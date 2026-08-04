@@ -210,17 +210,17 @@ export const SessionsList: React.FC<SessionsListProps> = ({
       <div 
         className="enterprise-hero-card p-6 lg:p-8 space-y-5 relative"
         style={{
-          background: 'linear-gradient(90deg, #2E4CB8 0%, #37308E 45%, #13254A 100%)',
-          borderRadius: '28px',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.25)',
-          color: '#FFFFFF'
+          background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+          borderRadius: '24px',
+          border: '1px solid #BFDBFE',
+          boxShadow: '0 10px 30px rgba(37, 99, 235, 0.08)',
+          color: '#0F172A'
         }}
       >
         {/* Subtle radial glow behind title */}
         <div 
-          className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none blur-3xl" 
-          style={{ background: 'radial-gradient(circle, rgba(124, 92, 255, 0.15) 0%, rgba(124, 92, 255, 0) 70%)' }}
+          className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none blur-3xl opacity-40" 
+          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 70%)' }}
         />
         
         {/* Header Title & Video */}
@@ -229,24 +229,24 @@ export const SessionsList: React.FC<SessionsListProps> = ({
             <div 
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm"
               style={{
-                backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                color: '#FFFFFF',
-                border: '1px solid rgba(255, 255, 255, 0.12)'
+                backgroundColor: '#DBEAFE',
+                color: '#1D4ED8',
+                border: '1px solid #BFDBFE'
               }}
             >
-              <BookOpen className="w-3.5 h-3.5" style={{ color: '#4EA3FF' }} />
+              <BookOpen className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />
               <span>GT Learning Academy Catalog • {filteredSessions.length} Modules</span>
             </div>
-            <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight" style={{ color: '#FFFFFF' }}>
+            <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
               Technical Learning Sessions
             </h2>
-            <p className="hero-desc text-xs lg:text-sm max-w-2xl leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.82)' }}>
+            <p className="hero-desc text-xs lg:text-sm max-w-2xl leading-relaxed text-slate-600 font-medium">
               Explore hands-on GT engineering curricula, deep-dive technical modules, architectural frameworks, and domain tracks.
             </p>
           </div>
 
           {/* Hero Right Video Player */}
-          <div className="w-full lg:w-80 flex-shrink-0 rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-slate-950/80 relative">
+          <div className="w-full lg:w-80 flex-shrink-0 rounded-2xl overflow-hidden border border-slate-200 shadow-xl bg-white relative">
             <video 
               controls
               poster="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80"
@@ -257,12 +257,12 @@ export const SessionsList: React.FC<SessionsListProps> = ({
         </div>
 
         {/* Search Bar & Multi-Select Dropdown Filter Row */}
-        <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+        <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10" style={{ borderTop: '1px solid rgba(37, 99, 235, 0.15)' }}>
           
           <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
             {/* Search Bar on the Left of Dropdown Box */}
             <div ref={searchContainerRef} className="relative w-full sm:w-72 md:w-80">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 z-10" style={{ color: '#4EA3FF' }} />
+              <Search className="w-4 h-4 absolute left-3.5 top-3 z-10 text-blue-600" />
               <input
                 type="text"
                 value={searchQuery}
@@ -272,19 +272,14 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                 }}
                 onFocus={() => setIsSearchFocused(true)}
                 placeholder="Search sessions, topics, documents, or tags..."
-                className="enterprise-hero-search w-full rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all duration-200"
-                style={{
-                  backgroundColor: 'rgba(8, 14, 38, 0.75)',
-                  border: '1px solid rgba(59, 130, 246, 0.35)',
-                  color: '#FFFFFF'
-                }}
+                className="w-full rounded-xl pl-10 pr-4 py-2.5 text-xs bg-white text-slate-900 placeholder-slate-500 border border-slate-300 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm transition-all duration-200"
               />
 
               {/* Autocomplete Suggestions Dropdown */}
               {isSearchFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-[#0E1733] border border-slate-700 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
+                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
                   {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
-                    <div className="p-3 text-center text-xs text-slate-400 font-mono">
+                    <div className="p-3 text-center text-xs text-slate-500 font-mono">
                       No matching sessions or documents found
                     </div>
                   ) : (
@@ -292,7 +287,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                       {/* Matching Sessions Section */}
                       {suggestedSessions.length > 0 && (
                         <div className="space-y-1.5">
-                          <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-wider block px-2">
+                          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block px-2">
                             Suggested Sessions ({suggestedSessions.length})
                           </span>
                           {suggestedSessions.map((s) => (
@@ -302,18 +297,18 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                                 onSelectSession(s.id);
                                 setIsSearchFocused(false);
                               }}
-                              className="p-2 hover:bg-[#18254F] rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
+                              className="p-2 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-6 h-6 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#4EA3FF] flex-shrink-0 font-bold">
+                                <div className="w-6 h-6 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 flex-shrink-0 font-bold">
                                   <FolderOpen className="w-3.5 h-3.5" />
                                 </div>
                                 <div className="truncate">
-                                  <span className="font-bold text-white group-hover:text-[#4EA3FF] block truncate">{s.name}</span>
-                                  <span className="text-[10px] text-slate-300 font-mono">{getDisplayCategory(s.category)} • {s.durationHours} hrs</span>
+                                  <span className="font-bold text-slate-900 group-hover:text-blue-700 block truncate">{s.name}</span>
+                                  <span className="text-[10px] text-slate-500 font-mono">{getDisplayCategory(s.category)}</span>
                                 </div>
                               </div>
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#4EA3FF] flex-shrink-0" />
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 flex-shrink-0" />
                             </div>
                           ))}
                         </div>
@@ -321,8 +316,8 @@ export const SessionsList: React.FC<SessionsListProps> = ({
 
                       {/* Matching Documents Section */}
                       {suggestedDocs.length > 0 && (
-                        <div className="space-y-1.5 border-t border-slate-700/60 pt-2">
-                          <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-wider block px-2">
+                        <div className="space-y-1.5 border-t border-slate-100 pt-2">
+                          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block px-2">
                             Suggested Documents ({suggestedDocs.length})
                           </span>
                           {suggestedDocs.map((doc) => {
@@ -335,23 +330,23 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                                   onSelectSession(doc.sessionId);
                                   setIsSearchFocused(false);
                                 }}
-                                className="p-2 hover:bg-[#18254F] rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
+                                className="p-2 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
                               >
                                 <div className="flex items-center gap-2 min-w-0">
-                                  <span className="px-2 py-0.5 rounded border border-purple-400/30 bg-purple-500/20 text-purple-200 text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0">
+                                  <span className="px-2 py-0.5 rounded border border-purple-200 bg-purple-50 text-purple-700 text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0">
                                     <FileText className="w-3 h-3" />
                                     <span>{doc.type}</span>
                                   </span>
                                   <div className="truncate">
-                                    <span className="font-bold text-white group-hover:text-[#4EA3FF] block truncate">{doc.title}</span>
+                                    <span className="font-bold text-slate-900 group-hover:text-blue-700 block truncate">{doc.title}</span>
                                     {parentSession && (
-                                      <span className="text-[10px] text-slate-300 font-mono block truncate">
+                                      <span className="text-[10px] text-slate-500 font-mono block truncate">
                                         Session: {parentSession.name}
                                       </span>
                                     )}
                                   </div>
                                 </div>
-                                <span className="text-[10px] font-mono font-bold text-[#4EA3FF] bg-blue-500/15 px-2 py-0.5 rounded border border-blue-400/30 group-hover:bg-blue-500/30 flex-shrink-0 ml-2">
+                                <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 group-hover:bg-blue-100 flex-shrink-0 ml-2">
                                   Open Track
                                 </span>
                               </div>
@@ -371,50 +366,45 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               <button
                 type="button"
                 onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="enterprise-filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all duration-200 w-full sm:w-auto justify-between sm:justify-start"
-                style={{
-                  backgroundColor: selectedCategories.length > 0 ? '#18254F' : '#0E1733',
-                  border: selectedCategories.length > 0 ? '1px solid #4EA3FF' : '1px solid rgba(255, 255, 255, 0.08)',
-                  color: '#FFFFFF'
-                }}
+                className="px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all duration-200 w-full sm:w-auto justify-between sm:justify-start bg-white text-slate-900 border border-slate-300 hover:bg-blue-50 hover:border-blue-200 shadow-sm"
               >
                 <div className="flex items-center gap-2.5">
-                  <Filter className="w-3.5 h-3.5" style={{ color: '#4EA3FF' }} />
+                  <Filter className="w-3.5 h-3.5 text-blue-600" />
                   <span>
                     {selectedCategories.length === 0
                       ? 'All Learning Tracks'
                       : `Learning Tracks (${selectedCategories.length} selected)`}
                   </span>
                 </div>
-                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} style={{ color: 'rgba(255, 255, 255, 0.65)' }} />
+                <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
             {/* Dropdown Menu */}
             {isFilterDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-72 bg-slate-900 border border-slate-700 rounded-2xl shadow-2xl p-3 z-50 space-y-3 animate-fadeIn">
+              <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-2xl p-3 z-50 space-y-3 animate-fadeIn">
                 {/* Search Box Inside Dropdown */}
                 <div className="relative">
-                  <Search className="w-3 h-3 text-slate-500 absolute left-2.5 top-2.5" />
+                  <Search className="w-3 h-3 text-slate-400 absolute left-2.5 top-2.5" />
                   <input
                     type="text"
                     value={filterSearchQuery}
                     onChange={(e) => setFilterSearchQuery(e.target.value)}
                     placeholder="Search tracks..."
-                    className="w-full bg-slate-950 border border-slate-800 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-blue-500"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
                 {/* Dropdown Actions: Select All / Clear All */}
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2 text-[11px] font-semibold">
+                <div className="flex items-center justify-between border-b border-slate-100 pb-2 text-[11px] font-semibold">
                   <button
                     onClick={handleSelectAll}
-                    className="text-blue-400 hover:text-blue-300 transition-colors"
+                    className="text-blue-600 hover:text-blue-800 transition-colors"
                   >
                     Select All
                   </button>
                   <button
                     onClick={handleClearAll}
-                    className="text-slate-400 hover:text-slate-200 transition-colors"
+                    className="text-slate-500 hover:text-slate-800 transition-colors"
                   >
                     Clear All
                   </button>
@@ -428,23 +418,23 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                       <label
                         key={cat.raw}
                         onClick={() => handleToggleCategory(cat.raw)}
-                        className="flex items-center justify-between p-2 rounded-lg hover:bg-slate-800/80 cursor-pointer text-xs transition-colors group"
+                        className="flex items-center justify-between p-2 rounded-lg hover:bg-blue-50 cursor-pointer text-xs transition-colors group"
                       >
                         <div className="flex items-center gap-2.5">
                           <div
                             className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
                               isChecked
-                                ? 'bg-blue-600 border-blue-500 text-white'
-                                : 'border-slate-700 bg-slate-950 group-hover:border-slate-600'
+                                ? 'bg-blue-600 border-blue-600 text-white'
+                                : 'border-slate-300 bg-white group-hover:border-blue-400'
                             }`}
                           >
                             {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                           </div>
-                          <span className={`font-medium ${isChecked ? 'text-white' : 'text-slate-300'}`}>
+                          <span className={`font-medium ${isChecked ? 'text-blue-700 font-bold' : 'text-slate-700'}`}>
                             {cat.display}
                           </span>
                         </div>
-                        <span className="text-[10px] font-mono bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] font-mono bg-blue-50 text-blue-700 border border-blue-200 px-1.5 py-0.5 rounded-full font-bold">
                           {cat.count}
                         </span>
                       </label>
@@ -456,15 +446,15 @@ export const SessionsList: React.FC<SessionsListProps> = ({
           </div>
         </div>
 
-          <div className="text-xs text-slate-400 font-mono">
-            Showing <span className="font-bold text-white">{filteredSessions.length}</span> of <span className="font-bold text-white">{sessions.length}</span> tracks
+          <div className="text-xs text-slate-700 font-mono font-medium">
+            Showing <span className="font-extrabold text-blue-950">{filteredSessions.length}</span> of <span className="font-extrabold text-blue-950">{sessions.length}</span> tracks
           </div>
         </div>
 
         {/* Selected Filter Chips Row */}
         {selectedCategories.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-slate-800/60">
-            <span className="text-[11px] text-slate-400 font-mono font-medium">Selected Filters:</span>
+          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-blue-200/60">
+            <span className="text-[11px] text-slate-600 font-mono font-medium">Selected Filters:</span>
             {selectedCategories.map((catRaw) => {
               const display = getDisplayCategory(catRaw);
               const isRemoving = removingChip === catRaw;
@@ -472,7 +462,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               return (
                 <div
                   key={catRaw}
-                  className={`bg-slate-900 border border-slate-800 px-3 py-1 rounded-full flex items-center gap-2 text-xs text-slate-300 font-medium shadow-sm transition-all duration-250 ease-in-out ${
+                  className={`bg-white/90 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 text-xs text-blue-950 font-bold shadow-sm transition-all duration-250 ease-in-out ${
                     isRemoving ? 'opacity-0 scale-90 -translate-x-2' : 'opacity-100 scale-100'
                   }`}
                 >
@@ -482,9 +472,9 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                     onClick={() => handleRemoveChip(catRaw)}
                     aria-label="Remove filter"
                     title="Remove filter"
-                    className="p-0.5 rounded-full hover:bg-[#EF4444] transition-all duration-200 group focus:outline-none"
+                    className="p-0.5 rounded-full hover:bg-rose-500 transition-all duration-200 group focus:outline-none"
                   >
-                    <X className="w-3.5 h-3.5 text-slate-400 opacity-70 group-hover:text-white transition-colors" />
+                    <X className="w-3.5 h-3.5 text-blue-700 group-hover:text-white transition-colors" />
                   </button>
                 </div>
               );
@@ -492,7 +482,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
 
             <button
               onClick={handleClearAll}
-              className="text-xs text-blue-400 hover:text-blue-300 font-medium underline underline-offset-2 ml-1 transition-colors"
+              className="text-xs text-blue-700 hover:text-blue-900 font-bold underline underline-offset-2 ml-1 transition-colors"
             >
               Reset Filters
             </button>
@@ -522,14 +512,17 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               key={session.id}
               onClick={() => setActiveCardId(prev => prev === session.id ? null : session.id)}
               className={`
-                group relative bg-white border rounded-3xl overflow-hidden flex flex-col justify-between h-full
+                group relative bg-white border rounded-[20px] overflow-hidden flex flex-col justify-between h-full
                 transition-all duration-300 ease-out transform cursor-pointer
                 ${
                   isActive
-                    ? 'z-50 scale-105 sm:scale-108 border-blue-500 shadow-[0_20px_60px_-10px_rgba(59,130,246,0.35)] ring-2 ring-blue-500/50'
-                    : 'z-10 border-slate-200 hover:border-blue-400 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-blue-900/10'
+                    ? 'z-50 scale-105 sm:scale-108 border-blue-600 shadow-[0_20px_50px_rgba(37,99,235,0.25)] ring-2 ring-blue-500/40'
+                    : 'z-10 border-slate-200 hover:border-blue-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(37,99,235,0.15)]'
                 }
               `}
+              style={{
+                boxShadow: isActive ? undefined : '0 10px 30px rgba(15, 23, 42, 0.08)'
+              }}
               data-inspect-id="SessionCard"
             >
               <div>
@@ -540,16 +533,16 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                     alt={session.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/60 via-slate-950/10 to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
                   
                   {/* Category & Trainer Badges Overlay on Image */}
                   <div className="absolute top-3 left-3 right-14 flex flex-wrap items-center gap-1.5 z-10">
-                    <span className="bg-white/95 backdrop-blur-md text-blue-700 text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-slate-200 shadow-sm">
+                    <span className="bg-[#DBEAFE] text-[#1D4ED8] text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-[#BFDBFE] shadow-sm">
                       {categoryDisplay}
                     </span>
                     {session.trainerName && (
-                      <span className="bg-slate-900/85 backdrop-blur-md text-white text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-slate-700 shadow-sm flex items-center gap-1">
-                        <span className="text-emerald-400 font-semibold">Trainer:</span> {session.trainerName}
+                      <span className="bg-[#EFF6FF] text-[#2563EB] text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-[#BFDBFE] shadow-sm flex items-center gap-1">
+                        <span className="text-blue-800 font-bold">Trainer:</span> {session.trainerName}
                       </span>
                     )}
                   </div>
@@ -562,7 +555,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                           e.stopPropagation();
                           setActiveCardId(null);
                         }}
-                        className="w-8 h-8 rounded-full bg-slate-900/90 hover:bg-rose-600 text-slate-200 hover:text-white border border-slate-700 flex items-center justify-center transition-colors shadow-md"
+                        className="w-8 h-8 rounded-full bg-white text-slate-700 hover:text-rose-600 border border-slate-200 flex items-center justify-center transition-colors shadow-md"
                         title="Close active view (Esc)"
                       >
                         <X className="w-4 h-4" />
@@ -573,14 +566,14 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                           e.stopPropagation();
                           onToggleBookmark(session.id);
                         }}
-                        className={`w-8 h-8 rounded-full bg-white/95 backdrop-blur-md border flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-sm ${
+                        className={`w-8 h-8 rounded-full bg-white border flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-md ${
                           session.isBookmarked
-                            ? 'text-amber-500 fill-amber-500 border-amber-400'
-                            : 'text-slate-700 border-slate-200 hover:border-blue-500 hover:bg-blue-50'
+                            ? 'text-blue-600 fill-blue-600 border-blue-300'
+                            : 'text-blue-600 border-slate-200 hover:border-blue-400 hover:bg-blue-50'
                         }`}
                         title="Save Learning Track"
                       >
-                        <Bookmark className={`w-4 h-4 ${session.isBookmarked ? 'fill-amber-500' : ''}`} />
+                        <Bookmark className={`w-4 h-4 ${session.isBookmarked ? 'fill-blue-600 text-blue-600' : 'text-blue-600'}`} />
                       </button>
                     )}
                   </div>
@@ -607,9 +600,9 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                       </span>
                       <div className="space-y-1">
                         {session.topics.slice(0, 3).map((t, idx) => (
-                          <div key={t.id || idx} className="flex items-center justify-between text-[11px] bg-slate-50 p-2 rounded-lg border border-slate-200">
+                          <div key={t.id || idx} className="flex items-center justify-between text-[11px] bg-blue-50/70 p-2 rounded-lg border border-blue-100">
                             <span className="text-slate-800 font-medium truncate">{t.title}</span>
-                            <span className="text-[10px] text-emerald-700 font-mono flex-shrink-0 font-bold ml-2">Unlocked</span>
+                            <span className="text-[10px] text-blue-700 font-mono flex-shrink-0 font-bold ml-2">Unlocked</span>
                           </div>
                         ))}
                       </div>
@@ -626,10 +619,15 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                     onSelectSession(session.id);
                   }}
                   data-inspect-id="PrimaryButton"
-                  className="w-full font-bold text-xs py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white border border-blue-500 shadow-lg shadow-blue-600/30 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out hover:scale-[1.02]"
+                  style={{
+                    background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+                    border: '1px solid #BFDBFE',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.12)',
+                  }}
+                  className="w-full font-extrabold text-xs py-3 rounded-xl text-blue-800 hover:text-blue-900 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md hover:border-blue-400"
                 >
-                  <Play className="w-3.5 h-3.5 fill-current text-white" />
-                  <span className="text-white font-bold">{isActive ? 'Launch Learning Track' : 'Open Learning Track'}</span>
+                  <Play className="w-3.5 h-3.5 fill-blue-700 text-blue-700" />
+                  <span className="text-blue-800 font-extrabold">{isActive ? 'Launch Learning Track' : 'Open Learning Track'}</span>
                 </button>
               </div>
             </div>
@@ -638,10 +636,10 @@ export const SessionsList: React.FC<SessionsListProps> = ({
       </div>
 
       {filteredSessions.length === 0 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-12 text-center space-y-3">
-          <FolderOpen className="w-12 h-12 text-slate-600 mx-auto" />
-          <h3 className="text-lg font-bold text-white">No learning sessions found</h3>
-          <p className="text-slate-400 text-xs max-w-sm mx-auto">
+        <div className="bg-white border border-slate-200 rounded-3xl p-12 text-center space-y-3 shadow-md">
+          <FolderOpen className="w-12 h-12 text-blue-500 mx-auto" />
+          <h3 className="text-lg font-bold text-slate-900">No learning sessions found</h3>
+          <p className="text-slate-600 text-xs max-w-sm mx-auto">
             Try resetting your search query or selected learning track filters to view available modules.
           </p>
           <button
@@ -649,7 +647,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               setSearchQuery('');
               handleClearAll();
             }}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-semibold transition-colors mt-2"
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-md mt-2"
           >
             Reset Search & Filters
           </button>

@@ -386,13 +386,13 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       <div className="flex items-center justify-between">
         <button
           onClick={onBack}
-          className="inline-flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-blue-700 dark:text-slate-300 dark:hover:text-white bg-slate-100 dark:bg-slate-900 px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 transition-all shadow-sm"
+          className="inline-flex items-center gap-2 text-xs font-bold text-slate-800 hover:text-blue-700 bg-slate-100 hover:bg-slate-200/80 px-4 py-2.5 rounded-xl border border-slate-200 transition-all shadow-sm"
         >
           <ArrowLeft className="w-4 h-4 text-blue-600" />
           <span>Back to Learning Sessions</span>
         </button>
 
-        <span className="text-xs font-mono font-bold text-slate-500 bg-slate-100 dark:bg-slate-800/80 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-700">
+        <span className="text-xs font-mono font-bold text-blue-900 bg-blue-50 px-3.5 py-1.5 rounded-lg border border-blue-200 shadow-sm">
           Learning Track • {session.category}
         </span>
       </div>
@@ -400,18 +400,18 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {/* SESSION OVERVIEW VIDEO SECTION                           */}
       {/* ======================================================== */}
-      <div className="bg-slate-950 text-white border border-slate-800 rounded-2xl p-4 sm:p-5 md:p-6 shadow-xl space-y-4 relative overflow-hidden">
-        <div className="space-y-1.5 pb-2 border-b border-slate-800/80">
-          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-500/20 text-blue-300 border border-blue-500/30 text-[11px] font-mono font-bold">
-            <Video className="w-3 h-3 text-blue-400" />
+      <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-lg space-y-4 relative overflow-hidden">
+        <div className="space-y-1.5 pb-3 border-b border-slate-100">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-mono font-bold">
+            <Video className="w-3.5 h-3.5 text-blue-600" />
             <span>Session Overview</span>
           </div>
-          <h2 className="text-lg md:text-xl font-bold text-white">{session.name}</h2>
-          <p className="text-xs text-slate-300 leading-relaxed">{overviewVideoDesc}</p>
+          <h2 className="text-lg md:text-xl font-extrabold text-slate-900">{session.name}</h2>
+          <p className="text-xs text-slate-600 font-medium leading-relaxed">{overviewVideoDesc}</p>
         </div>
 
         {/* Video Player Box - Fills available area in 16:9 aspect ratio */}
-        <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black border border-slate-800 shadow-lg flex items-center justify-center">
+        <div className="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-md flex items-center justify-center">
           <video
             controls
             src={overviewVideoUrl}
@@ -426,7 +426,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {/* THREE CORE FIELDS (Road Map, Provided Materials, Additional Materials) */}
       {/* ======================================================== */}
-      <div className="bg-white dark:bg-slate-900 p-2 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-md flex items-center gap-2 overflow-x-auto no-scrollbar">
+      <div className="bg-slate-100 p-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2 overflow-x-auto no-scrollbar">
         
         {/* Field 1: Road Map */}
         <button
@@ -434,10 +434,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'roadmap'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800'
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <Layers className="w-4 h-4" />
+          <Layers className={`w-4 h-4 ${activeTab === 'roadmap' ? 'text-white' : 'text-blue-600'}`} />
           <span>Road Map</span>
         </button>
 
@@ -447,10 +447,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'provided-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800'
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <FileText className="w-4 h-4" />
+          <FileText className={`w-4 h-4 ${activeTab === 'provided-materials' ? 'text-white' : 'text-blue-600'}`} />
           <span>Provided Materials ({providedMaterialsList.length})</span>
         </button>
 
@@ -460,24 +460,24 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'additional-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800'
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <FolderPlus className="w-4 h-4" />
+          <FolderPlus className={`w-4 h-4 ${activeTab === 'additional-materials' ? 'text-white' : 'text-blue-600'}`} />
           <span>Additional Materials ({additionalMaterialsList.length})</span>
         </button>
 
-        <div className="h-6 w-px bg-slate-200 dark:bg-slate-800 my-auto mx-1" />
+        <div className="h-6 w-px bg-slate-300 my-auto mx-1" />
 
         <button
           onClick={() => setActiveTab('notes')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'notes'
-              ? 'bg-blue-600 text-white shadow-md'
-              : 'text-slate-600 dark:text-slate-300 hover:text-blue-600 hover:bg-slate-100 dark:hover:bg-slate-800'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <Edit3 className="w-3.5 h-3.5" />
+          <Edit3 className={`w-3.5 h-3.5 ${activeTab === 'notes' ? 'text-white' : 'text-blue-600'}`} />
           <span>Notes ({personalNotesList.length})</span>
         </button>
 
@@ -488,12 +488,12 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {activeTab === 'roadmap' && (
         <div className="space-y-6 animate-fadeIn">
-          <div className="bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900/50 p-4 rounded-2xl flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2 text-blue-900 dark:text-blue-200 font-medium">
+          <div className="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between text-xs">
+            <div className="flex items-center gap-2 text-blue-900 font-medium">
               <Layers className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <span>Interactive Session Roadmap — GTs can view this pathway for structured reference & topic progression.</span>
             </div>
-            <span className="font-mono text-[11px] font-bold text-blue-700 dark:text-blue-300 bg-white dark:bg-blue-900/60 px-3 py-1 rounded-lg border border-blue-200 dark:border-blue-800">
+            <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
               {(session?.topics || []).length} Topics Total
             </span>
           </div>
@@ -506,19 +506,19 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
           {/* Subtopics Breakdown */}
           {selectedTopic && (
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 dark:text-white flex items-center gap-2">
+                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
                   <BookOpen className="w-4 h-4 text-blue-600" />
                   <span>Topic Modules & Subtopics: {selectedTopic.title}</span>
                 </h3>
-                <span className="text-xs font-mono text-slate-500">{(selectedTopic?.subtopics || []).length} Subtopics</span>
+                <span className="text-xs font-mono text-slate-500 font-semibold">{(selectedTopic?.subtopics || []).length} Subtopics</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
                 {(selectedTopic?.subtopics || []).map((sub) => (
-                  <div key={sub.id} className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
-                    <span className="font-bold text-slate-900 dark:text-white text-xs">{sub.title}</span>
+                  <div key={sub.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
+                    <span className="font-bold text-slate-800 text-xs">{sub.title}</span>
                   </div>
                 ))}
               </div>
@@ -534,22 +534,22 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <div className="space-y-6 animate-fadeIn">
           
           {/* Action Header */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold font-mono">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-xs font-bold font-mono">
                   <ShieldCheck className="w-3.5 h-3.5 text-blue-600" />
                   <span>Official Organization Provided Materials</span>
                 </div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mt-1">Provided Study Materials</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
+                <h3 className="text-lg font-extrabold text-slate-900 mt-1">Provided Study Materials</h3>
+                <p className="text-xs text-slate-600">
                   Access all official docs, PPTs, video links, notes, and video files provided by the organization for this session.
                 </p>
               </div>
             </div>
 
             {/* Filter Pills & Search */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="pt-2 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar">
                 {['All', 'Doc', 'PPT', 'Video', 'Notes'].map((t) => (
                   <button
@@ -557,8 +557,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     onClick={() => setProvidedFilterType(t)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                       providedFilterType === t
-                        ? 'bg-slate-900 text-white dark:bg-blue-600 dark:text-white'
-                        : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200'
+                        ? 'bg-blue-600 text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {t}
@@ -573,7 +573,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   placeholder="Search provided materials..."
                   value={providedSearch}
                   onChange={(e) => setProvidedSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                 />
               </div>
             </div>
@@ -582,29 +582,29 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           {/* Provided Materials List Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredProvided.map((mat) => (
-              <div key={mat.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 flex flex-col justify-between">
+              <div key={mat.id} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4 flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-blue-700 dark:text-blue-300 px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-950/60 border border-blue-200 dark:border-blue-800">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-blue-700 px-2.5 py-1 rounded-lg bg-blue-50 border border-blue-200">
                       {renderTypeIcon(mat.type)}
                       <span>{mat.type}</span>
                     </span>
                     <span className="text-xs text-slate-500 font-mono">{mat.fileSizeOrDuration}</span>
                   </div>
 
-                  <h4 className="text-base font-bold text-slate-900 dark:text-white">{mat.title}</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">{mat.description}</p>
+                  <h4 className="text-base font-bold text-slate-900">{mat.title}</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed">{mat.description}</p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
                   <span className="text-[11px] text-slate-500 font-mono">Provided by L&D • {mat.updatedAt}</span>
                   <a
                     href={mat.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 text-xs font-bold px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 transition-colors"
+                    className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-xl border border-blue-200 flex items-center gap-2 transition-colors"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" /> Open / Download
+                    <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> Open / Download
                   </a>
                 </div>
               </div>
@@ -620,22 +620,22 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <div className="space-y-6 animate-fadeIn">
           
           {/* Action Header */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 dark:bg-purple-950/60 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-800 text-xs font-bold font-mono">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-50 text-purple-700 border border-purple-200 text-xs font-bold font-mono">
                   <FolderPlus className="w-3.5 h-3.5 text-purple-600" />
                   <span>Referenced & Additional Study Materials</span>
                 </div>
-                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mt-1">Additional Reference Materials</h3>
-                <p className="text-xs text-slate-600 dark:text-slate-400">
+                <h3 className="text-lg font-extrabold text-slate-900 mt-1">Additional Reference Materials</h3>
+                <p className="text-xs text-slate-600">
                   Explore additional docs, PPTs, video links, notes, and supplementary videos referenced by GT trainees and mentors.
                 </p>
               </div>
             </div>
 
             {/* Filter Pills & Search */}
-            <div className="pt-2 border-t border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="pt-2 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar">
                 {['All', 'Doc', 'PPT', 'Video', 'Notes'].map((t) => (
                   <button
@@ -643,8 +643,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     onClick={() => setAdditionalFilterType(t)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
                       additionalFilterType === t
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300 hover:bg-slate-200'
+                        ? 'bg-purple-600 text-white shadow-sm'
+                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                     }`}
                   >
                     {t}
@@ -659,7 +659,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   placeholder="Search additional materials..."
                   value={additionalSearch}
                   onChange={(e) => setAdditionalSearch(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl text-xs text-slate-900 dark:text-white focus:outline-none focus:border-purple-500"
+                  className="w-full pl-9 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                 />
               </div>
             </div>
@@ -668,35 +668,35 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           {/* Additional Materials List Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {filteredAdditional.map((mat) => (
-              <div key={mat.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-4 flex flex-col justify-between">
+              <div key={mat.id} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4 flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-purple-700 dark:text-purple-300 px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-purple-950/60 border border-purple-200 dark:border-purple-800">
+                    <span className="inline-flex items-center gap-1.5 text-[11px] font-mono font-bold text-purple-700 px-2.5 py-1 rounded-lg bg-purple-50 border border-purple-200">
                       {renderTypeIcon(mat.type)}
                       <span>{mat.type}</span>
                     </span>
                     <span className="text-xs text-slate-500 font-mono">{mat.fileSizeOrDuration}</span>
                   </div>
 
-                  <h4 className="text-base font-bold text-slate-900 dark:text-white">{mat.title}</h4>
-                  <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">{mat.description}</p>
+                  <h4 className="text-base font-bold text-slate-900">{mat.title}</h4>
+                  <p className="text-slate-600 text-xs leading-relaxed">{mat.description}</p>
 
                   {mat.sourceOrAuthor && (
-                    <div className="text-[11px] text-slate-500 font-mono bg-slate-50 dark:bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 w-fit">
-                      Source/Contributor: <span className="text-slate-800 dark:text-slate-200 font-bold">{mat.sourceOrAuthor}</span>
+                    <div className="text-[11px] text-slate-600 font-mono bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-200 w-fit">
+                      Source/Contributor: <span className="text-slate-900 font-bold">{mat.sourceOrAuthor}</span>
                     </div>
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
                   <span className="text-[11px] text-slate-500 font-mono">Added: {mat.updatedAt}</span>
                   <a
                     href={mat.url}
                     target="_blank"
                     rel="noreferrer"
-                    className="bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 text-purple-700 dark:text-purple-200 text-xs font-bold px-4 py-2 rounded-xl border border-purple-200 dark:border-purple-800 flex items-center gap-2 transition-colors"
+                    className="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-xl border border-purple-200 flex items-center gap-2 transition-colors"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" /> Access Reference
+                    <ExternalLink className="w-3.5 h-3.5 text-purple-600" /> Access Reference
                   </a>
                 </div>
               </div>
@@ -708,17 +708,17 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* Notes Tab */}
       {activeTab === 'notes' && (
         <div className="space-y-6">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xl space-y-3">
-            <h3 className="text-sm font-bold text-slate-900 dark:text-white">Your Personal Notes</h3>
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-3">
+            <h3 className="text-sm font-bold text-slate-900">Your Personal Notes</h3>
             <textarea
               value={newNoteText}
               onChange={(e) => setNewNoteText(e.target.value)}
               placeholder="Record your insights, key syntax, or reminders for revision..."
-              className="w-full h-24 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 resize-none"
+              className="w-full h-24 bg-slate-50 border border-slate-200 rounded-xl p-4 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 resize-none"
             />
             <button
               onClick={handleAddNote}
-              className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition-all hover:-translate-y-0.5"
             >
               <Plus className="w-3.5 h-3.5" /> Save Personal Note
             </button>
@@ -726,12 +726,12 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
           <div className="space-y-3">
             {personalNotesList.map((note) => (
-              <div key={note.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs space-y-2">
+              <div key={note.id} className="bg-white border border-slate-200 rounded-2xl p-4 text-xs space-y-2 shadow-sm">
                 <div className="flex items-center justify-between text-slate-500 font-mono text-[10px]">
                   <span>{note.topicTitle}</span>
                   <span>{note.createdAt}</span>
                 </div>
-                <p className="text-slate-800 dark:text-slate-200 font-sans leading-relaxed">{note.content}</p>
+                <p className="text-slate-800 font-sans leading-relaxed">{note.content}</p>
               </div>
             ))}
           </div>
@@ -742,16 +742,16 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* MODAL 1: UPLOAD OVERVIEW VIDEO MODAL                     */}
       {/* ======================================================== */}
       {isUploadingVideoModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-5 text-slate-900 dark:text-white">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-5 text-slate-900">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <Video className="w-5 h-5 text-blue-600" />
-                <h3 className="text-base font-extrabold">Upload Session Overview Video</h3>
+                <h3 className="text-base font-extrabold text-slate-900">Upload Session Overview Video</h3>
               </div>
               <button
                 onClick={() => setIsUploadingVideoModalOpen(false)}
-                className="p-1 rounded-full text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                className="p-1 rounded-full text-slate-400 hover:text-slate-900"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -759,34 +759,34 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
             <form onSubmit={handleSaveOverviewVideo} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold mb-1">Video Title</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Video Title</label>
                 <input
                   type="text"
                   required
                   value={videoInputTitle}
                   onChange={(e) => setVideoInputTitle(e.target.value)}
                   placeholder="e.g. Full Session Overview & Objectives Walkthrough"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Overview Description</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Overview Description</label>
                 <textarea
                   rows={2}
                   value={videoInputDesc}
                   onChange={(e) => setVideoInputDesc(e.target.value)}
                   placeholder="Brief explanation of what attendees will watch in this video..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 resize-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Upload Video File (MP4/WebM) or Enter URL</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload Video File (MP4/WebM) or Enter URL</label>
                 <div className="space-y-2">
-                  <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-4 text-center hover:border-blue-500 cursor-pointer bg-slate-50 dark:bg-slate-950 transition-colors">
+                  <div className="border-2 border-dashed border-slate-300 rounded-2xl p-4 text-center hover:border-blue-500 cursor-pointer bg-slate-50 transition-colors">
                     <Upload className="w-6 h-6 text-blue-600 mx-auto mb-1" />
-                    <span className="text-xs font-semibold block text-slate-700 dark:text-slate-300">
+                    <span className="text-xs font-semibold block text-slate-700">
                       {selectedVideoFileName ? `Selected: ${selectedVideoFileName}` : 'Drag & drop MP4 overview video file or click to select'}
                     </span>
                     <span className="text-[10px] text-slate-400">Max file size: 500 MB</span>
@@ -810,7 +810,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     value={videoInputUrl}
                     onChange={(e) => setVideoInputUrl(e.target.value)}
                     placeholder="https://commondatastorage.googleapis.com/... or YouTube/Vimeo URL"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
@@ -819,13 +819,13 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsUploadingVideoModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20"
                 >
                   Save Video Overview
                 </button>
@@ -839,37 +839,37 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* MODAL 2: UPLOAD PROVIDED MATERIAL MODAL                  */}
       {/* ======================================================== */}
       {isUploadProvidedModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-5 text-slate-900 dark:text-white">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-5 text-slate-900">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-blue-600" />
-                <h3 className="text-base font-extrabold">Upload Official Provided Material</h3>
+                <h3 className="text-base font-extrabold text-slate-900">Upload Official Provided Material</h3>
               </div>
-              <button onClick={() => setIsUploadProvidedModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <button onClick={() => setIsUploadProvidedModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-900">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleAddProvidedMaterial} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold mb-1">Material Title</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Material Title</label>
                 <input
                   type="text"
                   required
                   value={matTitle}
                   onChange={(e) => setMatTitle(e.target.value)}
                   placeholder="e.g. Official C# Memory Profiling Guide"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Material Type</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Material Type</label>
                 <select
                   value={matType}
                   onChange={(e) => setMatType(e.target.value as CustomMaterialItem['type'])}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 focus:outline-none focus:border-blue-600"
                 >
                   <option value="Doc (PDF/Word)">Doc (PDF / Word)</option>
                   <option value="PowerPoint (PPT)">PowerPoint (PPT)</option>
@@ -881,7 +881,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Upload File OR Paste Material Link</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File OR Paste Material Link</label>
                 <div className="space-y-2">
                   <input
                     type="file"
@@ -897,19 +897,19 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     value={matUrl}
                     onChange={(e) => setMatUrl(e.target.value)}
                     placeholder="https://... or internal document link"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Description</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Description</label>
                 <textarea
                   rows={2}
                   value={matDesc}
                   onChange={(e) => setMatDesc(e.target.value)}
                   placeholder="Summary of this material..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600 resize-none"
                 />
               </div>
 
@@ -917,13 +917,13 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsUploadProvidedModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-600/20"
                 >
                   Upload Provided Material
                 </button>
@@ -937,48 +937,48 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* MODAL 3: UPLOAD ADDITIONAL MATERIAL MODAL                */}
       {/* ======================================================== */}
       {isUploadAdditionalModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-5 text-slate-900 dark:text-white">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-slate-800">
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-md flex items-center justify-center p-4">
+          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-lg p-6 shadow-2xl space-y-5 text-slate-900">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
               <div className="flex items-center gap-2">
                 <FolderPlus className="w-5 h-5 text-purple-600" />
-                <h3 className="text-base font-extrabold">Upload Additional Reference Material</h3>
+                <h3 className="text-base font-extrabold text-slate-900">Upload Additional Reference Material</h3>
               </div>
-              <button onClick={() => setIsUploadAdditionalModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-900 dark:hover:text-white">
+              <button onClick={() => setIsUploadAdditionalModalOpen(false)} className="p-1 text-slate-400 hover:text-slate-900">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             <form onSubmit={handleAddAdditionalMaterial} className="space-y-4">
               <div>
-                <label className="block text-xs font-bold mb-1">Material Title</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Material Title</label>
                 <input
                   type="text"
                   required
                   value={matTitle}
                   onChange={(e) => setMatTitle(e.target.value)}
                   placeholder="e.g. Advanced Microservices Benchmark Whitepaper"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Source / Contributor Name</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Source / Contributor Name</label>
                 <input
                   type="text"
                   value={matSource}
                   onChange={(e) => setMatSource(e.target.value)}
                   placeholder="e.g. Alex Vance or External Tech Blog"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Material Type</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Material Type</label>
                 <select
                   value={matType}
                   onChange={(e) => setMatType(e.target.value as CustomMaterialItem['type'])}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-purple-500"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 focus:outline-none focus:border-purple-600"
                 >
                   <option value="Doc (PDF/Word)">Doc (PDF / Word)</option>
                   <option value="PowerPoint (PPT)">PowerPoint (PPT)</option>
@@ -989,7 +989,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Upload File OR Paste Reference URL</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File OR Paste Reference URL</label>
                 <div className="space-y-2">
                   <input
                     type="file"
@@ -1005,19 +1005,19 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     value={matUrl}
                     onChange={(e) => setMatUrl(e.target.value)}
                     placeholder="https://... or external reference URL"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-purple-500"
+                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1">Description</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Description</label>
                 <textarea
                   rows={2}
                   value={matDesc}
                   onChange={(e) => setMatDesc(e.target.value)}
                   placeholder="Summary of why this reference is helpful..."
-                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:border-purple-500 resize-none"
+                  className="w-full px-3.5 py-2 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600 resize-none"
                 />
               </div>
 
@@ -1025,13 +1025,13 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                 <button
                   type="button"
                   onClick={() => setIsUploadAdditionalModalOpen(false)}
-                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+                  className="px-4 py-2 rounded-xl text-xs font-bold bg-slate-100 text-slate-700 hover:bg-slate-200"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow-md shadow-purple-600/30"
+                  className="px-5 py-2 rounded-xl text-xs font-bold bg-purple-600 hover:bg-purple-700 text-white shadow-md shadow-purple-600/20"
                 >
                   Upload Additional Material
                 </button>

@@ -42,34 +42,40 @@ export const ModeratorConsole: React.FC<ModeratorConsoleProps> = ({
     <div className="space-y-6 animate-fadeIn">
       
       {/* Top Controls Bar */}
-      <div className="bg-slate-900 p-1.5 rounded-2xl border border-slate-800 flex items-center gap-2 overflow-x-auto">
+      <div className="bg-slate-100 dark:bg-slate-800 p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto shadow-sm">
         <button
           onClick={() => setActiveTab('moderation')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-            activeTab === 'moderation' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'moderation' 
+              ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20' 
+              : 'text-slate-700 dark:text-slate-200 hover:text-rose-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
           }`}
         >
-          <ShieldAlert className="w-4 h-4" />
+          <ShieldAlert className={`w-4 h-4 ${activeTab === 'moderation' ? 'text-white' : 'text-rose-600 dark:text-rose-400'}`} />
           <span>Moderator Console</span>
         </button>
 
         <button
           onClick={() => setActiveTab('analytics')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-            activeTab === 'analytics' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'analytics' 
+              ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20' 
+              : 'text-slate-700 dark:text-slate-200 hover:text-rose-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
           }`}
         >
-          <BarChart3 className="w-4 h-4" />
+          <BarChart3 className={`w-4 h-4 ${activeTab === 'analytics' ? 'text-white' : 'text-rose-600 dark:text-rose-400'}`} />
           <span>Admin Knowledge Analytics</span>
         </button>
 
         <button
           onClick={() => setActiveTab('governance')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
-            activeTab === 'governance' ? 'bg-rose-600 text-white shadow-md' : 'text-slate-400 hover:text-white'
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'governance' 
+              ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20' 
+              : 'text-slate-700 dark:text-slate-200 hover:text-rose-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
           }`}
         >
-          <Tag className="w-4 h-4" />
+          <Tag className={`w-4 h-4 ${activeTab === 'governance' ? 'text-white' : 'text-rose-600 dark:text-rose-400'}`} />
           <span>Tag & Governance Manager</span>
         </button>
       </div>

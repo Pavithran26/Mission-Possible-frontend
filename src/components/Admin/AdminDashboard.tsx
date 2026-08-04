@@ -164,138 +164,139 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn text-slate-900 dark:text-slate-100">
 
-      {/* Filter and Search Bar for All Existing Sessions */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-md">
-        {/* Category Filters */}
-        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
-                selectedCategory === cat
-                  ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
+      {/* List of Existing Learning Sessions Cards directly below Console Card */}
+      <div className="space-y-6">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 px-1">
+          <h2 className="text-xl font-extrabold text-slate-900 flex items-center gap-2.5">
+            <FolderOpen className="w-6 h-6 text-blue-600" />
+            <span className="text-slate-900 font-extrabold">Enterprise Learning Sessions ({filteredSessions.length})</span>
+          </h2>
+          <span className="text-xs text-slate-600 font-mono font-medium">
+            Showing all published GT training modules
+          </span>
         </div>
 
-        {/* Search Bar with Autocomplete Suggestions */}
-        <div ref={searchContainerRef} className="relative w-full sm:w-80">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5 z-10" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              setSearchQuery(e.target.value);
-              setIsSearchFocused(true);
-            }}
-            onFocus={() => setIsSearchFocused(true)}
-            placeholder="Search sessions, topics..."
-            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-emerald-500"
-          />
+        {/* Filter and Search Bar for All Existing Sessions */}
+        <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+          {/* Category Filters */}
+          <div className="bg-slate-100 p-2 rounded-2xl border border-slate-200 flex items-center gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar shadow-sm">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setSelectedCategory(cat)}
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
+                  selectedCategory === cat
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                    : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-          {/* Autocomplete Suggestions Dropdown */}
-          {isSearchFocused && searchQuery.trim().length > 0 && (
-            <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
-              {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
-                <div className="p-3 text-center text-xs text-slate-500 font-mono">
-                  No matching sessions or documents found
-                </div>
-              ) : (
-                <>
-                  {/* Matching Sessions Section */}
-                  {suggestedSessions.length > 0 && (
-                    <div className="space-y-1.5">
-                      <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block px-2">
-                        Suggested Sessions ({suggestedSessions.length})
-                      </span>
-                      {suggestedSessions.map((s) => (
-                        <div
-                          key={s.id}
-                          onClick={() => {
-                            setSearchQuery(s.name);
-                            setIsSearchFocused(false);
-                          }}
-                          className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
-                        >
-                          <div className="flex items-center gap-2 min-w-0">
-                            <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0 font-bold">
-                              <FolderOpen className="w-3.5 h-3.5" />
-                            </div>
-                            <div className="truncate">
-                              <span className="font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 block truncate">{s.name}</span>
-                              <span className="text-[10px] text-slate-500 font-mono">{s.category} • {s.durationHours} Hrs</span>
-                            </div>
-                          </div>
-                          <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 flex-shrink-0" />
-                        </div>
-                      ))}
-                    </div>
-                  )}
+          {/* Search Bar with Autocomplete Suggestions */}
+          <div ref={searchContainerRef} className="relative w-full sm:w-80">
+            <Search className="w-4 h-4 text-blue-600 absolute left-3.5 top-3 z-10" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setIsSearchFocused(true);
+              }}
+              onFocus={() => setIsSearchFocused(true)}
+              placeholder="Search sessions, topics..."
+              className="w-full rounded-xl pl-10 pr-4 py-2.5 text-xs bg-white text-slate-900 placeholder-slate-500 border border-slate-300 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm transition-all duration-200"
+            />
 
-                  {/* Matching Documents Section */}
-                  {suggestedDocs.length > 0 && (
-                    <div className="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-2">
-                      <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block px-2">
-                        Suggested Documents ({suggestedDocs.length})
-                      </span>
-                      {suggestedDocs.map((doc) => {
-                        const parentSession = sessions.find(s => s.id === doc.sessionId);
-                        const badgeStyle = getMaterialTypeBadge(doc.type);
-                        const BadgeIcon = badgeStyle.icon;
-
-                        return (
+            {/* Autocomplete Suggestions Dropdown */}
+            {isSearchFocused && searchQuery.trim().length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
+                {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
+                  <div className="p-3 text-center text-xs text-slate-500 font-mono">
+                    No matching sessions or documents found
+                  </div>
+                ) : (
+                  <>
+                    {/* Matching Sessions Section */}
+                    {suggestedSessions.length > 0 && (
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block px-2">
+                          Suggested Sessions ({suggestedSessions.length})
+                        </span>
+                        {suggestedSessions.map((s) => (
                           <div
-                            key={doc.id}
+                            key={s.id}
                             onClick={() => {
-                              setActiveReadingMaterial(doc);
+                              setSearchQuery(s.name);
                               setIsSearchFocused(false);
                             }}
                             className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
                           >
                             <div className="flex items-center gap-2 min-w-0">
-                              <span className={`px-2 py-0.5 rounded border text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0 ${badgeStyle.bg}`}>
-                                <BadgeIcon className="w-3 h-3" />
-                                <span>{doc.type}</span>
-                              </span>
+                              <div className="w-6 h-6 rounded-lg bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0 font-bold">
+                                <FolderOpen className="w-3.5 h-3.5" />
+                              </div>
                               <div className="truncate">
-                                <span className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 block truncate">{doc.title}</span>
-                                {parentSession && (
-                                  <span className="text-[10px] text-slate-500 font-mono block truncate">
-                                    {parentSession.name}
-                                  </span>
-                                )}
+                                <span className="font-bold text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-300 block truncate">{s.name}</span>
+                                <span className="text-[10px] text-slate-500 font-mono">{s.category} • {s.durationHours} Hrs</span>
                               </div>
                             </div>
-                            <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 group-hover:bg-emerald-500/20 flex-shrink-0 ml-2">
-                              Read
-                            </span>
+                            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-emerald-600 flex-shrink-0" />
                           </div>
-                        );
-                      })}
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+                        ))}
+                      </div>
+                    )}
 
-      {/* List of Existing Learning Sessions Cards directly below Console Card */}
-      <div className="space-y-6">
-        <div className="flex items-center justify-between px-1">
-          <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <FolderOpen className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
-            <span>Enterprise Learning Sessions ({filteredSessions.length})</span>
-          </h2>
-          <span className="text-xs text-slate-600 dark:text-slate-400 font-mono">
-            Showing all published GT training modules
-          </span>
+                    {/* Matching Documents Section */}
+                    {suggestedDocs.length > 0 && (
+                      <div className="space-y-1.5 border-t border-slate-200 dark:border-slate-800 pt-2">
+                        <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block px-2">
+                          Suggested Documents ({suggestedDocs.length})
+                        </span>
+                        {suggestedDocs.map((doc) => {
+                          const parentSession = sessions.find(s => s.id === doc.sessionId);
+                          const badgeStyle = getMaterialTypeBadge(doc.type);
+                          const BadgeIcon = badgeStyle.icon;
+
+                          return (
+                            <div
+                              key={doc.id}
+                              onClick={() => {
+                                setActiveReadingMaterial(doc);
+                                setIsSearchFocused(false);
+                              }}
+                              className="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
+                            >
+                              <div className="flex items-center gap-2 min-w-0">
+                                <span className={`px-2 py-0.5 rounded border text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0 ${badgeStyle.bg}`}>
+                                  <BadgeIcon className="w-3 h-3" />
+                                  <span>{doc.type}</span>
+                                </span>
+                                <div className="truncate">
+                                  <span className="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 block truncate">{doc.title}</span>
+                                  {parentSession && (
+                                    <span className="text-[10px] text-slate-500 font-mono block truncate">
+                                      {parentSession.name}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20 group-hover:bg-emerald-500/20 flex-shrink-0 ml-2">
+                                Read
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
         </div>
 
         {filteredSessions.length === 0 ? (
@@ -365,11 +366,16 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     {onSelectSession && (
                       <button
                         onClick={() => onSelectSession(session.id)}
-                        className="bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-5 py-3 rounded-2xl shadow-lg shadow-blue-600/20 flex items-center gap-2 transition-all"
+                        style={{
+                          background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+                          border: '1px solid #BFDBFE',
+                          boxShadow: '0 4px 12px rgba(37, 99, 235, 0.12)',
+                        }}
+                        className="font-extrabold text-xs px-5 py-3 rounded-2xl text-blue-800 hover:text-blue-900 flex items-center gap-2 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md hover:border-blue-400"
                         title="View Session Details"
                       >
-                        <BookOpen className="w-4 h-4" />
-                        <span>View Session</span>
+                        <BookOpen className="w-4 h-4 text-blue-700 fill-blue-700" />
+                        <span className="text-blue-800 font-extrabold">View Session</span>
                       </button>
                     )}
                   </div>

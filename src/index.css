@@ -1,102 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0f172a;
-  --surface: #1e293b;
-  --card: rgba(255, 255, 255, 0.9);
-  --primary: #3b82f6;
+  --background: #f8fafc;
+  --surface: #ffffff;
+  --card: #ffffff;
+  --primary: #2563eb;
+  --primary-hover: #1d4ed8;
   --secondary: #64748b;
-  --text-primary: #f8fafc;
-  --text-secondary: #cbd5e1;
-  --text-muted: #94a3b8;
-  --border: #334155;
-  --hover: #334155;
-  --accent: #a855f7;
-  --success: #10b981;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --border: #e2e8f0;
+  --soft-border: #bfdbfe;
+  --hover-bg: #eff6ff;
+  --light-blue: #dbeafe;
+  --accent: #3b82f6;
 
   /* Centralized Hero Theme Tokens */
-  --hero-title: #ffffff;
-  --hero-subtitle: #f1f5f9;
-  --hero-muted: #cbd5e1;
-  --hero-badge-text: #93c5fd;
-  --hero-badge-bg: rgba(59, 130, 246, 0.2);
-  --hero-badge-border: rgba(147, 197, 253, 0.35);
-  --hero-icon: #ffffff;
-  --hero-border: rgba(99, 102, 241, 0.35);
-  --hero-card: rgba(15, 23, 42, 0.85);
+  --hero-title: #0f172a;
+  --hero-subtitle: #475569;
+  --hero-muted: #64748b;
+  --hero-badge-text: #1d4ed8;
+  --hero-badge-bg: #dbeafe;
+  --hero-badge-border: #bfdbfe;
+  --hero-icon: #2563eb;
+  --hero-border: #bfdbfe;
+  --hero-card: #ffffff;
 }
 
-/* Glass White Card utility styles */
-.glass-white-card,
-[data-inspect-id="SessionCard"],
-.bg-slate-900:not(header):not(nav):not(input):not(select):not(textarea):not(button):not(.hero-banner) {
-  background-color: rgba(255, 255, 255, 0.92) !important;
-  backdrop-filter: blur(12px) !important;
-  -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(255, 255, 255, 0.5) !important;
-  color: #0f172a !important;
-  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
-}
-
-.glass-white-card h1,
-.glass-white-card h2,
-.glass-white-card h3,
-.glass-white-card h4,
-.glass-white-card h5,
-.glass-white-card h6,
-[data-inspect-id="SessionCard"] h1,
-[data-inspect-id="SessionCard"] h2,
-[data-inspect-id="SessionCard"] h3,
-[data-inspect-id="SessionCard"] h4,
-.bg-slate-900:not(.hero-banner) h1,
-.bg-slate-900:not(.hero-banner) h2,
-.bg-slate-900:not(.hero-banner) h3,
-.bg-slate-900:not(.hero-banner) h4 {
-  color: #0f172a !important;
-}
-
-.glass-white-card p,
-[data-inspect-id="SessionCard"] p,
-.bg-slate-900:not(.hero-banner) p {
-  color: #334155 !important;
-}
-
-.glass-white-card .text-slate-400,
-.glass-white-card .text-slate-300,
-.glass-white-card .text-slate-500,
-[data-inspect-id="SessionCard"] .text-slate-400,
-[data-inspect-id="SessionCard"] .text-slate-300,
-.bg-slate-900:not(.hero-banner) .text-slate-400,
-.bg-slate-900:not(.hero-banner) .text-slate-300 {
-  color: #475569 !important;
-}
-
-.glass-white-card .text-white:not(button *):not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-amber-600 *):not(.bg-rose-600 *):not(.bg-purple-600 *):not(.bg-indigo-600 *),
-.bg-slate-900:not(.hero-banner) .text-white:not(button *):not(.bg-blue-600 *):not(.bg-emerald-600 *):not(.bg-amber-600 *):not(.bg-rose-600 *):not(.bg-purple-600 *):not(.bg-indigo-600 *) {
-  color: #0f172a !important;
-}
-
-.glass-white-card .bg-slate-950,
-.bg-slate-900:not(.hero-banner) .bg-slate-950 {
-  background-color: rgba(241, 245, 249, 0.88) !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
-}
-
-.glass-white-card .bg-slate-950 *,
-.bg-slate-900:not(.hero-banner) .bg-slate-950 * {
-  color: #1e293b;
-}
-
-/* Premium Enterprise Hero Card for GT Learning Academy */
+/* Light Modern Blue Theme Enterprise Hero Card */
 .enterprise-hero-card {
-  background: linear-gradient(90deg, #2E4CB8 0%, #37308E 45%, #13254A 100%) !important;
-  border-radius: 28px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25) !important;
-  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%) !important;
+  border-radius: 24px !important;
+  border: 1px solid #BFDBFE !important;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08) !important;
+  color: #0F172A !important;
   position: relative;
   overflow: hidden;
 }
@@ -104,46 +42,54 @@
 .enterprise-hero-card h1,
 .enterprise-hero-card h2,
 .enterprise-hero-card h3 {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
 }
 
 .enterprise-hero-card .hero-desc {
-  color: rgba(255, 255, 255, 0.82) !important;
+  color: #475569 !important;
 }
 
 .enterprise-hero-card .hero-secondary {
-  color: rgba(255, 255, 255, 0.65) !important;
+  color: #64748B !important;
 }
 
 .enterprise-hero-search {
-  background-color: rgba(8, 14, 38, 0.75) !important;
-  border: 1px solid rgba(59, 130, 246, 0.35) !important;
-  color: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
 }
 
 .enterprise-hero-search::placeholder {
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: #64748B !important;
+}
+
+.enterprise-hero-search:focus {
+  border-color: #2563EB !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
 }
 
 .enterprise-filter-btn {
-  background-color: #0E1733 !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  color: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #0F172A !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
   transition: all 0.2s ease;
 }
 
 .enterprise-filter-btn:hover {
-  background-color: #18254F !important;
-  border-color: #4EA3FF !important;
+  background-color: #EFF6FF !important;
+  border-color: #BFDBFE !important;
+  color: #1D4ED8 !important;
 }
 
 /* Knowledge Hub Enterprise Hero Card */
 .knowledge-hero-card {
-  background: linear-gradient(90deg, #2D1A57 0%, #4B157C 50%, #1A234B 100%) !important;
-  border-radius: 28px !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.28) !important;
-  color: #FFFFFF !important;
+  background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
+  border-radius: 24px !important;
+  border: 1px solid #BFDBFE !important;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08) !important;
+  color: #0F172A !important;
   position: relative;
   overflow: hidden;
 }
@@ -151,306 +97,91 @@
 .knowledge-hero-card h1,
 .knowledge-hero-card h2,
 .knowledge-hero-card h3 {
-  color: #FFFFFF !important;
+  color: #0F172A !important;
 }
 
 .knowledge-hero-card .hero-desc {
-  color: rgba(255, 255, 255, 0.82) !important;
+  color: #475569 !important;
 }
 
 .knowledge-hero-card .hero-small-label {
-  color: rgba(255, 255, 255, 0.70) !important;
+  color: #64748B !important;
 }
 
 .knowledge-hero-btn-primary {
-  background: linear-gradient(135deg, #3B82F6, #2563EB) !important;
+  background: #2563EB !important;
   color: #FFFFFF !important;
-  box-shadow: 0 8px 24px rgba(59, 130, 246, 0.35) !important;
+  border-radius: 12px !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.18) !important;
   transition: all 0.2s ease !important;
 }
 
 .knowledge-hero-btn-primary:hover {
-  filter: brightness(110%) !important;
+  background: #1D4ED8 !important;
+  transform: translateY(-2px);
 }
 
 .knowledge-hero-btn-secondary {
-  background-color: rgba(22, 32, 58, 0.90) !important;
-  border: 1px solid rgba(255, 255, 255, 0.10) !important;
-  color: #FFFFFF !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #BFDBFE !important;
+  color: #2563EB !important;
+  border-radius: 12px !important;
   transition: all 0.2s ease !important;
 }
 
 .knowledge-hero-btn-secondary:hover {
-  background-color: rgba(30, 42, 74, 0.95) !important;
+  background-color: #EFF6FF !important;
 }
 
 .knowledge-hero-badge {
-  background-color: rgba(255, 255, 255, 0.08) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
-  color: #E9E7FF !important;
+  background-color: #DBEAFE !important;
+  border: 1px solid #BFDBFE !important;
+  color: #1D4ED8 !important;
 }
 
 .knowledge-hero-stats {
-  background-color: rgba(13, 18, 42, 0.82) !important;
-  border: 1px solid rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(18px) !important;
-  -webkit-backdrop-filter: blur(18px) !important;
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
 }
 
-.light-theme {
-  --background: #f8fafc;
-  --surface: #ffffff;
-  --card: #ffffff;
-  --primary: #2563eb;
-  --secondary: #64748b;
-  --text-primary: #0f172a;
-  --text-secondary: #334155;
-  --text-muted: #64748b;
-  --border: #cbd5e1;
-  --hover: #f1f5f9;
-  --accent: #7c3aed;
-  --success: #059669;
-  --warning: #d97706;
-  --danger: #dc2626;
-
-  /* Centralized Hero Theme Tokens in Light Mode */
-  --hero-title: #ffffff;
-  --hero-subtitle: #f1f5f9;
-  --hero-muted: #cbd5e1;
-  --hero-badge-text: #e0e7ff;
-  --hero-badge-bg: rgba(255, 255, 255, 0.18);
-  --hero-badge-border: rgba(255, 255, 255, 0.35);
-  --hero-icon: #ffffff;
-  --hero-border: rgba(255, 255, 255, 0.25);
-  --hero-card: rgba(15, 23, 42, 0.85);
+/* Glass & Card overrides */
+.glass-white-card,
+[data-inspect-id="SessionCard"] {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 20px !important;
+  color: #0F172A !important;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08) !important;
+  transition: all 0.25s ease !important;
 }
 
-/* Global Theme Smooth Transitions */
-body, header, nav, main, section, footer, article, aside, 
-.bg-slate-900, .bg-slate-950, .bg-slate-800, .bg-slate-700, 
-.border-slate-800, .border-slate-700, .border-slate-900 {
-  transition: background-color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
-              color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
-              border-color 300ms cubic-bezier(0.4, 0, 0.2, 1), 
-              box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1);
+[data-inspect-id="SessionCard"]:hover {
+  transform: translateY(-4px) !important;
+  box-shadow: 0 18px 40px rgba(37, 99, 235, 0.15) !important;
 }
 
-/* Keyframes for Rotating Gradient Border (AI Tutor Button) */
+/* Segmented Control Navigation Tabs */
+.segmented-control-tabs {
+  background-color: #F1F5F9 !important;
+  border: 1px solid #E2E8F0 !important;
+  border-radius: 14px !important;
+}
+
+/* Global body styling */
+body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+/* Keyframe for rotating animation */
 @keyframes spin-gradient {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
 .animate-spin-gradient {
   animation: spin-gradient 7s linear infinite;
   will-change: transform;
 }
-
-/* LIGHT THEME COMPREHENSIVE OVERRIDES & WCAG CONTRAST */
-.light-theme {
-  background-color: #f8fafc !important;
-  color: #0f172a;
-}
-
-/* Base card backgrounds & borders in light mode */
-.light-theme .bg-slate-900 {
-  background-color: #ffffff !important;
-  color: #0f172a;
-  border-color: #cbd5e1 !important;
-  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.04) !important;
-}
-
-/* Inner nested cards, sidebars & panels in light mode */
-.light-theme .bg-slate-950 {
-  background-color: #f1f5f9 !important;
-  color: #0f172a;
-  border-color: #cbd5e1 !important;
-}
-
-.light-theme .bg-slate-900\/90,
-.light-theme .bg-slate-900\/80,
-.light-theme .bg-slate-900\/60 {
-  background-color: rgba(255, 255, 255, 0.96) !important;
-  color: #0f172a;
-  border-color: #cbd5e1 !important;
-}
-
-.light-theme .bg-slate-950\/90,
-.light-theme .bg-slate-950\/80,
-.light-theme .bg-slate-950\/60,
-.light-theme .bg-slate-950\/40 {
-  background-color: #f1f5f9 !important;
-  color: #0f172a;
-  border-color: #cbd5e1 !important;
-}
-
-/* Modals & Dialog overlays */
-.light-theme .bg-slate-900\/80 {
-  background-color: rgba(15, 23, 42, 0.45) !important;
-}
-
-/* Inputs, Textareas, Selects & Option tags in light mode */
-.light-theme input:not([type="checkbox"]):not([type="radio"]),
-.light-theme textarea,
-.light-theme select {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-  border-color: #cbd5e1 !important;
-}
-
-.light-theme input::placeholder,
-.light-theme textarea::placeholder {
-  color: #64748b !important;
-}
-
-.light-theme select option {
-  background-color: #ffffff !important;
-  color: #0f172a !important;
-}
-
-/* Text color contrast adaptations in Light Mode */
-.light-theme h1:not([class*="bg-clip-text"]),
-.light-theme h2:not([class*="bg-clip-text"]),
-.light-theme h3:not([class*="bg-clip-text"]),
-.light-theme h4:not([class*="bg-clip-text"]),
-.light-theme h5:not([class*="bg-clip-text"]),
-.light-theme h6:not([class*="bg-clip-text"]) {
-  color: #0f172a;
-}
-
-.light-theme .text-white:not(button *):not(.bg-blue-600 *):not(.bg-indigo-600 *):not(.bg-emerald-600 *):not(.bg-amber-600 *):not(.bg-purple-600 *):not(.bg-rose-600 *):not(.bg-cyan-600 *):not(.bg-gradient-to-r *) {
-  color: #0f172a;
-}
-
-.light-theme .text-slate-100,
-.light-theme .text-slate-200 {
-  color: #1e293b;
-}
-
-.light-theme .text-slate-300 {
-  color: #334155;
-}
-
-.light-theme .text-slate-400 {
-  color: #475569;
-}
-
-.light-theme .text-slate-500 {
-  color: #64748b;
-}
-
-/* Higher contrast text colors for badges and links in light mode */
-.light-theme .text-blue-400 {
-  color: #1d4ed8;
-}
-
-.light-theme .text-emerald-400 {
-  color: #047857;
-}
-
-.light-theme .text-amber-400 {
-  color: #b45309;
-}
-
-.light-theme .text-purple-400 {
-  color: #6b21a8;
-}
-
-.light-theme .text-rose-400 {
-  color: #be123c;
-}
-
-.light-theme .text-cyan-400 {
-  color: #0e7490;
-}
-
-.light-theme .text-indigo-400 {
-  color: #3730a3;
-}
-
-/* Preserve crisp white text inside solid colored buttons, badges, and gradient banners */
-.light-theme button.bg-blue-600,
-.light-theme button.bg-indigo-600,
-.light-theme button.bg-emerald-600,
-.light-theme button.bg-amber-600,
-.light-theme .bg-blue-600,
-.light-theme .bg-blue-600 *,
-.light-theme .bg-indigo-600,
-.light-theme .bg-indigo-600 *,
-.light-theme .bg-emerald-600,
-.light-theme .bg-emerald-600 *,
-.light-theme .bg-amber-600,
-.light-theme .bg-amber-600 * {
-  color: #ffffff !important;
-}
-
-/* Borders in Light Mode */
-.light-theme .border-slate-800,
-.light-theme .border-slate-800\/90,
-.light-theme .border-slate-800\/80,
-.light-theme .border-slate-800\/60,
-.light-theme .border-slate-700 {
-  border-color: #cbd5e1 !important;
-}
-
-/* Centralized Hero & Dark Gradient Banner Overrides in Light Mode */
-.light-theme .hero-banner,
-.light-theme [class*="bg-gradient-to-r"],
-.light-theme [class*="bg-gradient-to-br"] {
-  color: var(--hero-title, #ffffff);
-}
-
-/* Ensure text elements inside Hero Banners preserve white/light colors with WCAG AA contrast */
-.light-theme .hero-banner h1,
-.light-theme .hero-banner h2,
-.light-theme .hero-banner h3,
-.light-theme .hero-banner h4,
-.light-theme [class*="bg-gradient-to-r"] h1,
-.light-theme [class*="bg-gradient-to-r"] h2,
-.light-theme [class*="bg-gradient-to-r"] h3,
-.light-theme [class*="bg-gradient-to-r"] h4,
-.light-theme [class*="bg-gradient-to-br"] h1,
-.light-theme [class*="bg-gradient-to-br"] h2,
-.light-theme [class*="bg-gradient-to-br"] h3,
-.light-theme [class*="bg-gradient-to-br"] h4 {
-  color: var(--hero-title, #ffffff) !important;
-}
-
-.light-theme .hero-banner p,
-.light-theme [class*="bg-gradient-to-r"] p,
-.light-theme [class*="bg-gradient-to-br"] p {
-  color: var(--hero-subtitle, #f1f5f9) !important;
-}
-
-.light-theme .hero-banner .text-slate-100,
-.light-theme .hero-banner .text-slate-200,
-.light-theme .hero-banner .text-slate-300,
-.light-theme .hero-banner .text-slate-400,
-.light-theme [class*="bg-gradient-to-r"] .text-slate-100,
-.light-theme [class*="bg-gradient-to-r"] .text-slate-200,
-.light-theme [class*="bg-gradient-to-r"] .text-slate-300,
-.light-theme [class*="bg-gradient-to-r"] .text-slate-400,
-.light-theme [class*="bg-gradient-to-br"] .text-slate-100,
-.light-theme [class*="bg-gradient-to-br"] .text-slate-200,
-.light-theme [class*="bg-gradient-to-br"] .text-slate-300,
-.light-theme [class*="bg-gradient-to-br"] .text-slate-400 {
-  color: var(--hero-subtitle, #cbd5e1) !important;
-}
-
-.light-theme .hero-banner .text-blue-300,
-.light-theme .hero-banner .text-blue-200,
-.light-theme .hero-banner .text-indigo-200,
-.light-theme .hero-banner .text-purple-200,
-.light-theme [class*="bg-gradient-to-r"] .text-blue-300,
-.light-theme [class*="bg-gradient-to-r"] .text-blue-200,
-.light-theme [class*="bg-gradient-to-r"] .text-indigo-200,
-.light-theme [class*="bg-gradient-to-r"] .text-purple-200 {
-  color: var(--hero-badge-text, #e0e7ff) !important;
-}
-
-
-

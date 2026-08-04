@@ -322,103 +322,102 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           >
             <ArrowLeft className="w-4 h-4" /> Cancel & Return
           </button>
-          
-          <button
-            onClick={handleSaveForm}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2"
-          >
-            <Save className="w-4 h-4" /> Save All Session Changes
-          </button>
         </div>
 
         {/* Edit Form Card */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 md:p-8 shadow-xl space-y-6">
-          <div className="border-b border-slate-200 dark:border-slate-800 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div className="bg-white/80 backdrop-blur-md border border-slate-200/80 rounded-3xl p-6 md:p-8 shadow-xl space-y-6 text-slate-900">
+          <div className="border-b border-slate-200 pb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <div>
-              <h2 className="text-xl font-bold text-slate-900 dark:text-white">
+              <h2 className="text-xl font-extrabold text-slate-900">
                 {editingSession.id && sessions.some(s => s.id === editingSession.id) ? `Edit: ${editingSession.name || 'Learning Session'}` : 'Create New Learning Session'}
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-500 font-medium mt-0.5">
                 Configure overview details, roadmap flow, materials, assignments, notes, and quiz assessments.
               </p>
             </div>
-            <span className="text-xs font-mono font-bold text-emerald-600 dark:text-emerald-400 uppercase bg-emerald-50 dark:bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-200 dark:border-emerald-500/20 self-start sm:self-auto">
+            <span className="text-xs font-mono font-bold text-blue-700 uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-200 self-start sm:self-auto shadow-sm">
               {editingSession.status || 'Draft'} Mode
             </span>
           </div>
 
           {/* Navigation Tabs inside Edit Page */}
-          <div className="flex items-center gap-2 border-b border-slate-200 dark:border-slate-800 overflow-x-auto pb-3">
+          <div className="bg-slate-100/90 p-2 rounded-2xl border border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar shadow-sm">
             <button
               type="button"
               onClick={() => setActiveTab('overview')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'overview'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-white/80'
               }`}
             >
-              <BookOpen className="w-3.5 h-3.5" /> Session Overview
+              <BookOpen className={`w-3.5 h-3.5 ${activeTab === 'overview' ? 'text-white' : 'text-blue-600'}`} />
+              <span>Session Overview</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('roadmap')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'roadmap'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-white/80'
               }`}
             >
-              <Layers className="w-3.5 h-3.5" /> Road Map ({topicNodesCount})
+              <Layers className={`w-3.5 h-3.5 ${activeTab === 'roadmap' ? 'text-white' : 'text-blue-600'}`} />
+              <span>Road Map ({topicNodesCount})</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('provided')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'provided'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-white/80'
               }`}
             >
-              <FileText className="w-3.5 h-3.5" /> Provided Materials ({providedCount})
+              <FileText className={`w-3.5 h-3.5 ${activeTab === 'provided' ? 'text-white' : 'text-blue-600'}`} />
+              <span>Provided Materials ({providedCount})</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('additional')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'additional'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-white/80'
               }`}
             >
-              <FolderOpen className="w-3.5 h-3.5" /> Additional Materials ({additionalCount})
+              <FolderOpen className={`w-3.5 h-3.5 ${activeTab === 'additional' ? 'text-white' : 'text-blue-600'}`} />
+              <span>Additional Materials ({additionalCount})</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('assignments')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'assignments'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-white/80'
               }`}
             >
-              <ClipboardList className="w-3.5 h-3.5" /> Assignments ({assignmentsCount})
+              <ClipboardList className={`w-3.5 h-3.5 ${activeTab === 'assignments' ? 'text-white' : 'text-blue-600'}`} />
+              <span>Assignments ({assignmentsCount})</span>
             </button>
 
             <button
               type="button"
               onClick={() => setActiveTab('quiz')}
-              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
+              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 ${
                 activeTab === 'quiz'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-white/80'
               }`}
             >
-              <HelpCircle className="w-3.5 h-3.5" /> Quiz Builder
+              <HelpCircle className={`w-3.5 h-3.5 ${activeTab === 'quiz' ? 'text-white' : 'text-blue-600'}`} />
+              <span>Quiz Builder</span>
             </button>
           </div>
 
@@ -426,69 +425,82 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           {activeTab === 'overview' && (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs animate-fadeIn">
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-slate-700 dark:text-slate-300 font-semibold">Session Title *</label>
+                <label className="text-slate-700 font-bold block mb-1">Session Title *</label>
                 <input
                   type="text"
                   required
                   value={editingSession.name || ''}
                   onChange={(e) => setEditingSession({ ...editingSession, name: e.target.value })}
                   placeholder="e.g. .NET Core Web API & Microservices Architecture"
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-bold"
                 />
               </div>
 
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-slate-700 dark:text-slate-300 font-semibold">Description *</label>
+                <label className="text-slate-700 font-bold block mb-1">Description *</label>
                 <textarea
                   required
                   rows={3}
                   value={editingSession.description || ''}
                   onChange={(e) => setEditingSession({ ...editingSession, description: e.target.value })}
                   placeholder="Detailed overview of what Graduate Trainees will learn in this session..."
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-4 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 resize-none"
+                  className="w-full bg-white border border-slate-300 rounded-xl p-4 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium resize-none"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-slate-700 dark:text-slate-300 font-semibold">Category Track *</label>
+                <label className="text-slate-700 font-bold block mb-1">Category Track *</label>
                 <input
                   type="text"
                   required
                   value={editingSession.category ?? ''}
                   onChange={(e) => setEditingSession({ ...editingSession, category: e.target.value as CategoryType })}
                   placeholder="e.g. .NET with C#, Insurance, SQL, C2C..."
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-slate-700 dark:text-slate-300 font-semibold">Trainer Name</label>
+                <label className="text-slate-700 font-bold block mb-1">Trainer Name</label>
                 <input
                   type="text"
                   value={editingSession.trainerName ?? ''}
                   onChange={(e) => setEditingSession({ ...editingSession, trainerName: e.target.value })}
                   placeholder="e.g. Santhosh, Harish, Janani..."
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500"
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                 />
               </div>
 
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-slate-700 dark:text-slate-300 font-semibold">Session Status *</label>
+                <label className="text-slate-700 font-bold block mb-1">Session Status *</label>
                 <select
-                  value={editingSession.status || 'Draft'}
-                  onChange={(e) => setEditingSession({ ...editingSession, status: e.target.value as any, isPublished: e.target.value === 'Published' })}
-                  className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-4 py-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 font-medium"
+                  value={
+                    editingSession.status === 'Published' || editingSession.status === 'Publish'
+                      ? 'Publish'
+                      : editingSession.status === 'Archived' || editingSession.status === 'Archive'
+                      ? 'Archive'
+                      : (editingSession.status || 'Draft')
+                  }
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    setEditingSession({
+                      ...editingSession,
+                      status: val as any,
+                      isPublished: val === 'Publish' || val === 'Published'
+                    });
+                  }}
+                  className="w-full bg-white border border-slate-300 rounded-xl px-4 py-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-bold"
                 >
-                  <option value="Published">Published</option>
+                  <option value="Publish">Publish</option>
                   <option value="Draft">Draft</option>
-                  <option value="Archived">Archived</option>
+                  <option value="Archive">Archive</option>
                 </select>
               </div>
 
               <div className="space-y-1.5 md:col-span-2">
-                <label className="text-slate-700 dark:text-slate-300 font-semibold block">Overview Video</label>
+                <label className="text-slate-700 font-bold block mb-1">Overview Video</label>
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2">
+                  <label className="cursor-pointer bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl shadow-md flex items-center gap-2 transition-all">
                     <Video className="w-4 h-4" />
                     <span>Upload Overview Video</span>
                     <input
@@ -504,7 +516,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                     />
                   </label>
                   {editingSession.videoUrl && (
-                    <span className="text-xs text-emerald-600 dark:text-emerald-400 font-medium truncate max-w-xs">
+                    <span className="text-xs text-blue-700 font-bold truncate max-w-xs">
                       Video attached: {editingSession.videoUrl}
                     </span>
                   )}
@@ -516,15 +528,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           {/* TAB 2: ROAD MAP EDITOR */}
           {activeTab === 'roadmap' && (
             <div className="space-y-6 text-xs animate-fadeIn">
-              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between bg-blue-50/60 p-4 rounded-2xl border border-blue-200/80">
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Interactive Learning Roadmap Sequence</h3>
-                  <p className="text-slate-500 dark:text-slate-400">Add Topic Nodes, Subtopic Nodes, edit/add/replace video links, document files, and topic assignments.</p>
+                  <h3 className="font-extrabold text-blue-950 text-sm">Interactive Learning Roadmap Sequence</h3>
+                  <p className="text-slate-600 font-medium">Add Topic Nodes, Subtopic Nodes, edit/add/replace video links, document files, and topic assignments.</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleAddTopicNode}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
                 >
                   <Plus className="w-4 h-4" /> Add New Topic Node
                 </button>
@@ -533,16 +545,16 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
               {/* Topic Nodes List */}
               <div className="space-y-6">
                 {(editingSession.topics || []).map((topic, tIdx) => (
-                  <div key={topic.id || tIdx} className="bg-slate-50/50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 space-y-4">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
-                      <div className="flex items-center gap-2 font-bold text-blue-700 dark:text-blue-400">
-                        <Layers className="w-4 h-4" />
+                  <div key={topic.id || tIdx} className="bg-white/90 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-sm">
+                    <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+                      <div className="flex items-center gap-2 font-extrabold text-blue-900">
+                        <Layers className="w-4 h-4 text-blue-600" />
                         <span>Topic Node #{tIdx + 1}</span>
                       </div>
                       <button
                         type="button"
                         onClick={() => handleDeleteTopicNode(tIdx)}
-                        className="text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1"
+                        className="text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Remove Topic Node
                       </button>
@@ -550,42 +562,42 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
                     <div className="space-y-3">
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Topic Title</label>
+                        <label className="text-slate-700 font-bold block mb-1">Topic Title</label>
                         <input
                           type="text"
                           value={topic.title}
                           onChange={(e) => handleUpdateTopicNode(tIdx, { title: e.target.value })}
                           placeholder="e.g. C# Fundamentals & Object Oriented Concepts"
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-bold"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Topic Description</label>
+                        <label className="text-slate-700 font-bold block mb-1">Topic Description</label>
                         <textarea
                           rows={2}
                           value={topic.description}
                           onChange={(e) => handleUpdateTopicNode(tIdx, { description: e.target.value })}
                           placeholder="Overview of topic concepts and outcomes..."
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white resize-none"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium resize-none"
                         />
                       </div>
                     </div>
 
                     {/* Subtopic Nodes inside Topic Node */}
-                    <div className="mt-4 pt-3 border-t border-slate-200 dark:border-slate-800 space-y-3">
+                    <div className="mt-4 pt-3 border-t border-slate-200 space-y-3">
                       <div className="flex items-center justify-between">
-                        <span className="font-bold text-slate-800 dark:text-slate-200">Subtopic Nodes ({topic.subtopics?.length || 0})</span>
+                        <span className="font-extrabold text-slate-900">Subtopic Nodes ({topic.subtopics?.length || 0})</span>
                       </div>
 
                       {(topic.subtopics || []).map((sub, sIdx) => (
-                        <div key={sub.id || sIdx} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3.5 space-y-2">
+                        <div key={sub.id || sIdx} className="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-semibold text-slate-700 dark:text-slate-300 text-xs">Subtopic #{sIdx + 1}</span>
+                            <span className="font-bold text-slate-700 text-xs">Subtopic #{sIdx + 1}</span>
                             <button
                               type="button"
                               onClick={() => handleDeleteSubtopicNode(tIdx, sIdx)}
-                              className="text-rose-500 hover:text-rose-600 text-[11px] font-semibold"
+                              className="text-rose-600 hover:text-rose-700 text-[11px] font-bold"
                             >
                               Delete Subtopic
                             </button>
@@ -597,7 +609,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                               value={sub.title}
                               onChange={(e) => handleUpdateSubtopicNode(tIdx, sIdx, { title: e.target.value })}
                               placeholder="Subtopic Name"
-                              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-2 text-slate-900 dark:text-white text-xs"
+                              className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-slate-900 text-xs focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                             />
                           </div>
                         </div>
@@ -608,7 +620,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                         <button
                           type="button"
                           onClick={() => handleAddSubtopicNode(tIdx)}
-                          className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
+                          className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 rounded-xl text-xs flex items-center justify-center gap-1.5 shadow-sm transition-all"
                         >
                           <Plus className="w-4 h-4" /> Add Subtopic Node
                         </button>
@@ -623,15 +635,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           {/* TAB 3: PROVIDED MATERIALS */}
           {activeTab === 'provided' && (
             <div className="space-y-6 text-xs animate-fadeIn">
-              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between bg-blue-50/60 p-4 rounded-2xl border border-blue-200/80">
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Provided Materials ({providedCount})</h3>
-                  <p className="text-slate-500 dark:text-slate-400">Official documents, guides, and external reference links provided for trainees.</p>
+                  <h3 className="font-extrabold text-blue-950 text-sm">Provided Materials ({providedCount})</h3>
+                  <p className="text-slate-600 font-medium">Official documents, guides, and external reference links provided for trainees.</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleAddProvidedMaterial}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
                 >
                   <Plus className="w-4 h-4" /> Add Provided Material
                 </button>
@@ -639,9 +651,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
               <div className="space-y-4">
                 {(editingSession.providedMaterials || []).map((mat, mIdx) => (
-                  <div key={mat.id || mIdx} className="bg-slate-50/50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-4">
+                  <div key={mat.id || mIdx} className="bg-white/90 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-4 space-y-4 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 dark:text-white">Provided Material #{mIdx + 1}</span>
+                      <span className="font-extrabold text-slate-900">Provided Material #{mIdx + 1}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -649,7 +661,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           list.splice(mIdx, 1);
                           setEditingSession({ ...editingSession, providedMaterials: list });
                         }}
-                        className="text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1"
+                        className="text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Remove
                       </button>
@@ -657,7 +669,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Document Name</label>
+                        <label className="text-slate-700 font-bold block mb-1">Document Name</label>
                         <input
                           type="text"
                           value={mat.title}
@@ -667,12 +679,12 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, providedMaterials: list });
                           }}
                           placeholder="Document Name"
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Type of Document</label>
+                        <label className="text-slate-700 font-bold block mb-1">Type of Document</label>
                         <select
                           value={mat.type}
                           onChange={(e) => {
@@ -680,7 +692,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             list[mIdx] = { ...list[mIdx], type: e.target.value as any };
                             setEditingSession({ ...editingSession, providedMaterials: list });
                           }}
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         >
                           <option value="PDF">PDF Document</option>
                           <option value="PowerPoint">PowerPoint Presentation</option>
@@ -691,7 +703,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                       </div>
 
                       <div className="space-y-1 md:col-span-2">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Document Description</label>
+                        <label className="text-slate-700 font-bold block mb-1">Document Description</label>
                         <textarea
                           rows={2}
                           value={mat.description}
@@ -701,15 +713,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, providedMaterials: list });
                           }}
                           placeholder="Brief summary of document contents..."
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white resize-none"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium resize-none"
                         />
                       </div>
 
                       {/* Upload Document Button */}
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold block">Upload Document</label>
-                        <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700">
-                          <Upload className="w-3.5 h-3.5 text-blue-500" />
+                        <label className="text-slate-700 font-bold block mb-1">Upload Document</label>
+                        <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl border border-slate-300 shadow-sm transition-all">
+                          <Upload className="w-3.5 h-3.5 text-blue-600" />
                           <span>Upload File</span>
                           <input
                             type="file"
@@ -725,14 +737,14 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           />
                         </label>
                         {mat.url && !mat.url.startsWith('http') && (
-                          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono ml-2">File: {mat.url}</span>
+                          <span className="text-[11px] text-blue-700 font-mono font-bold ml-2">File: {mat.url}</span>
                         )}
                       </div>
 
                       {/* Add URLs Section */}
-                      <div className="space-y-2.5 md:col-span-2 pt-2 border-t border-slate-200 dark:border-slate-800">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
-                          <ExternalLink className="w-3.5 h-3.5 text-blue-500" /> Add URLs (Video or Website Link)
+                      <div className="space-y-2.5 md:col-span-2 pt-2 border-t border-slate-200">
+                        <label className="text-slate-700 font-bold flex items-center gap-1.5">
+                          <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> Add URLs (Video or Website Link)
                         </label>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                           <input
@@ -744,7 +756,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                               setEditingSession({ ...editingSession, providedMaterials: list });
                             }}
                             placeholder="https://..."
-                            className="sm:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                            className="sm:col-span-2 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
                           />
                           <select
                             value={mat.urlType || (mat.type === 'Video' ? 'Video' : 'Website')}
@@ -753,7 +765,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                               list[mIdx] = { ...list[mIdx], urlType: e.target.value as any };
                               setEditingSession({ ...editingSession, providedMaterials: list });
                             }}
-                            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-medium"
+                            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-bold"
                           >
                             <option value="Video">Video URL</option>
                             <option value="Website">Website URL</option>
@@ -770,15 +782,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           {/* TAB 4: ADDITIONAL MATERIALS */}
           {activeTab === 'additional' && (
             <div className="space-y-6 text-xs animate-fadeIn">
-              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between bg-blue-50/60 p-4 rounded-2xl border border-blue-200/80">
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Additional Materials ({additionalCount})</h3>
-                  <p className="text-slate-500 dark:text-slate-400">Supplementary documents, external website references, and tutorial videos.</p>
+                  <h3 className="font-extrabold text-blue-950 text-sm">Additional Materials ({additionalCount})</h3>
+                  <p className="text-slate-600 font-medium">Supplementary documents, external website references, and tutorial videos.</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleAddAdditionalMaterial}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
                 >
                   <Plus className="w-4 h-4" /> Add Additional Material
                 </button>
@@ -786,9 +798,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
               <div className="space-y-4">
                 {(editingSession.additionalMaterials || []).map((mat, mIdx) => (
-                  <div key={mat.id || mIdx} className="bg-slate-50/50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-4">
+                  <div key={mat.id || mIdx} className="bg-white/90 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-4 space-y-4 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 dark:text-white">Additional Material #{mIdx + 1}</span>
+                      <span className="font-extrabold text-slate-900">Additional Material #{mIdx + 1}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -796,7 +808,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           list.splice(mIdx, 1);
                           setEditingSession({ ...editingSession, additionalMaterials: list });
                         }}
-                        className="text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1"
+                        className="text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Remove
                       </button>
@@ -804,7 +816,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Document Name</label>
+                        <label className="text-slate-700 font-bold block mb-1">Document Name</label>
                         <input
                           type="text"
                           value={mat.title}
@@ -814,12 +826,12 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, additionalMaterials: list });
                           }}
                           placeholder="Document Name"
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Type of Document</label>
+                        <label className="text-slate-700 font-bold block mb-1">Type of Document</label>
                         <select
                           value={mat.type || 'PDF'}
                           onChange={(e) => {
@@ -827,7 +839,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             list[mIdx] = { ...list[mIdx], type: e.target.value as any };
                             setEditingSession({ ...editingSession, additionalMaterials: list });
                           }}
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         >
                           <option value="PDF">PDF Document</option>
                           <option value="PowerPoint">PowerPoint Presentation</option>
@@ -838,7 +850,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                       </div>
 
                       <div className="space-y-1 md:col-span-2">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Document Description</label>
+                        <label className="text-slate-700 font-bold block mb-1">Document Description</label>
                         <textarea
                           rows={2}
                           value={mat.description}
@@ -848,15 +860,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, additionalMaterials: list });
                           }}
                           placeholder="Detailed description of additional material..."
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white resize-none"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium resize-none"
                         />
                       </div>
 
                       {/* Upload Document Button */}
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold block">Upload Document</label>
-                        <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-semibold text-xs px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700">
-                          <Upload className="w-3.5 h-3.5 text-blue-500" />
+                        <label className="text-slate-700 font-bold block mb-1">Upload Document</label>
+                        <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl border border-slate-300 shadow-sm transition-all">
+                          <Upload className="w-3.5 h-3.5 text-blue-600" />
                           <span>Upload File</span>
                           <input
                             type="file"
@@ -872,14 +884,14 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           />
                         </label>
                         {mat.url && !mat.url.startsWith('http') && (
-                          <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-mono ml-2">File: {mat.url}</span>
+                          <span className="text-[11px] text-blue-700 font-mono font-bold ml-2">File: {mat.url}</span>
                         )}
                       </div>
 
                       {/* Add URLs Section */}
-                      <div className="space-y-2.5 md:col-span-2 pt-2 border-t border-slate-200 dark:border-slate-800">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold flex items-center gap-1.5">
-                          <ExternalLink className="w-3.5 h-3.5 text-blue-500" /> Add URLs (Video or Website Link)
+                      <div className="space-y-2.5 md:col-span-2 pt-2 border-t border-slate-200">
+                        <label className="text-slate-700 font-bold flex items-center gap-1.5">
+                          <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> Add URLs (Video or Website Link)
                         </label>
                         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
                           <input
@@ -891,7 +903,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                               setEditingSession({ ...editingSession, additionalMaterials: list });
                             }}
                             placeholder="https://..."
-                            className="sm:col-span-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                            className="sm:col-span-2 bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
                           />
                           <select
                             value={mat.urlType || 'Website'}
@@ -900,7 +912,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                               list[mIdx] = { ...list[mIdx], urlType: e.target.value as any };
                               setEditingSession({ ...editingSession, additionalMaterials: list });
                             }}
-                            className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-medium"
+                            className="bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-bold"
                           >
                             <option value="Video">Video URL</option>
                             <option value="Website">Website URL</option>
@@ -917,15 +929,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           {/* TAB 5: ASSIGNMENTS */}
           {activeTab === 'assignments' && (
             <div className="space-y-6 text-xs animate-fadeIn">
-              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between bg-blue-50/60 p-4 rounded-2xl border border-blue-200/80">
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Session Assignments ({assignmentsCount})</h3>
-                  <p className="text-slate-500 dark:text-slate-400">Practical tasks and assignment submissions for trainees.</p>
+                  <h3 className="font-extrabold text-blue-950 text-sm">Session Assignments ({assignmentsCount})</h3>
+                  <p className="text-slate-600 font-medium">Practical tasks and assignment submissions for trainees.</p>
                 </div>
                 <button
                   type="button"
                   onClick={handleAddAssignment}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
                 >
                   <Plus className="w-4 h-4" /> Add New Assignment
                 </button>
@@ -933,9 +945,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
               <div className="space-y-4">
                 {(editingSession.assignments || []).map((asgn, aIdx) => (
-                  <div key={asgn.id || aIdx} className="bg-slate-50/50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3">
+                  <div key={asgn.id || aIdx} className="bg-white/90 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-4 space-y-3 shadow-sm">
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-slate-900 dark:text-white">Assignment #{aIdx + 1}</span>
+                      <span className="font-extrabold text-slate-900">Assignment #{aIdx + 1}</span>
                       <button
                         type="button"
                         onClick={() => {
@@ -943,7 +955,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           list.splice(aIdx, 1);
                           setEditingSession({ ...editingSession, assignments: list });
                         }}
-                        className="text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1"
+                        className="text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1"
                       >
                         <Trash2 className="w-3.5 h-3.5" /> Remove
                       </button>
@@ -951,7 +963,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Assignment Name</label>
+                        <label className="text-slate-700 font-bold block mb-1">Assignment Name</label>
                         <input
                           type="text"
                           value={asgn.title}
@@ -961,12 +973,12 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, assignments: list });
                           }}
                           placeholder="Assignment Name"
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Due Date</label>
+                        <label className="text-slate-700 font-bold block mb-1">Due Date</label>
                         <input
                           type="date"
                           value={asgn.dueDate || ''}
@@ -975,12 +987,12 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             list[aIdx] = { ...list[aIdx], dueDate: e.target.value };
                             setEditingSession({ ...editingSession, assignments: list });
                           }}
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white"
+                          className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         />
                       </div>
 
                       <div className="space-y-1 md:col-span-2">
-                        <label className="text-slate-700 dark:text-slate-300 font-semibold">Description</label>
+                        <label className="text-slate-700 font-bold block mb-1">Description</label>
                         <textarea
                           rows={3}
                           value={asgn.description}
@@ -990,7 +1002,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, assignments: list });
                           }}
                           placeholder="Detailed description of the assignment..."
-                          className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-3 text-slate-900 dark:text-white resize-none"
+                          className="w-full bg-white border border-slate-300 rounded-xl p-3 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium resize-none"
                         />
                       </div>
                     </div>
@@ -1003,10 +1015,10 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           {/* TAB 7: QUIZ BUILDER */}
           {activeTab === 'quiz' && (
             <div className="space-y-6 text-xs animate-fadeIn">
-              <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-between bg-blue-50/60 p-4 rounded-2xl border border-blue-200/80">
                 <div>
-                  <h3 className="font-bold text-slate-900 dark:text-white text-sm">Session Quiz & Assessments</h3>
-                  <p className="text-slate-500 dark:text-slate-400">Configure questions, correct answers, time limit, and passing thresholds.</p>
+                  <h3 className="font-extrabold text-blue-950 text-sm">Session Quiz & Assessments</h3>
+                  <p className="text-slate-600 font-medium">Configure questions, correct answers, time limit, and passing thresholds.</p>
                 </div>
                 <button
                   type="button"
@@ -1031,16 +1043,16 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                     defaultQuiz.questions = [...(defaultQuiz.questions || []), newQ];
                     setEditingSession({ ...editingSession, quizzes: [defaultQuiz] });
                   }}
-                  className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
                 >
                   <Plus className="w-4 h-4" /> Add Quiz Question
                 </button>
               </div>
 
               {((editingSession.quizzes?.[0]?.questions) || []).map((q, qIdx) => (
-                <div key={q.id || qIdx} className="bg-slate-50/50 dark:bg-slate-950/60 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 space-y-3">
+                <div key={q.id || qIdx} className="bg-white/90 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-4 space-y-3 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="font-bold text-slate-900 dark:text-white">Question #{qIdx + 1}</span>
+                    <span className="font-extrabold text-slate-900">Question #{qIdx + 1}</span>
                     <button
                       type="button"
                       onClick={() => {
@@ -1050,7 +1062,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           setEditingSession({ ...editingSession, quizzes: currentQuizzes });
                         }
                       }}
-                      className="text-rose-600 hover:text-rose-700 font-semibold flex items-center gap-1"
+                      className="text-rose-600 hover:text-rose-700 font-bold flex items-center gap-1"
                     >
                       <Trash2 className="w-3.5 h-3.5" /> Remove
                     </button>
@@ -1068,7 +1080,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                         }
                       }}
                       placeholder="Question prompt..."
-                      className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl px-3 py-2 text-slate-900 dark:text-white font-semibold"
+                      className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 font-bold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                     />
 
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1087,13 +1099,13 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             }
                           }}
                           placeholder={`Option ${oIdx + 1}`}
-                          className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-slate-900 dark:text-white"
+                          className="bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 font-semibold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                         />
                       ))}
                     </div>
 
                     <div className="flex items-center gap-3 pt-2">
-                      <span className="text-slate-600 dark:text-slate-400 font-semibold">Correct Answer:</span>
+                      <span className="text-slate-700 font-bold">Correct Answer:</span>
                       <input
                         type="text"
                         value={Array.isArray(q.correctAnswer) ? q.correctAnswer.join(', ') : q.correctAnswer}
@@ -1104,7 +1116,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             setEditingSession({ ...editingSession, quizzes: currentQuizzes });
                           }
                         }}
-                        className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg px-3 py-1.5 text-slate-900 dark:text-white font-semibold"
+                        className="flex-1 bg-white border border-slate-300 rounded-lg px-3 py-1.5 text-slate-900 font-semibold focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                       />
                     </div>
                   </div>
@@ -1114,19 +1126,20 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           )}
 
           {/* Form Action Footer */}
-          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex justify-end gap-3">
+          <div className="pt-4 border-t border-slate-200 flex justify-end gap-3">
             <button
               type="button"
               onClick={() => setEditingSession(null)}
-              className="bg-slate-100 hover:bg-slate-200 dark:bg-slate-950 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800"
+              className="px-5 py-2.5 rounded-xl border border-slate-300 text-slate-700 text-xs font-bold hover:bg-slate-100 transition-colors"
             >
               Cancel
             </button>
             <button
-              type="submit"
-              className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2"
+              type="button"
+              onClick={handleSaveForm}
+              className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-md shadow-blue-600/20 flex items-center gap-2"
             >
-              <Save className="w-4 h-4" /> Save All Session Details
+              <Save className="w-4 h-4 text-white" /> Save All Session Changes
             </button>
           </div>
         </div>
@@ -1138,24 +1151,21 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     <div className="space-y-6">
       
       {/* Admin Session Control Header */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-md flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-2">
         <div>
-          <button
-            onClick={onBackToDashboard}
-            className="inline-flex items-center gap-1.5 text-xs text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white mb-2 font-medium"
-          >
-            <ArrowLeft className="w-3.5 h-3.5" /> Back to Admin Overview
-          </button>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Session Content & Tracker Management</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-xs mt-0.5">Manage session roadmaps, study materials, or track session table fields in real-time</p>
+          <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight flex items-center gap-2.5">
+            <FolderOpen className="w-6.5 h-6.5 text-blue-600" />
+            <span>Session Content</span>
+          </h2>
+          <p className="text-slate-600 text-xs mt-0.5">Manage session roadmaps, study materials, assignments, and curriculum content</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
           <button
             onClick={handleCreateNew}
-            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 self-start md:self-auto"
+            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-md shadow-blue-600/20 flex items-center gap-2 self-start md:self-auto"
           >
-            <Plus className="w-4 h-4" /> Create New Session
+            <Plus className="w-4 h-4 text-white" /> Create New Session
           </button>
         </div>
       </div>
@@ -1165,16 +1175,16 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
       ) : (
         <>
           {/* Filter & Search Bar */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-        <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="bg-slate-100 p-2 rounded-2xl border border-slate-200 flex items-center gap-2 overflow-x-auto w-full sm:w-auto no-scrollbar shadow-sm">
           {(['ALL', 'Published', 'Draft', 'Archived'] as const).map((st) => (
             <button
               key={st}
               onClick={() => setFilterStatus(st)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-colors ${
+              className={`px-4 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 filterStatus === st
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
-                  : 'bg-slate-100 dark:bg-slate-950 text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-slate-800'
+                  : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
               }`}
             >
               {st}
@@ -1183,13 +1193,13 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
         </div>
 
         <div className="relative w-full sm:w-64">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-blue-600 absolute left-3.5 top-3 z-10" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search session title..."
-            className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:border-blue-500"
+            className="w-full rounded-xl pl-10 pr-4 py-2.5 text-xs bg-white text-slate-900 placeholder-slate-500 border border-slate-300 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm transition-all duration-200"
           />
         </div>
       </div>
@@ -1218,8 +1228,10 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                     className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
                       (session.status || (session.isPublished !== false ? 'Published' : 'Draft')) === 'Published'
                         ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                        : (session.status === 'Archived')
+                        : (session.status === 'Archived' || session.status === 'Archive')
                         ? 'bg-slate-100 text-slate-700 border-slate-300'
+                        : session.status === 'Publish'
+                        ? 'bg-blue-50 text-blue-800 border-blue-300'
                         : 'bg-amber-50 text-amber-800 border-amber-300'
                     }`}
                   >
@@ -1232,26 +1244,57 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
               </div>
             </div>
 
-            {/* Quick Actions: Edit (Pen) & Delete */}
-            <div className="flex items-center gap-3 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-200 dark:border-slate-800 self-end lg:self-center">
+            {/* Quick Actions */}
+            <div className="flex flex-col gap-2 pt-2 lg:pt-0 border-t lg:border-t-0 border-slate-200 self-end lg:self-center min-w-[170px]">
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    setEditingSession(session);
+                    setActiveTab('overview');
+                  }}
+                  style={{
+                    background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+                    border: '1px solid #BFDBFE',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.12)',
+                  }}
+                  className="font-extrabold text-xs px-4 py-2.5 rounded-xl text-blue-800 hover:text-blue-900 flex items-center justify-center gap-2 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md hover:border-blue-400 flex-1"
+                  title="Edit Session Details & Content"
+                >
+                  <Edit3 className="w-4 h-4 text-blue-700 fill-blue-700" />
+                  <span className="text-blue-800 font-extrabold">Edit Session</span>
+                </button>
+                
+                <button
+                  onClick={() => onDeleteSession(session.id)}
+                  style={{
+                    background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+                    border: '1px solid #BFDBFE',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.12)',
+                  }}
+                  className="p-2.5 rounded-xl text-blue-800 hover:text-rose-700 hover:border-rose-300 flex items-center justify-center transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md"
+                  title="Delete Session"
+                >
+                  <Trash2 className="w-4 h-4 text-rose-600" />
+                </button>
+              </div>
+
+              {/* Publish button under the Edit Session button */}
               <button
+                disabled={session.status !== 'Publish'}
                 onClick={() => {
-                  setEditingSession(session);
-                  setActiveTab('overview');
+                  if (session.status === 'Publish') {
+                    onSaveSession({ ...session, status: 'Published', isPublished: true });
+                  }
                 }}
-                className="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 dark:bg-slate-950 dark:hover:bg-slate-800 text-blue-700 dark:text-blue-400 font-bold text-xs rounded-xl border border-blue-200 dark:border-slate-800 shadow-sm transition-all"
-                title="Edit Session Details & Content"
+                className={`w-full font-extrabold text-xs px-4 py-2 rounded-xl flex items-center justify-center gap-2 transition-all duration-200 ${
+                  session.status === 'Publish'
+                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-md shadow-emerald-600/20 cursor-pointer hover:-translate-y-0.5'
+                    : 'bg-slate-200/80 text-slate-400 border border-slate-200 cursor-not-allowed opacity-60'
+                }`}
+                title={session.status === 'Publish' ? 'Click to Publish session' : 'Publish button enabled when status is "Publish"'}
               >
-                <Edit3 className="w-4 h-4" />
-                <span>Edit Session</span>
-              </button>
-              
-              <button
-                onClick={() => onDeleteSession(session.id)}
-                className="p-2.5 bg-rose-50 hover:bg-rose-100 dark:bg-slate-950 dark:hover:bg-rose-900/50 text-rose-600 dark:text-rose-400 rounded-xl border border-rose-200 dark:border-slate-800 transition-all"
-                title="Delete Session"
-              >
-                <Trash2 className="w-4 h-4" />
+                <CheckCircle2 className={`w-4 h-4 ${session.status === 'Publish' ? 'text-white' : 'text-slate-400'}`} />
+                <span>Publish</span>
               </button>
             </div>
           </div>

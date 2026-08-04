@@ -399,22 +399,22 @@ export const TopicsView: React.FC<TopicsViewProps> = ({
         )}
 
         {topicActiveTab === 'chat' && (
-          <div className="bg-slate-900 p-6 rounded-3xl border border-slate-800 space-y-4">
-            <h3 className="text-sm font-bold text-white flex items-center gap-2">
-              <Radio className="w-4 h-4 text-amber-400" />
+          <div className="bg-white/80 backdrop-blur-xl p-6 rounded-3xl border border-slate-200/80 space-y-4 shadow-md">
+            <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+              <Radio className="w-4 h-4 text-amber-500" />
               <span>Microsoft Teams Real-Time Channels for {activeTopic.name}</span>
             </h3>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               {activeTopic.channels.map((chan) => (
-                <div key={chan.id} className="bg-slate-950 p-4 rounded-2xl border border-slate-800 space-y-2">
+                <div key={chan.id} className="bg-slate-50/90 p-4 rounded-2xl border border-slate-200 space-y-2 shadow-sm">
                   <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-white">#{chan.name}</span>
-                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <span className="text-xs font-bold text-slate-900">#{chan.name}</span>
+                    <span className="px-2 py-0.5 rounded-full text-[9px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold">
                       Active Channel
                     </span>
                   </div>
-                  <p className="text-slate-400 text-[11px]">{chan.description}</p>
+                  <p className="text-slate-600 text-[11px]">{chan.description}</p>
                 </div>
               ))}
             </div>
