@@ -1,3 +1,22 @@
+export interface SessionTrackerRecord {
+  id: string;
+  sessionCode: string;
+  sessionName: string;
+  category: CategoryType | string;
+  trainerName: string;
+  scheduleDate: string;
+  scheduleTime: string;
+  durationHours: number;
+  status: 'Scheduled' | 'In Progress' | 'Completed' | 'Cancelled';
+  enrolledCount: number;
+  maxCapacity: number;
+  completionRatePercent: number;
+  materialsLink?: string;
+  recordingLink?: string;
+  notes?: string;
+  lastUpdated?: string;
+}
+
 export type UserRole = 'GT' | 'Admin' | 'Super Admin';
 
 export interface User {

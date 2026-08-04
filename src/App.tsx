@@ -16,11 +16,12 @@ import { SessionManager } from './components/Admin/SessionManager';
 import { RoadmapBuilder } from './components/Admin/RoadmapBuilder';
 import { MaterialUploader } from './components/Admin/MaterialUploader';
 import { QuizBuilder } from './components/Admin/QuizBuilder';
+import { SessionTracker } from './components/Admin/SessionTracker';
 import { AdminAuthGate } from './components/Admin/AdminAuthGate';
 import { AIAssistant } from './components/AIAssistant';
 import { InspectModeOverlay } from './components/InspectModeOverlay';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
-import { Bookmark, X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles } from 'lucide-react';
+import { Bookmark, X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles, Table } from 'lucide-react';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<User>(mockUser);
@@ -49,7 +50,7 @@ export function App() {
     }
   }, [theme]);
   const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub'>('sessions');
-  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>('dashboard');
+  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>('dashboard');
 
   // Detail Selection State
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
@@ -313,6 +314,15 @@ export function App() {
                   >
                     Session Management
                   </button>
+                  <button
+                    onClick={() => setAdminViewMode('tracker')}
+                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
+                      adminViewMode === 'tracker' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold' : 'text-slate-400 hover:text-white'
+                    }`}
+                  >
+                    <Table className="w-3.5 h-3.5" />
+                    <span>Session Tracker</span>
+                  </button>
                 </div>
 
                 {adminViewMode === 'dashboard' ? (
@@ -320,6 +330,7 @@ export function App() {
                     sessions={sessions}
                     onAddNewSession={() => setAdminViewMode('sessions')}
                     onManageSessions={() => setAdminViewMode('sessions')}
+                    onOpenSessionTracker={() => setAdminViewMode('tracker')}
                     onSaveSession={handleSaveAdminSession}
                     onDeleteSession={handleDeleteAdminSession}
                     onOpenRoadmapBuilder={(s) => {
@@ -357,6 +368,8 @@ export function App() {
                     }}
                     onBackToDashboard={() => setAdminViewMode('dashboard')}
                   />
+                ) : adminViewMode === 'tracker' ? (
+                  <SessionTracker sessions={sessions} />
                 ) : adminViewMode === 'roadmap-builder' && activeAdminSession ? (
                   <RoadmapBuilder
                     session={activeAdminSession}

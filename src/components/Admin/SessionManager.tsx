@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Session, CategoryType, RoadmapTopic, SubTopic, StudyMaterial, SessionAssignment, PersonalNote, Quiz, QuizQuestion } from '../../types';
+import { SessionTracker } from './SessionTracker';
 import { 
   Plus, 
   Search, 
@@ -20,7 +21,10 @@ import {
   StickyNote,
   Presentation,
   FolderOpen,
-  X
+  X,
+  Table,
+  Upload,
+  ExternalLink
 } from 'lucide-react';
 
 interface SessionManagerProps {
@@ -41,6 +45,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 }) => {
   const [editingSession, setEditingSession] = useState<Partial<Session> | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'roadmap' | 'provided' | 'additional' | 'assignments' | 'notes' | 'quiz'>('overview');
+  const [sessionManagerMode, setSessionManagerMode] = useState<'modules' | 'tracker'>('modules');
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'Published' | 'Draft' | 'Archived'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -1141,19 +1146,53 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           >
             <ArrowLeft className="w-3.5 h-3.5" /> Back to Admin Overview
           </button>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Session Content Management</h2>
-          <p className="text-slate-600 dark:text-slate-400 text-xs mt-0.5">Manage session roadmaps, study materials, assignments, and quizzes in one view</p>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">Session Content & Tracker Management</h2>
+          <p className="text-slate-600 dark:text-slate-400 text-xs mt-0.5">Manage session roadmaps, study materials, or track session table fields in real-time</p>
         </div>
 
-        <button
-          onClick={handleCreateNew}
-          className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 self-start md:self-auto"
-        >
-          <Plus className="w-4 h-4" /> Create New Session
-        </button>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="bg-slate-100 dark:bg-slate-950 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center gap-1">
+            <button
+              type="button"
+              onClick={() => setSessionManagerMode('modules')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                sessionManagerMode === 'modules'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <FolderOpen className="w-3.5 h-3.5" />
+              <span>Session Modules</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setSessionManagerMode('tracker')}
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 ${
+                sessionManagerMode === 'tracker'
+                  ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <Table className="w-3.5 h-3.5" />
+              <span>Session Tracker</span>
+            </button>
+          </div>
+
+          <button
+            onClick={handleCreateNew}
+            className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs px-5 py-2.5 rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 self-start md:self-auto"
+          >
+            <Plus className="w-4 h-4" /> Create New Session
+          </button>
+        </div>
       </div>
 
-      {/* Filter & Search Bar */}
+      {sessionManagerMode === 'tracker' ? (
+        <SessionTracker sessions={sessions} />
+      ) : (
+        <>
+          {/* Filter & Search Bar */}
       <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
         <div className="flex items-center gap-2 overflow-x-auto w-full sm:w-auto">
           {(['ALL', 'Published', 'Draft', 'Archived'] as const).map((st) => (
@@ -1246,6 +1285,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
           </div>
         ))}
       </div>
+      </>
+      )}
     </div>
   );
 };

@@ -9,7 +9,8 @@ import {
   InspectMetadata,
   PersonalNote,
   DiscussionPost,
-  Certificate
+  Certificate,
+  SessionTrackerRecord
 } from '../types';
 
 export const mockCurrentUser: User = {
@@ -1058,5 +1059,96 @@ export const mockCertificates: Certificate[] = [
     trackName: '.NET with C# Enterprise Architecture',
     issuedDate: 'July 30, 2026',
     qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=VERIFIED-CERT-8821'
+  }
+];
+
+export const mockSessionTrackerRecords: SessionTrackerRecord[] = [
+  {
+    id: 'track-101',
+    sessionCode: 'SESS-NET-01',
+    sessionName: '.NET with C# Foundation & Enterprise Architecture',
+    category: '.NET with C#',
+    trainerName: 'Sarah Jenkins',
+    scheduleDate: '2026-08-05',
+    scheduleTime: '09:00 AM - 12:00 PM',
+    durationHours: 12,
+    status: 'In Progress',
+    enrolledCount: 38,
+    maxCapacity: 40,
+    completionRatePercent: 75,
+    materialsLink: 'https://github.com/gt-learning/dotnet-curriculum',
+    recordingLink: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    notes: 'Covers C# 12 features, Dependency Injection, and Entity Framework Core 8.',
+    lastUpdated: '2026-08-03'
+  },
+  {
+    id: 'track-102',
+    sessionCode: 'SESS-INS-02',
+    sessionName: 'Insurance Domain Fundamentals & Underwriting',
+    category: 'Insurance',
+    trainerName: 'David Miller',
+    scheduleDate: '2026-08-08',
+    scheduleTime: '01:00 PM - 04:00 PM',
+    durationHours: 10,
+    status: 'Scheduled',
+    enrolledCount: 40,
+    maxCapacity: 40,
+    completionRatePercent: 45,
+    materialsLink: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    recordingLink: '',
+    notes: 'Key domain topics: Policy Lifecycle, Claims Processing, Reinsurance & Actuarial Basics.',
+    lastUpdated: '2026-08-02'
+  },
+  {
+    id: 'track-103',
+    sessionCode: 'SESS-SQL-03',
+    sessionName: 'SQL Database Modelling & Performance Tuning',
+    category: 'SQL',
+    trainerName: 'Michael Chang',
+    scheduleDate: '2026-08-01',
+    scheduleTime: '10:00 AM - 01:00 PM',
+    durationHours: 14,
+    status: 'Completed',
+    enrolledCount: 35,
+    maxCapacity: 35,
+    completionRatePercent: 92,
+    materialsLink: 'https://github.com/gt-learning/sql-optimization',
+    recordingLink: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    notes: 'All participants completed final hands-on query tuning assessment.',
+    lastUpdated: '2026-08-01'
+  },
+  {
+    id: 'track-104',
+    sessionCode: 'SESS-FED-04',
+    sessionName: 'Modern Frontend Development with React & Tailwind',
+    category: 'Frontend',
+    trainerName: 'Elena Rostova',
+    scheduleDate: '2026-08-12',
+    scheduleTime: '09:30 AM - 12:30 PM',
+    durationHours: 16,
+    status: 'Scheduled',
+    enrolledCount: 32,
+    maxCapacity: 40,
+    completionRatePercent: 20,
+    materialsLink: 'https://react.dev',
+    notes: 'Focus on React 18 hooks, state synchronization, and accessible enterprise UI components.',
+    lastUpdated: '2026-08-03'
+  },
+  {
+    id: 'track-105',
+    sessionCode: 'SESS-C2C-05',
+    sessionName: 'Campus to Corporate (C2C) Professional Readiness',
+    category: 'Campus to Corporate',
+    trainerName: 'Rachel Green',
+    scheduleDate: '2026-07-28',
+    scheduleTime: '02:00 PM - 05:00 PM',
+    durationHours: 8,
+    status: 'Completed',
+    enrolledCount: 40,
+    maxCapacity: 40,
+    completionRatePercent: 98,
+    materialsLink: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
+    notes: 'Enterprise etiquette, agile communication, and project team dynamics.',
+    lastUpdated: '2026-07-28'
   }
 ];

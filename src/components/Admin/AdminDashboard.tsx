@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Session, StudyMaterial, CategoryType } from '../../types';
 import { mockStudyMaterials } from '../../data/mockData';
+import { SessionTracker } from './SessionTracker';
 import { 
   ShieldCheck, 
   Plus, 
@@ -26,7 +27,8 @@ import {
   ChevronUp,
   ChevronRight,
   FolderOpen,
-  Tag
+  Tag,
+  Table
 } from 'lucide-react';
 
 interface AdminDashboardProps {
@@ -34,6 +36,7 @@ interface AdminDashboardProps {
   studyMaterials?: StudyMaterial[];
   onAddNewSession: () => void;
   onManageSessions: () => void;
+  onOpenSessionTracker?: () => void;
   onSaveSession?: (sessionData: Partial<Session>) => void;
   onDeleteSession?: (sessionId: string) => void;
   onOpenRoadmapBuilder?: (session: Session) => void;
@@ -47,6 +50,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   studyMaterials = mockStudyMaterials,
   onAddNewSession,
   onManageSessions,
+  onOpenSessionTracker,
   onSaveSession,
   onDeleteSession,
   onOpenRoadmapBuilder,
@@ -54,6 +58,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
   onOpenQuizBuilder,
   onSelectSession
 }) => {
+  const [activeOverviewSubTab, setActiveOverviewSubTab] = useState<'catalog' | 'tracker'>('catalog');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('ALL');
   const [isSearchFocused, setIsSearchFocused] = useState(false);
