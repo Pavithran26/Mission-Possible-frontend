@@ -4,7 +4,6 @@ import {
   Search, 
   Filter, 
   Bookmark, 
-  Clock, 
   ChevronDown, 
   ChevronRight, 
   Play, 
@@ -589,14 +588,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
 
                 {/* Card Body - Name and Description */}
                 <div className="p-5 space-y-3">
-                  {/* Duration Header */}
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="flex items-center gap-1 font-mono text-[11px] text-slate-500 font-medium">
-                      <Clock className="w-3.5 h-3.5 text-blue-600" />
-                      {session.durationHours} Hours Track
-                    </span>
-                  </div>
-
                   {/* Session Name & Description */}
                   <div className="space-y-1.5">
                     <h3 className={`text-base font-bold transition-colors leading-snug ${isActive ? 'text-blue-700 text-lg' : 'text-slate-900 group-hover:text-blue-700'}`}>
