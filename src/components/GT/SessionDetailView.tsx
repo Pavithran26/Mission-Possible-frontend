@@ -517,14 +517,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
                 {(selectedTopic?.subtopics || []).map((sub) => (
-                  <div key={sub.id} className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 space-y-2">
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-bold text-slate-900 dark:text-white">{sub.title}</span>
-                      <span className="text-[10px] text-slate-500 font-mono">{sub.durationMinutes} mins</span>
-                    </div>
-                    <span className="inline-block text-[10px] font-mono font-bold px-2.5 py-0.5 rounded bg-emerald-100 dark:bg-emerald-500/20 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30">
-                      {sub.status}
-                    </span>
+                  <div key={sub.id} className="bg-slate-50 dark:bg-slate-950 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 flex items-center justify-between">
+                    <span className="font-bold text-slate-900 dark:text-white text-xs">{sub.title}</span>
                   </div>
                 ))}
               </div>
@@ -600,23 +594,6 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
                   <h4 className="text-base font-bold text-slate-900 dark:text-white">{mat.title}</h4>
                   <p className="text-slate-600 dark:text-slate-400 text-xs leading-relaxed">{mat.description}</p>
-
-                  {/* AI Summary */}
-                  <button
-                    onClick={() => handleSummarize(mat.id, mat.title, mat.description)}
-                    disabled={summarizingId === mat.id}
-                    className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 hover:underline font-bold"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>{summarizingId === mat.id ? 'Generating AI Summary...' : 'Summarize with Gemini AI'}</span>
-                  </button>
-
-                  {summaries[mat.id] && (
-                    <div className="bg-amber-50 dark:bg-slate-950 p-4 rounded-2xl border border-amber-200 dark:border-amber-500/30 text-xs text-slate-800 dark:text-slate-200 leading-relaxed space-y-1">
-                      <span className="font-bold text-amber-700 dark:text-amber-400 block font-mono">🤖 Gemini AI Summary:</span>
-                      <p>{summaries[mat.id]}</p>
-                    </div>
-                  )}
                 </div>
 
                 <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between">
@@ -707,23 +684,6 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   {mat.sourceOrAuthor && (
                     <div className="text-[11px] text-slate-500 font-mono bg-slate-50 dark:bg-slate-950 px-3 py-1.5 rounded-lg border border-slate-200 dark:border-slate-800 w-fit">
                       Source/Contributor: <span className="text-slate-800 dark:text-slate-200 font-bold">{mat.sourceOrAuthor}</span>
-                    </div>
-                  )}
-
-                  {/* AI Summary */}
-                  <button
-                    onClick={() => handleSummarize(mat.id, mat.title, mat.description)}
-                    disabled={summarizingId === mat.id}
-                    className="inline-flex items-center gap-1.5 text-xs text-amber-600 dark:text-amber-400 hover:underline font-bold"
-                  >
-                    <Sparkles className="w-3.5 h-3.5" />
-                    <span>{summarizingId === mat.id ? 'Generating AI Summary...' : 'Summarize with Gemini AI'}</span>
-                  </button>
-
-                  {summaries[mat.id] && (
-                    <div className="bg-amber-50 dark:bg-slate-950 p-4 rounded-2xl border border-amber-200 dark:border-amber-500/30 text-xs text-slate-800 dark:text-slate-200 leading-relaxed space-y-1">
-                      <span className="font-bold text-amber-700 dark:text-amber-400 block font-mono">🤖 Gemini AI Summary:</span>
-                      <p>{summaries[mat.id]}</p>
                     </div>
                   )}
                 </div>

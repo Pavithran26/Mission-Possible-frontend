@@ -224,8 +224,8 @@ export const SessionsList: React.FC<SessionsListProps> = ({
           style={{ background: 'radial-gradient(circle, rgba(124, 92, 255, 0.15) 0%, rgba(124, 92, 255, 0) 70%)' }}
         />
         
-        {/* Header Title & Global Search */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
+        {/* Header Title & Video */}
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           <div className="space-y-2">
             <div 
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm"
@@ -246,134 +246,149 @@ export const SessionsList: React.FC<SessionsListProps> = ({
             </p>
           </div>
 
-          <div ref={searchContainerRef} className="relative w-full lg:w-96">
-            <Search className="w-4 h-4 absolute left-3.5 top-3 z-10" style={{ color: '#4EA3FF' }} />
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setIsSearchFocused(true);
-              }}
-              onFocus={() => setIsSearchFocused(true)}
-              placeholder="Search sessions, topics, documents, or tags..."
-              className="enterprise-hero-search w-full rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all duration-200"
-              style={{
-                backgroundColor: 'rgba(8, 14, 38, 0.75)',
-                border: '1px solid rgba(59, 130, 246, 0.35)',
-                color: '#FFFFFF'
-              }}
+          {/* Hero Right Video Player */}
+          <div className="w-full lg:w-80 flex-shrink-0 rounded-2xl overflow-hidden border border-white/20 shadow-2xl bg-slate-950/80 relative">
+            <video 
+              controls
+              poster="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80"
+              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
+              className="w-full h-40 object-cover"
             />
+          </div>
+        </div>
 
-            {/* Autocomplete Suggestions Dropdown */}
-            {isSearchFocused && searchQuery.trim().length > 0 && (
-              <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-[#0E1733] border border-slate-700 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
-                {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
-                  <div className="p-3 text-center text-xs text-slate-400 font-mono">
-                    No matching sessions or documents found
-                  </div>
-                ) : (
-                  <>
-                    {/* Matching Sessions Section */}
-                    {suggestedSessions.length > 0 && (
-                      <div className="space-y-1.5">
-                        <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-wider block px-2">
-                          Suggested Sessions ({suggestedSessions.length})
-                        </span>
-                        {suggestedSessions.map((s) => (
-                          <div
-                            key={s.id}
-                            onClick={() => {
-                              onSelectSession(s.id);
-                              setIsSearchFocused(false);
-                            }}
-                            className="p-2 hover:bg-[#18254F] rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
-                          >
-                            <div className="flex items-center gap-2 min-w-0">
-                              <div className="w-6 h-6 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#4EA3FF] flex-shrink-0 font-bold">
-                                <FolderOpen className="w-3.5 h-3.5" />
-                              </div>
-                              <div className="truncate">
-                                <span className="font-bold text-white group-hover:text-[#4EA3FF] block truncate">{s.name}</span>
-                                <span className="text-[10px] text-slate-300 font-mono">{getDisplayCategory(s.category)} • {s.durationHours} hrs</span>
-                              </div>
-                            </div>
-                            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#4EA3FF] flex-shrink-0" />
-                          </div>
-                        ))}
-                      </div>
-                    )}
+        {/* Search Bar & Multi-Select Dropdown Filter Row */}
+        <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+          
+          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+            {/* Search Bar on the Left of Dropdown Box */}
+            <div ref={searchContainerRef} className="relative w-full sm:w-72 md:w-80">
+              <Search className="w-4 h-4 absolute left-3.5 top-3 z-10" style={{ color: '#4EA3FF' }} />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setIsSearchFocused(true);
+                }}
+                onFocus={() => setIsSearchFocused(true)}
+                placeholder="Search sessions, topics, documents, or tags..."
+                className="enterprise-hero-search w-full rounded-xl pl-10 pr-4 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500/30 transition-all duration-200"
+                style={{
+                  backgroundColor: 'rgba(8, 14, 38, 0.75)',
+                  border: '1px solid rgba(59, 130, 246, 0.35)',
+                  color: '#FFFFFF'
+                }}
+              />
 
-                    {/* Matching Documents Section */}
-                    {suggestedDocs.length > 0 && (
-                      <div className="space-y-1.5 border-t border-slate-700/60 pt-2">
-                        <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-wider block px-2">
-                          Suggested Documents ({suggestedDocs.length})
-                        </span>
-                        {suggestedDocs.map((doc) => {
-                          const parentSession = sessions.find(s => s.id === doc.sessionId);
-
-                          return (
+              {/* Autocomplete Suggestions Dropdown */}
+              {isSearchFocused && searchQuery.trim().length > 0 && (
+                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-[#0E1733] border border-slate-700 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
+                  {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
+                    <div className="p-3 text-center text-xs text-slate-400 font-mono">
+                      No matching sessions or documents found
+                    </div>
+                  ) : (
+                    <>
+                      {/* Matching Sessions Section */}
+                      {suggestedSessions.length > 0 && (
+                        <div className="space-y-1.5">
+                          <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-wider block px-2">
+                            Suggested Sessions ({suggestedSessions.length})
+                          </span>
+                          {suggestedSessions.map((s) => (
                             <div
-                              key={doc.id}
+                              key={s.id}
                               onClick={() => {
-                                onSelectSession(doc.sessionId);
+                                onSelectSession(s.id);
                                 setIsSearchFocused(false);
                               }}
                               className="p-2 hover:bg-[#18254F] rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <span className="px-2 py-0.5 rounded border border-purple-400/30 bg-purple-500/20 text-purple-200 text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0">
-                                  <FileText className="w-3 h-3" />
-                                  <span>{doc.type}</span>
-                                </span>
+                                <div className="w-6 h-6 rounded-lg bg-blue-500/10 border border-blue-500/20 flex items-center justify-center text-[#4EA3FF] flex-shrink-0 font-bold">
+                                  <FolderOpen className="w-3.5 h-3.5" />
+                                </div>
                                 <div className="truncate">
-                                  <span className="font-bold text-white group-hover:text-[#4EA3FF] block truncate">{doc.title}</span>
-                                  {parentSession && (
-                                    <span className="text-[10px] text-slate-300 font-mono block truncate">
-                                      Session: {parentSession.name}
-                                    </span>
-                                  )}
+                                  <span className="font-bold text-white group-hover:text-[#4EA3FF] block truncate">{s.name}</span>
+                                  <span className="text-[10px] text-slate-300 font-mono">{getDisplayCategory(s.category)} • {s.durationHours} hrs</span>
                                 </div>
                               </div>
-                              <span className="text-[10px] font-mono font-bold text-[#4EA3FF] bg-blue-500/15 px-2 py-0.5 rounded border border-blue-400/30 group-hover:bg-blue-500/30 flex-shrink-0 ml-2">
-                                Open Track
-                              </span>
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#4EA3FF] flex-shrink-0" />
                             </div>
-                          );
-                        })}
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
+                          ))}
+                        </div>
+                      )}
 
-        {/* Multi-Select Dropdown Filter Row */}
-        <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          
-          <div ref={filterDropdownRef} className="relative inline-block text-left">
-            {/* Filter Dropdown Trigger Button */}
-            <button
-              type="button"
-              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-              className="enterprise-filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all duration-200"
-              style={{
-                backgroundColor: selectedCategories.length > 0 ? '#18254F' : '#0E1733',
-                border: selectedCategories.length > 0 ? '1px solid #4EA3FF' : '1px solid rgba(255, 255, 255, 0.08)',
-                color: '#FFFFFF'
-              }}
-            >
-              <Filter className="w-3.5 h-3.5" style={{ color: '#4EA3FF' }} />
-              <span>
-                {selectedCategories.length === 0
-                  ? 'All Learning Tracks'
-                  : `Learning Tracks (${selectedCategories.length} selected)`}
-              </span>
-              <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} style={{ color: 'rgba(255, 255, 255, 0.65)' }} />
-            </button>
+                      {/* Matching Documents Section */}
+                      {suggestedDocs.length > 0 && (
+                        <div className="space-y-1.5 border-t border-slate-700/60 pt-2">
+                          <span className="text-[10px] font-mono font-bold text-slate-300 uppercase tracking-wider block px-2">
+                            Suggested Documents ({suggestedDocs.length})
+                          </span>
+                          {suggestedDocs.map((doc) => {
+                            const parentSession = sessions.find(s => s.id === doc.sessionId);
+
+                            return (
+                              <div
+                                key={doc.id}
+                                onClick={() => {
+                                  onSelectSession(doc.sessionId);
+                                  setIsSearchFocused(false);
+                                }}
+                                className="p-2 hover:bg-[#18254F] rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
+                              >
+                                <div className="flex items-center gap-2 min-w-0">
+                                  <span className="px-2 py-0.5 rounded border border-purple-400/30 bg-purple-500/20 text-purple-200 text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0">
+                                    <FileText className="w-3 h-3" />
+                                    <span>{doc.type}</span>
+                                  </span>
+                                  <div className="truncate">
+                                    <span className="font-bold text-white group-hover:text-[#4EA3FF] block truncate">{doc.title}</span>
+                                    {parentSession && (
+                                      <span className="text-[10px] text-slate-300 font-mono block truncate">
+                                        Session: {parentSession.name}
+                                      </span>
+                                    )}
+                                  </div>
+                                </div>
+                                <span className="text-[10px] font-mono font-bold text-[#4EA3FF] bg-blue-500/15 px-2 py-0.5 rounded border border-blue-400/30 group-hover:bg-blue-500/30 flex-shrink-0 ml-2">
+                                  Open Track
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Dropdown Box to the Right of Search Bar */}
+            <div ref={filterDropdownRef} className="relative inline-block text-left w-full sm:w-auto">
+              {/* Filter Dropdown Trigger Button */}
+              <button
+                type="button"
+                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+                className="enterprise-filter-btn px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-2.5 transition-all duration-200 w-full sm:w-auto justify-between sm:justify-start"
+                style={{
+                  backgroundColor: selectedCategories.length > 0 ? '#18254F' : '#0E1733',
+                  border: selectedCategories.length > 0 ? '1px solid #4EA3FF' : '1px solid rgba(255, 255, 255, 0.08)',
+                  color: '#FFFFFF'
+                }}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Filter className="w-3.5 h-3.5" style={{ color: '#4EA3FF' }} />
+                  <span>
+                    {selectedCategories.length === 0
+                      ? 'All Learning Tracks'
+                      : `Learning Tracks (${selectedCategories.length} selected)`}
+                  </span>
+                </div>
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} style={{ color: 'rgba(255, 255, 255, 0.65)' }} />
+              </button>
 
             {/* Dropdown Menu */}
             {isFilterDropdownOpen && (
@@ -440,6 +455,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               </div>
             )}
           </div>
+        </div>
 
           <div className="text-xs text-slate-400 font-mono">
             Showing <span className="font-bold text-white">{filteredSessions.length}</span> of <span className="font-bold text-white">{sessions.length}</span> tracks
