@@ -1,0 +1,8 @@
+{
+  "name": "Remix Corporate GT \u0026 Admin Learning Portal version 3",
+  "description": "Enterprise Graduate Trainee learning portal with structured roadmaps, study materials, AI assistant, quizzes, analytics, inspect mode, and admin portal.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
