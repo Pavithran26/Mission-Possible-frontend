@@ -220,16 +220,16 @@ export function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
             
             {/* Sub-Navigation Bar for GT Portal */}
-            <div className="bg-slate-900/90 backdrop-blur-md p-2 rounded-2xl border border-slate-800 flex items-center gap-2.5 overflow-x-auto no-scrollbar shadow-md">
+            <div className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2.5 overflow-x-auto no-scrollbar shadow-sm">
               <button
                 onClick={() => { setGtViewMode('sessions'); setSelectedSessionId(null); setActiveQuiz(null); }}
                 className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                   gtViewMode === 'sessions' && !selectedSessionId && !activeQuiz 
                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-blue-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                 }`}
               >
-                <BookOpen className={`w-4 h-4 ${gtViewMode === 'sessions' ? 'text-white' : 'text-blue-400'}`} />
+                <BookOpen className={`w-4 h-4 ${gtViewMode === 'sessions' && !selectedSessionId && !activeQuiz ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
                 <span>Learning Sessions ({sessions.length})</span>
               </button>
 
@@ -238,10 +238,10 @@ export function App() {
                 className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
                   gtViewMode === 'knowledge-hub' && !selectedSessionId && !activeQuiz 
                     ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-600/30' 
-                    : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+                    : 'text-slate-700 dark:text-slate-200 hover:text-blue-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                 }`}
               >
-                <Sparkles className={`w-4 h-4 ${gtViewMode === 'knowledge-hub' ? 'text-white' : 'text-blue-400'}`} />
+                <Sparkles className={`w-4 h-4 ${gtViewMode === 'knowledge-hub' && !selectedSessionId && !activeQuiz ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
                 <span>Knowledge Hub</span>
               </button>
             </div>
@@ -297,30 +297,36 @@ export function App() {
               <div className="space-y-6">
                 
                 {/* Sub-Navigation Bar for Admin Portal */}
-                <div className="bg-slate-900/90 backdrop-blur-md p-1.5 rounded-2xl border border-slate-800 flex items-center gap-2 overflow-x-auto no-scrollbar">
+                <div className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto no-scrollbar shadow-sm">
                   <button
                     onClick={() => setAdminViewMode('dashboard')}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      adminViewMode === 'dashboard' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold' : 'text-slate-400 hover:text-white'
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                      adminViewMode === 'dashboard'
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                        : 'text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                     }`}
                   >
                     Admin Overview
                   </button>
                   <button
                     onClick={() => setAdminViewMode('sessions')}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      adminViewMode === 'sessions' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold' : 'text-slate-400 hover:text-white'
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                      adminViewMode === 'sessions'
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                        : 'text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                     }`}
                   >
                     Session Management
                   </button>
                   <button
                     onClick={() => setAdminViewMode('tracker')}
-                    className={`px-4 py-2 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      adminViewMode === 'tracker' ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold' : 'text-slate-400 hover:text-white'
+                    className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+                      adminViewMode === 'tracker'
+                        ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
+                        : 'text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                     }`}
                   >
-                    <Table className="w-3.5 h-3.5" />
+                    <Table className={`w-3.5 h-3.5 ${adminViewMode === 'tracker' ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`} />
                     <span>Session Tracker</span>
                   </button>
                 </div>

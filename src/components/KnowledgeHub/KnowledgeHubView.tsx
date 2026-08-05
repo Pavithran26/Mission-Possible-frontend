@@ -444,39 +444,40 @@ export const KnowledgeHubView: React.FC<KnowledgeHubViewProps> = ({
   return (
     <div className="space-y-8 animate-fadeIn">
       
-      {/* Top Knowledge Hub Banner with Modern Enterprise Purple Gradient Styling */}
+      {/* Top Knowledge Hub Banner with Modern Enterprise SaaS Light Styling */}
       <div 
-        className="knowledge-hero-card p-6 sm:p-8 space-y-6 relative text-white"
+        className="knowledge-hero-card p-6 sm:p-8 space-y-6 relative"
         style={{
-          background: 'linear-gradient(90deg, #2D1A57 0%, #4B157C 50%, #1A234B 100%)',
-          borderRadius: '28px',
-          border: '1px solid rgba(255, 255, 255, 0.08)',
-          boxShadow: '0 20px 50px rgba(0, 0, 0, 0.28)'
+          background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+          borderRadius: '24px',
+          border: '1px solid #BFDBFE',
+          boxShadow: '0 10px 30px rgba(37, 99, 235, 0.08)',
+          color: '#0F172A'
         }}
       >
-        {/* Soft purple radial glow behind heading */}
+        {/* Soft blue radial glow behind heading */}
         <div 
-          className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none blur-3xl" 
-          style={{ background: 'radial-gradient(circle, rgba(155, 89, 255, 0.18) 0%, rgba(155, 89, 255, 0) 70%)' }}
+          className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none blur-3xl opacity-40" 
+          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 70%)' }}
         />
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
           
           <div className="space-y-2">
             <div className="flex items-center gap-3">
-              <span className="knowledge-hero-badge px-3 py-1 rounded-full text-xs font-bold font-mono shadow-sm">
+              <span className="bg-[#DBEAFE] text-[#1D4ED8] border border-[#BFDBFE] px-3 py-1 rounded-full text-xs font-bold font-mono shadow-sm">
                 Knowledge Hub ⭐
               </span>
-              <span className="hero-small-label text-xs font-mono" style={{ color: 'rgba(255, 255, 255, 0.70)' }}>
+              <span className="hero-small-label text-xs font-mono text-slate-600 font-medium">
                 Central Collaboration Platform
               </span>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl font-black text-white">
+            <h1 className="text-2xl sm:text-3xl font-black text-slate-900">
               Enterprise Trainee & Mentor Knowledge Ecosystem
             </h1>
 
-            <p className="hero-desc text-xs sm:text-sm max-w-2xl leading-relaxed" style={{ color: 'rgba(255, 255, 255, 0.82)' }}>
+            <p className="hero-desc text-xs sm:text-sm max-w-2xl leading-relaxed text-slate-600 font-medium">
               Ask technical questions, share solutions, upload study resources, collaborate in real-time Teams channels, and build organizational knowledge.
             </p>
           </div>
@@ -493,7 +494,7 @@ export const KnowledgeHubView: React.FC<KnowledgeHubViewProps> = ({
                 setActiveTab('forum');
                 setIsCreateDiscussionOpen(true);
               }}
-              className="knowledge-hero-btn-primary px-4 py-2.5 rounded-2xl text-xs font-bold flex items-center gap-2"
+              className="px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white shadow-[0_8px_24px_rgba(37,99,235,0.18)] transition-all hover:-translate-y-0.5"
             >
               <Plus className="w-4 h-4 text-white" />
               <span>Ask Question</span>
@@ -504,12 +505,12 @@ export const KnowledgeHubView: React.FC<KnowledgeHubViewProps> = ({
         </div>
 
         {/* Live Metrics Row */}
-        <div className="pt-4 text-xs relative z-10" style={{ borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <div className="knowledge-hero-stats p-3 rounded-2xl inline-flex items-center gap-3">
-            <MessageSquare className="w-5 h-5 text-blue-400" />
+        <div className="pt-4 text-xs relative z-10" style={{ borderTop: '1px solid rgba(37, 99, 235, 0.15)' }}>
+          <div className="bg-white border border-slate-200 shadow-sm p-3 rounded-2xl inline-flex items-center gap-3">
+            <MessageSquare className="w-5 h-5 text-blue-600" />
             <div>
-              <p className="text-[10px] font-medium" style={{ color: 'rgba(255, 255, 255, 0.70)' }}>Total Discussions</p>
-              <p className="font-bold text-white text-sm">{discussions.length} Questions</p>
+              <p className="text-[10px] font-medium text-slate-500">Total Discussions</p>
+              <p className="font-bold text-slate-900 text-sm">{discussions.length} Questions</p>
             </div>
           </div>
         </div>
@@ -517,46 +518,54 @@ export const KnowledgeHubView: React.FC<KnowledgeHubViewProps> = ({
       </div>
 
       {/* Primary Sub-Navigation Bar inside Knowledge Hub */}
-      <div className="bg-white p-2 rounded-2xl border border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar shadow-sm">
+      <div className="bg-slate-100 p-2 rounded-2xl border border-slate-200 flex items-center gap-2 overflow-x-auto no-scrollbar shadow-sm">
         
         <button
           onClick={() => { setActiveTab('topics'); setSelectedTopicId(''); }}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'topics' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'topics' 
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' 
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <Globe className="w-4 h-4" />
+          <Globe className={`w-4 h-4 ${activeTab === 'topics' ? 'text-white' : 'text-blue-600'}`} />
           <span>Topics & Communities ({topics.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('forum')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'forum' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'forum' 
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' 
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <MessageSquare className="w-4 h-4" />
+          <MessageSquare className={`w-4 h-4 ${activeTab === 'forum' ? 'text-white' : 'text-blue-600'}`} />
           <span>Discussion Forum ({discussions.length})</span>
         </button>
 
         <button
           onClick={() => setActiveTab('chat')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'chat' ? 'bg-blue-600 text-white shadow-md shadow-blue-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'chat' 
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30' 
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
           }`}
         >
-          <Radio className="w-4 h-4 text-amber-600" />
+          <Radio className={`w-4 h-4 ${activeTab === 'chat' ? 'text-white' : 'text-amber-600'}`} />
           <span>Teams Real-Time Chat</span>
         </button>
 
         {currentUser.role === 'Admin' && (
           <button
             onClick={() => setActiveTab('moderator')}
-            className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-              activeTab === 'moderator' ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+            className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+              activeTab === 'moderator' 
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30' 
+                : 'text-slate-700 hover:text-rose-700 hover:bg-slate-200/80'
             }`}
           >
-            <ShieldAlert className="w-4 h-4 text-rose-600" />
+            <ShieldAlert className={`w-4 h-4 ${activeTab === 'moderator' ? 'text-white' : 'text-rose-600'}`} />
             <span>Moderator & Analytics</span>
           </button>
         )}

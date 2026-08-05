@@ -121,33 +121,33 @@ export const InspectModeOverlay: React.FC<InspectModeOverlayProps> = ({
             </div>
 
             <div className="flex items-center gap-2">
-              <div className="bg-slate-800 p-1 rounded-lg flex gap-1 border border-slate-700">
+              <div className="bg-slate-100 dark:bg-slate-800 p-1 rounded-xl flex gap-1 border border-slate-200 dark:border-slate-700 shadow-sm">
                 <button
                   onClick={() => setActiveTab('overview')}
-                  className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${
                     activeTab === 'overview'
-                      ? 'bg-cyan-500 text-slate-950 font-semibold shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-cyan-600 text-white shadow'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-cyan-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/60'
                   }`}
                 >
                   Overview & Purpose
                 </button>
                 <button
                   onClick={() => setActiveTab('architecture')}
-                  className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${
                     activeTab === 'architecture'
-                      ? 'bg-cyan-500 text-slate-950 font-semibold shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-cyan-600 text-white shadow'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-cyan-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/60'
                   }`}
                 >
                   API & DB Schema
                 </button>
                 <button
                   onClick={() => setActiveTab('learning')}
-                  className={`px-3 py-1 text-xs font-medium rounded transition-colors ${
+                  className={`px-3 py-1 text-xs font-bold rounded-lg transition-colors ${
                     activeTab === 'learning'
-                      ? 'bg-cyan-500 text-slate-950 font-semibold shadow'
-                      : 'text-slate-400 hover:text-white'
+                      ? 'bg-cyan-600 text-white shadow'
+                      : 'text-slate-700 dark:text-slate-300 hover:text-cyan-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/60'
                   }`}
                 >
                   Interview & Best Practices

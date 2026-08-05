@@ -268,7 +268,7 @@ export const mockSessions: Session[] = [
     name: 'SQL & Relational Database Engineering',
     category: 'SQL',
     trainerName: 'Janani',
-    description: 'PostgreSQL & SQL Server mastery: Schema Normalization, Complex Joins, CTEs, Window Functions, Indexing strategies, Stored Procedures, and Query Optimization.',
+    description: 'Master PostgreSQL fundamentals: Schemas, Keys, Constraints, CRUD Operations, Joins, Views, Indexes, Triggers and Stored Procedures',
     thumbnail: 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=600&auto=format&fit=crop&q=80',
     durationHours: 24,
     difficulty: 'Intermediate',
@@ -314,7 +314,7 @@ export const mockSessions: Session[] = [
     name: 'Campus to Corporate',
     category: 'C2C',
     trainerName: 'Mayford Gomes',
-    description: 'Corporate transition readiness, executive communication, Agile & Scrum methodologies, business etiquette, teamwork, workplace ethics, and professional presentation mastery.',
+    description: 'Accountability, Teamwork, Business Etiette, Effective Communication, Time Management (Pomodoro & Eisenhower Matrix), and Vocal Variety (Power, Pitch, Pace & Pause) for Workplace Success.',
     thumbnail: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=600&auto=format&fit=crop&q=80',
     durationHours: 20,
     difficulty: 'Beginner',
@@ -333,10 +333,10 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'c2c-t1',
-        title: 'Corporate Culture & Workplace Communication',
+        title: 'Corporate Foundation & Professional Mindset',
         order: 1,
         status: 'Completed',
-        description: 'Email etiquette, active listening, structured thinking, and professional conduct.',
+        description: 'Understanding the transition from college to corporate life, workplace culture, professionalism, accountability, ownership, and business etiquette.',
         subtopics: [
           { id: 'c2cst-1', title: 'Business Communication Essentials', durationMinutes: 30, status: 'Completed' },
           { id: 'c2cst-2', title: 'Workplace Ethics & Governance', durationMinutes: 30, status: 'Completed' }
@@ -344,10 +344,10 @@ export const mockSessions: Session[] = [
       },
       {
         id: 'c2c-t2',
-        title: 'Agile Mindset & Collaboration',
+        title: 'Communication Excellence',
         order: 2,
         status: 'In Progress',
-        description: 'Scrum ceremonies, sprint planning, Jira ticket management, and cross-functional teamwork.',
+        description: 'Building effective verbal, written, and interpersonal communication skills using professional communication techniques and best practices.',
         subtopics: [
           { id: 'c2cst-3', title: 'Scrum Ceremonies & Daily Standups', durationMinutes: 40, status: 'In Progress' }
         ]

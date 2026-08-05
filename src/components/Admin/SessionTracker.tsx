@@ -150,10 +150,8 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Are you sure you want to delete this session tracking record?')) {
-      setTrackerRecords(prev => prev.filter(r => r.id !== id));
-      if (onDeleteRecord) onDeleteRecord(id);
-    }
+    setTrackerRecords(prev => prev.filter(r => r.id !== id));
+    if (onDeleteRecord) onDeleteRecord(id);
   };
 
   const handleSaveForm = (e: React.FormEvent) => {
@@ -247,16 +245,16 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
   return (
     <div className="space-y-6 animate-fadeIn">
 
-      {/* Top Bar with Actions */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+      {/* Top Bar with Actions - Content kept in place without card container */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-2">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
+          <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
             <Table className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-slate-900 dark:text-white leading-tight">Session Tracker</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">
-              Showing <span className="font-bold text-slate-800 dark:text-slate-200">{filteredRecords.length}</span> of {trackerRecords.length} total records
+            <h3 className="text-xl font-extrabold text-slate-900 leading-tight">Session Tracker</h3>
+            <p className="text-xs text-slate-600 mt-0.5 font-medium">
+              Showing <span className="font-bold text-slate-900">{filteredRecords.length}</span> of {trackerRecords.length} total records
             </p>
           </div>
         </div>
@@ -265,33 +263,38 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
         <div className="flex flex-wrap items-center gap-2.5 w-full sm:w-auto">
           <button
             onClick={handleOpenAdd}
-            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md shadow-emerald-600/20 flex items-center gap-2"
+            style={{
+              background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+              border: '1px solid #BFDBFE',
+              boxShadow: '0 4px 12px rgba(37, 99, 235, 0.12)',
+            }}
+            className="px-4 py-2.5 rounded-xl text-blue-800 hover:text-blue-900 font-extrabold text-xs transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md hover:border-blue-400 flex items-center gap-2"
           >
-            <Plus className="w-4 h-4" />
+            <Plus className="w-4 h-4 text-blue-700" />
             <span>Add Record</span>
           </button>
 
           <button
             onClick={handleExportExcel}
-            className="px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs transition-all border border-emerald-600 flex items-center gap-2 shadow-sm"
+            className="px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all shadow-md shadow-blue-600/20 flex items-center gap-2"
           >
-            <FileSpreadsheet className="w-4 h-4" />
+            <FileSpreadsheet className="w-4 h-4 text-white" />
             <span>Export Excel</span>
           </button>
         </div>
       </div>
 
-      {/* Comprehensive Filters Bar */}
-      <div className="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-800 dark:text-slate-200">
-            <Filter className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+      {/* Comprehensive Filters Bar - Styled like SessionManager search/filter box */}
+      <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center gap-2 text-xs font-extrabold text-slate-900">
+            <Filter className="w-4 h-4 text-blue-600" />
             <span>Filter Session Tracker Records</span>
           </div>
           {(categoryFilter !== 'ALL' || codeFilter !== 'ALL' || nameFilter !== 'ALL' || trainerFilter !== 'ALL' || scheduleDateFilter !== 'ALL' || scheduleTimeFilter !== 'ALL' || searchQuery) && (
             <button
               onClick={handleResetFilters}
-              className="text-xs text-rose-600 dark:text-rose-400 hover:underline font-semibold flex items-center gap-1"
+              className="text-xs text-rose-600 hover:underline font-bold flex items-center gap-1"
             >
               <X className="w-3.5 h-3.5" />
               <span>Reset All Filters</span>
@@ -304,11 +307,11 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
           
           {/* Filter 1: Session Code */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Session Code</label>
+            <label className="text-[11px] font-bold text-slate-700">Session Code</label>
             <select
               value={codeFilter}
               onChange={(e) => setCodeFilter(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 font-medium"
+              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
             >
               <option value="ALL">All Session Codes</option>
               {sessionCodes.map(code => (
@@ -319,11 +322,11 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
           {/* Filter 2: Session Name */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Session Name</label>
+            <label className="text-[11px] font-bold text-slate-700">Session Name</label>
             <select
               value={nameFilter}
               onChange={(e) => setNameFilter(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 font-medium"
+              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
             >
               <option value="ALL">All Session Names</option>
               {sessionNames.map(name => (
@@ -334,11 +337,11 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
           {/* Filter 3: Trainer Name */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Trainer Name</label>
+            <label className="text-[11px] font-bold text-slate-700">Trainer Name</label>
             <select
               value={trainerFilter}
               onChange={(e) => setTrainerFilter(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 font-medium"
+              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
             >
               <option value="ALL">All Trainers</option>
               {trainers.map(t => (
@@ -349,11 +352,11 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
           {/* Filter 4: Schedule Date */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Schedule Date</label>
+            <label className="text-[11px] font-bold text-slate-700">Schedule Date</label>
             <select
               value={scheduleDateFilter}
               onChange={(e) => setScheduleDateFilter(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 font-medium"
+              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
             >
               <option value="ALL">All Schedule Dates</option>
               {scheduleDates.map(d => (
@@ -364,11 +367,11 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
           {/* Filter 5: Schedule Time */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Schedule Time</label>
+            <label className="text-[11px] font-bold text-slate-700">Schedule Time</label>
             <select
               value={scheduleTimeFilter}
               onChange={(e) => setScheduleTimeFilter(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 font-medium"
+              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
             >
               <option value="ALL">All Schedule Times</option>
               {scheduleTimes.map(t => (
@@ -379,11 +382,11 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
           {/* Filter 6: Category */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Category</label>
+            <label className="text-[11px] font-bold text-slate-700">Category</label>
             <select
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 font-medium"
+              className="w-full bg-white border border-slate-300 text-slate-900 rounded-xl px-3 py-2 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-medium"
             >
               <option value="ALL">All Categories</option>
               {categories.map(cat => (
@@ -394,15 +397,15 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
           {/* Filter 7: Global Search */}
           <div className="space-y-1">
-            <label className="text-[11px] font-semibold text-slate-600 dark:text-slate-400">Global Keywords</label>
+            <label className="text-[11px] font-bold text-slate-700">Global Keywords</label>
             <div className="relative">
-              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
+              <Search className="w-3.5 h-3.5 text-blue-600 absolute left-3 top-2.5 z-10" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search notes, links..."
-                className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white placeholder-slate-400 rounded-xl pl-8 pr-3 py-2 focus:outline-none focus:border-emerald-500"
+                className="w-full rounded-xl pl-8 pr-3 py-2 text-xs bg-white text-slate-900 placeholder-slate-500 border border-slate-300 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm transition-all duration-200"
               />
             </div>
           </div>
@@ -411,29 +414,29 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
       </div>
 
       {/* Main Table of Fields */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+      <div className="bg-white/80 backdrop-blur-md rounded-3xl border border-slate-200/80 shadow-xl overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
             {/* Table Header */}
-            <thead className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-mono uppercase text-[10px]">
+            <thead className="bg-blue-50/80 border-b border-slate-200 text-blue-900 font-mono uppercase text-[10px]">
               <tr>
-                <th className="py-4 px-4 font-bold text-center w-12">S.No.</th>
-                <th className="py-4 px-4 font-bold">Session Code & Title</th>
-                <th className="py-4 px-4 font-bold">Category</th>
-                <th className="py-4 px-4 font-bold">Trainer / Instructor</th>
-                <th className="py-4 px-4 font-bold">Schedule & Time</th>
-                <th className="py-4 px-4 font-bold">Session Remarks</th>
-                <th className="py-4 px-4 font-bold text-right">Actions</th>
+                <th className="py-4 px-4 font-bold text-center w-12 text-blue-900">S.No.</th>
+                <th className="py-4 px-4 font-bold text-blue-900">Session Code & Title</th>
+                <th className="py-4 px-4 font-bold text-blue-900">Category</th>
+                <th className="py-4 px-4 font-bold text-blue-900">Trainer / Instructor</th>
+                <th className="py-4 px-4 font-bold text-blue-900">Schedule & Time</th>
+                <th className="py-4 px-4 font-bold text-blue-900">Session Remarks</th>
+                <th className="py-4 px-4 font-bold text-right text-blue-900">Actions</th>
               </tr>
             </thead>
 
             {/* Table Body */}
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/80 text-slate-800 dark:text-slate-200">
+            <tbody className="divide-y divide-slate-100 text-slate-800">
               {filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-500">
                     <Table className="w-10 h-10 text-slate-400 mx-auto mb-2" />
-                    <p className="font-bold text-slate-800 dark:text-slate-200">No session tracking records found</p>
+                    <p className="font-bold text-slate-800">No session tracking records found</p>
                     <p className="text-xs text-slate-400 mt-1">Try resetting filters or add a new session record above.</p>
                   </td>
                 </tr>
@@ -441,20 +444,20 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
                 filteredRecords.map((record, index) => (
                   <tr 
                     key={record.id}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/50 transition-colors"
+                    className="hover:bg-blue-50/40 transition-colors"
                   >
                     {/* S.No. Auto-Increment */}
-                    <td className="py-3.5 px-4 text-center font-mono font-bold text-slate-500 dark:text-slate-400 text-[11px]">
+                    <td className="py-3.5 px-4 text-center font-mono font-bold text-slate-600 text-[11px]">
                       {index + 1}
                     </td>
 
                     {/* Session Code & Title */}
                     <td className="py-3.5 px-4 min-w-[220px]">
                       <div className="space-y-1">
-                        <span className="px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono font-bold text-[10px] border border-slate-200 dark:border-slate-700">
+                        <span className="px-2 py-0.5 rounded bg-slate-100 text-slate-700 font-mono font-bold text-[10px] border border-slate-200">
                           {record.sessionCode}
                         </span>
-                        <p className="font-bold text-slate-900 dark:text-white line-clamp-1">
+                        <p className="font-extrabold text-slate-900 line-clamp-1">
                           {record.sessionName}
                         </p>
                       </div>
@@ -462,21 +465,21 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
                     {/* Category */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
-                      <span className="px-2.5 py-1 rounded-full bg-blue-50 dark:bg-blue-500/10 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-500/20 text-[10px] font-bold">
+                      <span className="px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 border border-blue-200 text-[10px] font-bold">
                         {record.category}
                       </span>
                     </td>
 
                     {/* Trainer */}
-                    <td className="py-3.5 px-4 whitespace-nowrap font-medium text-slate-900 dark:text-white">
+                    <td className="py-3.5 px-4 whitespace-nowrap font-bold text-slate-900">
                       {record.trainerName || 'Unassigned'}
                     </td>
 
                     {/* Schedule & Duration */}
                     <td className="py-3.5 px-4 whitespace-nowrap">
                       <div className="space-y-0.5">
-                        <div className="flex items-center gap-1.5 text-slate-900 dark:text-white font-semibold">
-                          <Calendar className="w-3.5 h-3.5 text-slate-400" />
+                        <div className="flex items-center gap-1.5 text-slate-900 font-bold">
+                          <Calendar className="w-3.5 h-3.5 text-blue-600" />
                           <span>{record.scheduleDate}</span>
                         </div>
                         <p className="text-[10px] text-slate-500 font-mono">
@@ -487,7 +490,7 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
                     {/* Session Remarks */}
                     <td className="py-3.5 px-4 min-w-[200px] max-w-[320px]">
-                      <div className="text-slate-700 dark:text-slate-300 text-xs leading-relaxed">
+                      <div className="text-slate-700 text-xs leading-relaxed">
                         {record.notes ? (
                           <span className="line-clamp-2">{record.notes}</span>
                         ) : (
@@ -501,17 +504,17 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
                       <div className="flex items-center justify-end gap-1">
                         <button
                           onClick={() => handleOpenEdit(record)}
-                          className="p-1.5 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-emerald-600 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-blue-100 text-slate-600 hover:text-blue-700 transition-colors"
                           title="Edit Session Fields"
                         >
-                          <Edit3 className="w-4 h-4" />
+                          <Edit3 className="w-4 h-4 text-blue-600" />
                         </button>
                         <button
                           onClick={() => handleDelete(record.id)}
-                          className="p-1.5 rounded-lg hover:bg-rose-50 dark:hover:bg-rose-500/10 text-slate-400 hover:text-rose-600 transition-colors"
+                          className="p-1.5 rounded-lg hover:bg-rose-50 text-slate-400 hover:text-rose-600 transition-colors"
                           title="Delete Record"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4 text-rose-500" />
                         </button>
                       </div>
                     </td>
@@ -525,18 +528,20 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
       {/* Add / Edit Record Modal Form */}
       {isAddEditModalOpen && editingRecord && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl space-y-6 text-slate-900 dark:text-white my-8 animate-fadeIn">
-            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-              <div className="flex items-center gap-2">
-                <Table className="w-5 h-5 text-emerald-600" />
-                <h3 className="text-lg font-bold">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white/95 backdrop-blur-md border border-slate-200/90 rounded-3xl w-full max-w-2xl p-6 sm:p-8 shadow-2xl space-y-6 text-slate-900 my-8 animate-fadeIn">
+            <div className="flex items-center justify-between border-b border-slate-200 pb-4">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
+                  <Table className="w-5 h-5" />
+                </div>
+                <h3 className="text-xl font-extrabold text-slate-900">
                   {editingRecord.id && trackerRecords.some(r => r.id === editingRecord.id) ? 'Edit Session Fields' : 'Upload New Session Details'}
                 </h3>
               </div>
               <button
                 onClick={() => setIsAddEditModalOpen(false)}
-                className="p-1 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white"
+                className="p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 hover:text-slate-700 transition-colors"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -547,24 +552,24 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
                 
                 {/* Session Code */}
                 <div>
-                  <label className="block text-slate-500 font-bold mb-1">Session Code / ID *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Session Code / ID *</label>
                   <input
                     type="text"
                     required
                     value={editingRecord.sessionCode || ''}
                     onChange={(e) => setEditingRecord({ ...editingRecord, sessionCode: e.target.value })}
                     placeholder="e.g. SESS-NET-01"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 font-mono shadow-sm"
                   />
                 </div>
 
                 {/* Category / Track */}
                 <div>
-                  <label className="block text-slate-500 font-bold mb-1">Category / Learning Track *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Category / Learning Track *</label>
                   <select
                     value={editingRecord.category || '.NET with C#'}
                     onChange={(e) => setEditingRecord({ ...editingRecord, category: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                   >
                     <option value=".NET with C#">.NET with C#</option>
                     <option value="Insurance">Insurance</option>
@@ -577,58 +582,58 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
 
                 {/* Session Name */}
                 <div className="sm:col-span-2">
-                  <label className="block text-slate-500 font-bold mb-1">Session Name / Title *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Session Name / Title *</label>
                   <input
                     type="text"
                     required
                     value={editingRecord.sessionName || ''}
                     onChange={(e) => setEditingRecord({ ...editingRecord, sessionName: e.target.value })}
                     placeholder="e.g. ASP.NET Core Web API & Clean Architecture"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-semibold"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 font-bold shadow-sm"
                   />
                 </div>
 
                 {/* Trainer Name */}
                 <div>
-                  <label className="block text-slate-500 font-bold mb-1">Trainer / Instructor *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Trainer / Instructor *</label>
                   <input
                     type="text"
                     required
                     value={editingRecord.trainerName || ''}
                     onChange={(e) => setEditingRecord({ ...editingRecord, trainerName: e.target.value })}
                     placeholder="e.g. Sarah Jenkins"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                   />
                 </div>
 
                 {/* Schedule Date */}
                 <div>
-                  <label className="block text-slate-500 font-bold mb-1">Schedule Date *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Schedule Date *</label>
                   <input
                     type="date"
                     required
                     value={editingRecord.scheduleDate || ''}
                     onChange={(e) => setEditingRecord({ ...editingRecord, scheduleDate: e.target.value })}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                   />
                 </div>
 
                 {/* Schedule Time */}
                 <div>
-                  <label className="block text-slate-500 font-bold mb-1">Schedule Time *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Schedule Time *</label>
                   <input
                     type="text"
                     required
                     value={editingRecord.scheduleTime || ''}
                     onChange={(e) => setEditingRecord({ ...editingRecord, scheduleTime: e.target.value })}
                     placeholder="e.g. 09:00 AM - 12:00 PM"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                   />
                 </div>
 
                 {/* Duration Hours */}
                 <div>
-                  <label className="block text-slate-500 font-bold mb-1">Hrs *</label>
+                  <label className="block text-slate-700 font-bold mb-1">Hrs *</label>
                   <input
                     type="number"
                     min="1"
@@ -636,38 +641,43 @@ export const SessionTracker: React.FC<SessionTrackerProps> = ({
                     value={editingRecord.durationHours || 10}
                     onChange={(e) => setEditingRecord({ ...editingRecord, durationHours: Number(e.target.value) })}
                     placeholder="e.g. 10"
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500 font-mono"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 font-mono shadow-sm"
                   />
                 </div>
 
                 {/* Notes / Remarks */}
                 <div className="sm:col-span-2">
-                  <label className="block text-slate-500 font-bold mb-1">Session Remarks / Additional Notes</label>
+                  <label className="block text-slate-700 font-bold mb-1">Session Remarks / Additional Notes</label>
                   <textarea
                     rows={3}
                     value={editingRecord.notes || ''}
                     onChange={(e) => setEditingRecord({ ...editingRecord, notes: e.target.value })}
                     placeholder="Enter any feedback, special prerequisites, or curriculum observations..."
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl p-2.5 text-slate-900 dark:text-white focus:outline-none focus:border-emerald-500"
+                    className="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm"
                   />
                 </div>
               </div>
 
               {/* Form Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200">
                 <button
                   type="button"
                   onClick={() => setIsAddEditModalOpen(false)}
-                  className="px-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                  className="px-4 py-2.5 rounded-xl border border-slate-300 text-slate-700 font-bold hover:bg-slate-100 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition-all"
+                  style={{
+                    background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
+                    border: '1px solid #BFDBFE',
+                    boxShadow: '0 4px 12px rgba(37, 99, 235, 0.12)',
+                  }}
+                  className="px-6 py-2.5 rounded-xl text-blue-800 hover:text-blue-900 font-extrabold flex items-center gap-2 transition-all duration-200 ease-in-out hover:-translate-y-0.5 hover:shadow-md hover:border-blue-400"
                 >
-                  <Save className="w-4 h-4" />
-                  <span>Save Record Details</span>
+                  <Save className="w-4 h-4 text-blue-700" />
+                  <span className="text-blue-800 font-extrabold">Save Record Details</span>
                 </button>
               </div>
             </form>

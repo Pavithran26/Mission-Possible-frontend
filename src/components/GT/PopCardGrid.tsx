@@ -86,7 +86,7 @@ const DEFAULT_CARDS: CardItem[] = [
     id: 'card-c2c',
     title: 'Campus to Corporate Readiness',
     category: 'C2C',
-    description: 'Corporate transition, executive communication, Agile & Scrum methodologies, business etiquette, and professional presentation mastery.',
+    description: 'Accountability, Teamwork, Business Etiette, Effective Communication, Time Management (Pomodoro & Eisenhower Matrix), and Vocal Variety (Power, Pitch, Pace & Pause) for Workplace Success.',
     fullContent: 'Master corporate communication, active listening in agile squads, delivery of high-impact technical demos, and navigating cross-functional team dynamics.',
     badge: 'Core Training',
     badgeColor: 'purple',
