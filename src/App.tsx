@@ -38,17 +38,8 @@ export function App() {
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
   
-  // Navigation & Theme State
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  // Navigation State
   const [activePortal, setActivePortal] = useState<'Landing' | 'GT' | 'Admin'>('Landing');
-
-  useEffect(() => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light-theme');
-    } else {
-      document.documentElement.classList.remove('light-theme');
-    }
-  }, [theme]);
   const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub'>('sessions');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>('dashboard');
 
@@ -200,8 +191,6 @@ export function App() {
           setGtViewMode('playground');
           setSelectedSessionId(null);
         }}
-        theme={theme}
-        onToggleTheme={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
       />
 
       {/* Main Body View Switching */}
