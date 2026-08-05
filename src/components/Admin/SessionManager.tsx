@@ -285,7 +285,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
       totalPoints: 100,
       instructions: 'Submit project URL or code zip.',
       submissionFormat: 'URL / File',
-      status: 'Pending'
+      status: 'Pending',
+      attachmentName: undefined,
+      attachmentUrl: undefined
     };
     setEditingSession({ ...editingSession, assignments: [...list, newAssign] });
   };
@@ -989,6 +991,34 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                           }}
                           className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm font-semibold"
                         />
+                      </div>
+
+                      <div className="space-y-1">
+                        <label className="text-slate-700 font-bold block mb-1">Upload Assignment Document</label>
+                        <label className="cursor-pointer inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2 rounded-xl border border-slate-300 shadow-sm transition-all">
+                          <Upload className="w-3.5 h-3.5 text-blue-600" />
+                          <span>Upload Document</span>
+                          <input
+                            type="file"
+                            accept="application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/zip"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) {
+                                const list = [...(editingSession.assignments || [])];
+                                list[aIdx] = {
+                                  ...list[aIdx],
+                                  attachmentName: file.name,
+                                  attachmentUrl: URL.createObjectURL(file)
+                                };
+                                setEditingSession({ ...editingSession, assignments: list });
+                              }
+                            }}
+                          />
+                        </label>
+                        {asgn.attachmentName && (
+                          <span className="text-[11px] text-blue-700 font-mono font-bold ml-2">Uploaded: {asgn.attachmentName}</span>
+                        )}
                       </div>
 
                       <div className="space-y-1 md:col-span-2">

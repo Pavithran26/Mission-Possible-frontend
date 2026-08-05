@@ -34,6 +34,7 @@ import {
   Link as LinkIcon,
   FileCode,
   ShieldCheck,
+  ClipboardList,
   FolderPlus
 } from 'lucide-react';
 
@@ -63,7 +64,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   onToggleBookmark
 }) => {
   // 3 Primary Fields / Tabs: 'roadmap' (Road Map), 'provided-materials' (Provided Materials), 'additional-materials' (Additional Materials)
-  const [activeTab, setActiveTab] = useState<'roadmap' | 'provided-materials' | 'additional-materials' | 'notes'>('roadmap');
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'provided-materials' | 'additional-materials' | 'assignments' | 'quiz' | 'notes'>('roadmap');
   const [selectedTopicId, setSelectedTopicId] = useState<string>(session?.topics?.[0]?.id || '');
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<Record<string, string>>({});
@@ -219,6 +220,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
   const selectedTopic = (session?.topics || []).find(t => t.id === selectedTopicId) || (session?.topics || [])[0];
   const activeQuiz = (session?.quizzes || [])[0];
+  const assignmentsCount = (session?.assignments || []).length;
+  const quizzesCount = (session?.quizzes || []).length;
 
   const handleSummarize = async (matId: string, title: string, desc: string) => {
     setSummarizingId(matId);
@@ -467,6 +470,30 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           <span>Additional Materials ({additionalMaterialsList.length})</span>
         </button>
 
+        <button
+          onClick={() => setActiveTab('assignments')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'assignments'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+          }`}
+        >
+          <ClipboardList className={`w-4 h-4 ${activeTab === 'assignments' ? 'text-white' : 'text-blue-600'}`} />
+          <span>Assignments ({assignmentsCount})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('quiz')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
+            activeTab === 'quiz'
+              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+          }`}
+        >
+          <HelpCircle className={`w-4 h-4 ${activeTab === 'quiz' ? 'text-white' : 'text-blue-600'}`} />
+          <span>Quiz ({quizzesCount})</span>
+        </button>
+
         <div className="h-6 w-px bg-slate-300 my-auto mx-1" />
 
         <button
@@ -488,15 +515,15 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {activeTab === 'roadmap' && (
         <div className="space-y-6 animate-fadeIn">
-          <div className="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2 text-blue-900 font-medium">
+          {/* <div className="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between text-xs"> */}
+            {/* <div className="flex items-center gap-2 text-blue-900 font-medium">
               <Layers className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <span>Interactive Session Roadmap — GTs can view this pathway for structured reference & topic progression.</span>
-            </div>
-            <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
+            </div> */}
+            {/* <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
               {(session?.topics || []).length} Topics Total
-            </span>
-          </div>
+            </span> */}
+          {/* </div> */}
 
           <InteractiveRoadmap
             topics={session?.topics || []}
@@ -702,6 +729,145 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
             ))}
           </div>
+        </div>
+      )}
+
+      {/* Assignments Tab */}
+      {activeTab === 'assignments' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="bg-blue-50/70 border border-blue-200 rounded-3xl p-5 shadow-sm space-y-3">
+            <h3 className="text-base font-extrabold text-slate-900">Session Assignments ({assignmentsCount})</h3>
+            <p className="text-slate-600 text-sm">Review required tasks, attached resources, due dates, and submission guidance for this session.</p>
+          </div>
+
+          {session.assignments && session.assignments.length > 0 ? (
+            <div className="space-y-4">
+              {session.assignments.map((assignment, idx) => (
+                <div key={assignment.id} className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                    <div className="space-y-2">
+                      <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500">
+                        <ClipboardList className="w-4 h-4 text-blue-600" />
+                        <span>Assignment {idx + 1}</span>
+                      </div>
+                      <h4 className="text-lg font-bold text-slate-900">{assignment.title}</h4>
+                      <p className="text-slate-600 text-sm leading-relaxed">{assignment.description}</p>
+                    </div>
+
+                    <div className="space-y-2 text-right text-[12px] text-slate-500">
+                      <div>{assignment.dueDate ? `Due ${assignment.dueDate}` : 'No due date set'}</div>
+                      <div>{assignment.totalPoints ? `${assignment.totalPoints} points` : 'Point value not set'}</div>
+                      <div>{assignment.submissionFormat || 'Submission: URL / File'}</div>
+                    </div>
+                  </div>
+
+                  {assignment.instructions && (
+                    <div className="rounded-3xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-700">
+                      <strong className="font-semibold">Instructions:</strong> {assignment.instructions}
+                    </div>
+                  )}
+
+                  {(assignment.attachmentName || assignment.attachmentUrl) && (
+                    <div className="rounded-3xl border border-blue-100 bg-blue-50 p-4 text-sm text-slate-700 flex flex-col gap-2">
+                      <div className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[0.18em] text-blue-700 font-bold">
+                        <FileText className="w-4 h-4" /> Attached Resource
+                      </div>
+                      <div className="text-sm text-slate-800">
+                        {assignment.attachmentName ? assignment.attachmentName : assignment.attachmentUrl}
+                      </div>
+                      {assignment.attachmentUrl && assignment.attachmentUrl.startsWith('http') && (
+                        <a href={assignment.attachmentUrl} target="_blank" rel="noreferrer" className="text-blue-700 font-bold text-sm">
+                          Open Resource
+                        </a>
+                      )}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap gap-2 text-[11px]">
+                    <span className="rounded-full border border-slate-200 bg-slate-100 px-3 py-1 font-semibold text-slate-700">{assignment.status || 'Pending'}</span>
+                    <span className="rounded-full border border-blue-200 bg-blue-50 px-3 py-1 font-semibold text-blue-700">{assignment.submissionFormat || 'URL / File'}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm text-slate-600 text-sm">
+              No assignment posted yet.
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Quiz Tab */}
+      {activeTab === 'quiz' && (
+        <div className="space-y-6 animate-fadeIn">
+          <div className="bg-blue-50/70 border border-blue-200 rounded-3xl p-5 shadow-sm space-y-3">
+            <h3 className="text-base font-extrabold text-slate-900">Session Quiz ({quizzesCount})</h3>
+            <p className="text-slate-600 text-sm">Review the current quiz assessment and start when ready.</p>
+          </div>
+
+          {activeQuiz ? (
+            <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6">
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h4 className="text-lg font-bold text-slate-900">{activeQuiz.title}</h4>
+                    <p className="text-slate-500 text-sm">{activeQuiz.description || 'No quiz description provided.'}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => onStartQuiz(activeQuiz)}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl shadow-md shadow-blue-600/20 transition-all"
+                  >
+                    Start Quiz
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[12px] text-slate-600">
+                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+                    <span className="block font-bold text-slate-900">Passing</span>
+                    <span>{activeQuiz.passingScorePercent}%</span>
+                  </div>
+                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+                    <span className="block font-bold text-slate-900">Time Limit</span>
+                    <span>{activeQuiz.timeLimitMinutes} min</span>
+                  </div>
+                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
+                    <span className="block font-bold text-slate-900">Questions</span>
+                    <span>{activeQuiz.questions.length}</span>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  {activeQuiz.questions.slice(0, 3).map((question, qIdx) => (
+                    <div key={question.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
+                      <p className="text-slate-900 text-sm font-semibold">Q{qIdx + 1}. {question.prompt}</p>
+                      <p className="text-slate-500 text-[12px]">Type: {question.type}</p>
+                    </div>
+                  ))}
+                  {activeQuiz.questions.length > 3 && (
+                    <div className="text-xs text-slate-500">And {activeQuiz.questions.length - 3} more questions in the full assessment.</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
+                <h4 className="text-sm font-bold text-slate-900">Preparation Notes</h4>
+                <p className="text-slate-600 text-sm leading-relaxed">
+                  Review session topics, official materials, and assignment instructions before launching the quiz. Use the references provided in this session for the best outcome.
+                </p>
+                <ul className="space-y-2 text-slate-600 text-sm list-disc list-inside">
+                  <li>Read the materials and assignment instructions carefully.</li>
+                  <li>Track your time under the quiz limit.</li>
+                  <li>Use the start button when you are ready.</li>
+                </ul>
+              </div>
+            </div>
+          ) : (
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm text-slate-600 text-sm">
+              No quiz has been configured for this session yet. Ask your facilitator to add an assessment to the session.
+            </div>
+          )}
         </div>
       )}
 

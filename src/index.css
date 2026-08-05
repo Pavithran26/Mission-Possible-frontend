@@ -83,7 +83,7 @@
   color: #1D4ED8 !important;
 }
 
-/* Knowledge Hub Enterprise Hero Card */
+/* Knowledge Hub Enterprise Hero Card
 .knowledge-hero-card {
   background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 50%, #BFDBFE 100%) !important;
   border-radius: 24px !important;
@@ -143,7 +143,7 @@
   background-color: #FFFFFF !important;
   border: 1px solid #E2E8F0 !important;
   box-shadow: 0 8px 24px rgba(15, 23, 42, 0.06) !important;
-}
+} */
 
 /* Glass & Card overrides */
 .glass-white-card,
