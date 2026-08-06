@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { User, Session, Quiz, RoadmapTopic, StudyMaterial, AppNotification, Announcement, Badge } from './types';
 import { mockUser, mockSessions, mockAnnouncements, mockBadges } from './data/mockData';
-import { fetchSessionsApi } from './services/api';
+import { fetchSessionsApi, logActivityApi } from './services/api';
 import { Header } from './components/Header';
 import { LandingPage } from './components/LandingPage';
 import { AuthModal } from './components/AuthModal';
@@ -188,8 +188,9 @@ export function App() {
             return;
           }
           setActivePortal('GT');
-          setGtViewMode('playground');
+          setGtViewMode('playground' as any);
           setSelectedSessionId(null);
+          logActivityApi('OpenPlayground', 'User opened the interactive coding playground');
         }}
       />
 
@@ -251,7 +252,10 @@ export function App() {
               <SessionDetailView
                 session={selectedSession}
                 onBack={() => setSelectedSessionId(null)}
-                onStartQuiz={(quiz) => setActiveQuiz(quiz)}
+                onStartQuiz={(quiz) => {
+                  setActiveQuiz(quiz);
+                  logActivityApi('StartQuiz', `User started quiz for session: ${selectedSession.name}`);
+                }}
                 onToggleBookmark={handleToggleBookmark}
               />
             ) : gtViewMode === 'knowledge-hub' ? (
@@ -259,7 +263,11 @@ export function App() {
             ) : (
               <SessionsList
                 sessions={sessions}
-                onSelectSession={(id) => setSelectedSessionId(id)}
+                onSelectSession={(id) => {
+                  setSelectedSessionId(id);
+                  const sessionName = sessions.find(s => s.id === id)?.name || id;
+                  logActivityApi('StartLearning', `User opened learning session: ${sessionName}`);
+                }}
                 onToggleBookmark={handleToggleBookmark}
               />
             )}

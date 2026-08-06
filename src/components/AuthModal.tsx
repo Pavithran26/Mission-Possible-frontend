@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Lock, Mail, User, ShieldCheck, UserCheck, ArrowRight, Sparkles, Building2 } from 'lucide-react';
 import { loginApi, registerApi } from '../services/api';
+import { useToast } from '../context/ToastContext';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -20,12 +21,12 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [mode, setMode] = useState<'login' | 'signup' | 'forgot'>(initialMode);
   const [selectedRole, setSelectedRole] = useState<'GT' | 'Admin'>(initialRole);
 
+  const { addToast } = useToast();
+
   useEffect(() => {
     if (isOpen) {
       setMode(initialMode);
       setSelectedRole(initialRole);
-      setErrorMsg('');
-      setSuccessMsg('');
     }
   }, [isOpen, initialMode, initialRole]);
 
@@ -36,30 +37,26 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [confirmPassword, setConfirmPassword] = useState('');
   const [dontHaveCredentials, setDontHaveCredentials] = useState(false);
   const [rememberMe, setRememberMe] = useState(true);
-  const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setErrorMsg('');
-    setSuccessMsg('');
 
     if (mode === 'forgot') {
       if (!email.trim()) {
-        setErrorMsg('Please enter your employee email');
+        addToast('error', 'Please enter your employee email');
         return;
       }
       if (!password) {
-        setErrorMsg('Please enter your new password');
+        addToast('error', 'Please enter your new password');
         return;
       }
       if (password !== confirmPassword) {
-        setErrorMsg('Passwords do not match');
+        addToast('error', 'Passwords do not match');
         return;
       }
-      setSuccessMsg('Password has been reset successfully! Please log in with your new password.');
+      addToast('success', 'Password has been reset successfully! Please log in with your new password.');
       setMode('login');
       setPassword('');
       setConfirmPassword('');
@@ -68,15 +65,15 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
     if (mode === 'signup') {
       if (!fullName.trim()) {
-        setErrorMsg('Please enter your full name');
+        addToast('error', 'Please enter your full name');
         return;
       }
       if (!email.trim()) {
-        setErrorMsg('Please enter your employee email');
+        addToast('error', 'Please enter your employee email');
         return;
       }
       if (password !== confirmPassword) {
-        setErrorMsg('Passwords do not match');
+        addToast('error', 'Passwords do not match');
         return;
       }
       
@@ -85,13 +82,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         const firstName = parts[0];
         const lastName = parts.slice(1).join(' ') || 'User';
         await registerApi(firstName, lastName, email, password);
-        setSuccessMsg('Account created successfully! Please log in.');
+        addToast('success', 'Account created successfully! Please log in.');
         setMode('login');
         setPassword('');
         setConfirmPassword('');
         return;
       } catch (err: any) {
-        setErrorMsg(err.message || 'Registration failed');
+        addToast('error', err.message || 'Registration failed');
         return;
       }
     }
@@ -106,7 +103,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     }
 
     if (!email.trim()) {
-      setErrorMsg('Please enter your employee email');
+      addToast('error', 'Please enter your employee email');
       return;
     }
 
@@ -122,7 +119,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         isGuest: false
       });
     } catch (err: any) {
-      setErrorMsg(err.message || 'Login failed. Please check your credentials.');
+      addToast('error', err.message || 'Login failed. Please check your credentials.');
     }
   };
 
@@ -167,7 +164,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           <div className="grid grid-cols-2 gap-2 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200/80 mb-6">
             <button
               type="button"
-              onClick={() => { setSelectedRole('GT'); setErrorMsg(''); }}
+              onClick={() => { setSelectedRole('GT'); }}
               className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
                 selectedRole === 'GT'
                   ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30 font-bold'
@@ -179,7 +176,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
             </button>
             <button
               type="button"
-              onClick={() => { setSelectedRole('Admin'); setErrorMsg(''); }}
+              onClick={() => { setSelectedRole('Admin'); }}
               className={`py-2 px-3 rounded-lg text-xs font-semibold flex items-center justify-center gap-2 transition-all ${
                 selectedRole === 'Admin'
                   ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30 font-bold'
@@ -189,18 +186,6 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>L&D Admin</span>
             </button>
-          </div>
-        )}
-
-        {/* Notifications */}
-        {errorMsg && (
-          <div className="mb-4 p-3 bg-rose-50 border border-rose-200 rounded-xl text-rose-800 text-xs text-center font-semibold">
-            {errorMsg}
-          </div>
-        )}
-        {successMsg && (
-          <div className="mb-4 p-3 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800 text-xs text-center font-semibold">
-            {successMsg}
           </div>
         )}
 
@@ -247,7 +232,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               <input
                 type="text"
                 disabled={mode === 'login' && selectedRole === 'GT' && dontHaveCredentials}
-                placeholder={selectedRole === 'Admin' ? 'admin@valuemomentum.com' : 'trainee@valuemomentum.com'}
+                placeholder={selectedRole === 'Admin' ? 'admin@gt.com' : 'user@gt.com'}
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className={`w-full pl-9 pr-3 py-2.5 bg-white/90 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm ${
@@ -307,7 +292,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </label>
               <button
                 type="button"
-                onClick={() => { setMode('forgot'); setErrorMsg(''); setSuccessMsg(''); }}
+                onClick={() => { setMode('forgot'); }}
                 className="text-blue-600 font-semibold hover:text-blue-800 hover:underline"
               >
                 Forgot password?
@@ -340,7 +325,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
           {mode === 'forgot' && (
             <button
               type="button"
-              onClick={() => { setMode('login'); setErrorMsg(''); setSuccessMsg(''); }}
+              onClick={() => { setMode('login'); }}
               className="w-full py-2.5 rounded-xl font-semibold text-xs text-slate-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all text-center"
             >
               Back to Login
@@ -357,7 +342,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 Don't have an account?{' '}
                 <button
                   type="button"
-                  onClick={() => { setMode('signup'); setErrorMsg(''); setSuccessMsg(''); }}
+                  onClick={() => { setMode('signup'); }}
                   className="text-blue-600 font-bold hover:text-blue-800 hover:underline"
                 >
                   Sign Up
@@ -368,7 +353,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 Already registered?{' '}
                 <button
                   type="button"
-                  onClick={() => { setMode('login'); setErrorMsg(''); setSuccessMsg(''); }}
+                  onClick={() => { setMode('login'); }}
                   className="text-blue-600 font-bold hover:text-blue-800 hover:underline"
                 >
                   Login
