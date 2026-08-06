@@ -15,11 +15,25 @@ export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenSignUp
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-blue-50/40 text-slate-900 flex flex-col justify-between relative overflow-hidden selection:bg-blue-600 selection:text-white">
+    <div className="min-h-screen text-slate-900 flex flex-col justify-between relative overflow-hidden selection:bg-blue-600 selection:text-white">
       
+      {/* Background Video */}
+      <video 
+        autoPlay 
+        loop 
+        muted 
+        playsInline 
+        className="absolute inset-0 w-full h-full object-cover z-0 opacity-100 pointer-events-none"
+      >
+        <source src="/premium.mp4" type="video/mp4" />
+      </video>
+
+      {/* Soft overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-gradient-to-br from-slate-50/60 via-white/50 to-blue-50/60 z-0 pointer-events-none" />
+
       {/* Soft Ambient Background Glows */}
-      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-500/10 blur-[150px] rounded-full pointer-events-none" />
-      <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] bg-indigo-500/10 blur-[140px] rounded-full pointer-events-none" />
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-blue-500/10 blur-[150px] rounded-full pointer-events-none z-0" />
+      <div className="absolute top-[40%] right-[-10%] w-[500px] h-[500px] bg-indigo-500/10 blur-[140px] rounded-full pointer-events-none z-0" />
 
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:py-12 relative z-10 flex-1 flex items-center justify-center">

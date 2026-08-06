@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { X, Lock, Mail, User, ShieldCheck, UserCheck, ArrowRight, Sparkles, Building2 } from 'lucide-react';
+import { loginApi, registerApi } from '../services/api';
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -40,7 +41,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMsg('');
     setSuccessMsg('');
@@ -78,6 +79,21 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         setErrorMsg('Passwords do not match');
         return;
       }
+      
+      try {
+        const parts = fullName.trim().split(' ');
+        const firstName = parts[0];
+        const lastName = parts.slice(1).join(' ') || 'User';
+        await registerApi(firstName, lastName, email, password);
+        setSuccessMsg('Account created successfully! Please log in.');
+        setMode('login');
+        setPassword('');
+        setConfirmPassword('');
+        return;
+      } catch (err: any) {
+        setErrorMsg(err.message || 'Registration failed');
+        return;
+      }
     }
 
     if (mode === 'login' && selectedRole === 'GT' && dontHaveCredentials) {
@@ -94,11 +110,20 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       return;
     }
 
-    onAuthSuccess(selectedRole, {
-      name: fullName.trim() || (selectedRole === 'Admin' ? 'L&D Administrator' : 'Sarah Jenkins'),
-      email: email.trim() || (selectedRole === 'Admin' ? 'admin@valuemomentum.com' : 'trainee@valuemomentum.com'),
-      isGuest: false
-    });
+    try {
+      const result = await loginApi(email.trim(), password);
+      // Assuming result.data contains token and user details
+      if (result.data?.token) {
+        localStorage.setItem('token', result.data.token);
+      }
+      onAuthSuccess(selectedRole, {
+        name: result.data?.firstName ? `${result.data.firstName} ${result.data.lastName}` : (fullName.trim() || (selectedRole === 'Admin' ? 'L&D Administrator' : 'Sarah Jenkins')),
+        email: email.trim(),
+        isGuest: false
+      });
+    } catch (err: any) {
+      setErrorMsg(err.message || 'Login failed. Please check your credentials.');
+    }
   };
 
   return (
