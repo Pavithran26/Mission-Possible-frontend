@@ -38,17 +38,8 @@ export function App() {
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
   
-  // Navigation & Theme State
-  const [theme, setTheme] = useState<'dark' | 'light'>('dark');
+  // Navigation State
   const [activePortal, setActivePortal] = useState<'Landing' | 'GT' | 'Admin'>('Landing');
-
-  useEffect(() => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light-theme');
-    } else {
-      document.documentElement.classList.remove('light-theme');
-    }
-  }, [theme]);
   const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub'>('sessions');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>('dashboard');
 
@@ -200,8 +191,6 @@ export function App() {
           setGtViewMode('playground');
           setSelectedSessionId(null);
         }}
-        theme={theme}
-        onToggleTheme={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
       />
 
       {/* Main Body View Switching */}
@@ -220,7 +209,7 @@ export function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
             
             {/* Sub-Navigation Bar for GT Portal */}
-            <div className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2.5 overflow-x-auto no-scrollbar shadow-sm">
+            {/* <div className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2.5 overflow-x-auto no-scrollbar shadow-sm">
               <button
                 onClick={() => { setGtViewMode('sessions'); setSelectedSessionId(null); setActiveQuiz(null); }}
                 className={`px-5 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
@@ -244,7 +233,7 @@ export function App() {
                 <Sparkles className={`w-4 h-4 ${gtViewMode === 'knowledge-hub' && !selectedSessionId && !activeQuiz ? 'text-white' : 'text-blue-600 dark:text-blue-400'}`} />
                 <span>Knowledge Hub</span>
               </button>
-            </div>
+            </div> */}
 
             {/* View Render Logic */}
             {activeQuiz ? (

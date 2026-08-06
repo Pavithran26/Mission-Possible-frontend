@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { User, AppNotification } from '../types';
-import { ThemeToggle } from './ThemeToggle';
 import { 
   GraduationCap, 
   Bookmark, 
@@ -24,8 +23,6 @@ interface HeaderProps {
   onMarkNotificationsRead: () => void;
   onOpenBookmarks: () => void;
   onOpenPlayground: () => void;
-  theme?: 'dark' | 'light';
-  onToggleTheme?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -36,9 +33,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenLogin,
   onOpenSignUp,
   onLogout,
-  onOpenBookmarks,
-  theme = 'dark',
-  onToggleTheme
+  onOpenBookmarks
 }) => {
   const [showProfilePopover, setShowProfilePopover] = useState(false);
 
@@ -97,19 +92,15 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Unauthenticated Landing Navigation Links */}
           {!isAuthenticated && (
             <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-600">
-              <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-blue-600 transition-colors">
+              {/* <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="hover:text-blue-600 transition-colors">
                 Home
-              </button>
+              </button> */}
             </nav>
           )}
         </div>
 
           {/* Right Header Actions */}
           <div className="flex items-center gap-3">
-            {onToggleTheme && (
-              <ThemeToggle isDark={theme === 'dark'} onToggle={onToggleTheme} />
-            )}
-
             {!isAuthenticated && (
               <div className="flex items-center gap-2">
                 <button
@@ -132,14 +123,14 @@ export const Header: React.FC<HeaderProps> = ({
             <div className="flex items-center gap-3">
               
               {/* Back to Login Button */}
-              <button
+              {/* <button
                 onClick={handleBackToLogin}
                 className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-blue-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all flex items-center gap-1.5 shadow-sm"
                 title="Back to Login Page"
               >
                 <ArrowLeft className="w-3.5 h-3.5 text-blue-600" />
                 <span>Back to Login</span>
-              </button>
+              </button> */}
 
               {/* Bookmarks Toggle */}
               <button
@@ -182,10 +173,10 @@ export const Header: React.FC<HeaderProps> = ({
                       </div>
                     </div>
 
-                    <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
-                      <span className="block text-amber-600 font-bold text-xs">🔥 {currentUser.streakDays} Days</span>
-                      <span className="text-[10px] text-slate-500 font-mono">Active Learning Streak</span>
-                    </div>
+                    {/* <div className="bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-center">
+                     <span className="block text-amber-600 font-bold text-xs">🔥 {currentUser.streakDays} Days</span> 
+                     <span className="text-[10px] text-slate-500 font-mono">Active Learning Streak</span> 
+                    </div> */}
 
                     <div className="border-t border-slate-100 pt-3 space-y-1">
                       <button

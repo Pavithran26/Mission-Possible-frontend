@@ -178,6 +178,8 @@ export interface SessionAssignment {
   totalPoints?: number;
   instructions?: string;
   submissionFormat?: string;
+  attachmentName?: string;
+  attachmentUrl?: string;
   status?: 'Pending' | 'Submitted' | 'Graded';
   submittedUrl?: string;
   submittedAt?: string;
