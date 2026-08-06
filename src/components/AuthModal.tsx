@@ -118,6 +118,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         email: email.trim(),
         isGuest: false
       });
+      addToast('success', `Welcome back! Logged in successfully.`);
     } catch (err: any) {
       addToast('error', err.message || 'Login failed. Please check your credentials.');
     }
