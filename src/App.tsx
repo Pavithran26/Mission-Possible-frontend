@@ -24,28 +24,142 @@ import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { Bookmark, X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles, Table } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
+// Helpers for URL Hash Sync & Route Persistence
+const getHashState = () => {
+  const hash = typeof window !== 'undefined' ? window.location.hash.replace(/^#\/?/, '') : '';
+  if (!hash || hash === 'landing') return { portal: 'Landing' as const };
+
+  const [pathPart, queryPart] = hash.split('?');
+  const params = new URLSearchParams(queryPart || '');
+  const parts = pathPart.split('/').filter(Boolean);
+
+  if (parts[0] === 'gt') {
+    const view = parts[1] || 'sessions';
+    if (view === 'knowledge-hub') return { portal: 'GT' as const, gtViewMode: 'knowledge-hub' as const };
+    if (view === 'playground') return { portal: 'GT' as const, gtViewMode: 'playground' as const };
+    
+    // sessions route
+    const sessionId = parts[2] || null;
+    const quizId = parts[3] === 'quiz' ? parts[4] : null;
+    return {
+      portal: 'GT' as const,
+      gtViewMode: 'sessions' as const,
+      selectedSessionId: sessionId,
+      quizId,
+      sessionTab: params.get('tab') || 'roadmap',
+      sessionTopicId: params.get('topic') || ''
+    };
+  }
+
+  if (parts[0] === 'admin') {
+    const adminMode = (parts[1] || 'dashboard') as any;
+    return {
+      portal: 'Admin' as const,
+      adminViewMode: adminMode,
+      adminSessionId: params.get('sessionId') || null
+    };
+  }
+
+  return { portal: 'Landing' as const };
+};
+
+const buildHashFromState = (
+  portal: 'Landing' | 'GT' | 'Admin',
+  gtMode: 'sessions' | 'knowledge-hub' | 'playground',
+  adminMode: string,
+  sessionId: string | null,
+  quizId: string | null,
+  sessionTab: string,
+  sessionTopicId: string,
+  adminSessionId: string | null
+) => {
+  if (portal === 'Landing') return '#landing';
+  if (portal === 'GT') {
+    if (gtMode === 'knowledge-hub') return '#gt/knowledge-hub';
+    if (gtMode === 'playground') return '#gt/playground';
+    if (sessionId) {
+      if (quizId) return `#gt/sessions/${sessionId}/quiz/${quizId}`;
+      let q = `?tab=${encodeURIComponent(sessionTab)}`;
+      if (sessionTopicId) q += `&topic=${encodeURIComponent(sessionTopicId)}`;
+      return `#gt/sessions/${sessionId}${q}`;
+    }
+    return '#gt/sessions';
+  }
+  if (portal === 'Admin') {
+    let base = `#admin/${adminMode}`;
+    if (adminSessionId && ['roadmap-builder', 'material-uploader', 'quiz-builder'].includes(adminMode)) {
+      base += `?sessionId=${encodeURIComponent(adminSessionId)}`;
+    }
+    return base;
+  }
+  return '#landing';
+};
+
 export function App() {
-  const [currentUser, setCurrentUser] = useState<User>(mockUser);
+  const initialHashState = getHashState();
+
+  const [currentUser, setCurrentUser] = useState<User>(() => {
+    try {
+      const saved = localStorage.getItem('gt_auth_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.currentUser) return parsed.currentUser;
+      }
+    } catch (e) {}
+    return mockUser;
+  });
+
   const [sessions, setSessions] = useState<Session[]>(mockSessions);
   const [announcements] = useState<Announcement[]>(mockAnnouncements);
   const [badges] = useState<Badge[]>(mockBadges);
 
   // Global Authentication State
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('gt_auth_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return Boolean(parsed.isAuthenticated);
+      }
+    } catch (e) {}
+    return false;
+  });
+
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
   const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
   const [authModalRole, setAuthModalRole] = useState<'GT' | 'Admin'>('GT');
 
   // Admin Authentication State
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(false);
+  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('gt_auth_session');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        return Boolean(parsed.isAdminAuthenticated);
+      }
+    } catch (e) {}
+    return false;
+  });
   
   // Navigation State
-  const [activePortal, setActivePortal] = useState<'Landing' | 'GT' | 'Admin'>('Landing');
-  const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub' | 'playground'>('sessions');
-  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>('dashboard');
+  const [activePortal, setActivePortal] = useState<'Landing' | 'GT' | 'Admin'>(initialHashState.portal);
+  const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub' | 'playground'>(
+    initialHashState.portal === 'GT' && 'gtViewMode' in initialHashState ? initialHashState.gtViewMode : 'sessions'
+  );
+  const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>(
+    initialHashState.portal === 'Admin' && 'adminViewMode' in initialHashState ? initialHashState.adminViewMode : 'dashboard'
+  );
 
   // Detail Selection State
-  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
+    initialHashState.portal === 'GT' && 'selectedSessionId' in initialHashState ? initialHashState.selectedSessionId : null
+  );
+  const [sessionDetailTab, setSessionDetailTab] = useState<string>(
+    initialHashState.portal === 'GT' && 'sessionTab' in initialHashState ? initialHashState.sessionTab : 'roadmap'
+  );
+  const [sessionDetailTopicId, setSessionDetailTopicId] = useState<string>(
+    initialHashState.portal === 'GT' && 'sessionTopicId' in initialHashState ? initialHashState.sessionTopicId : ''
+  );
   const [activeAdminSession, setActiveAdminSession] = useState<Session | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
   const [restoredActiveQuiz, setRestoredActiveQuiz] = useState<boolean>(false);
@@ -107,13 +221,74 @@ export function App() {
   const { addToast } = useToast();
 
   const handleLogout = () => {
+    localStorage.removeItem('gt_auth_session');
     setIsAuthenticated(false);
     setIsAdminAuthenticated(false);
     setActivePortal('Landing');
     setSelectedSessionId(null);
     setActiveQuiz(null);
+    window.location.hash = '#landing';
     addToast('info', 'You have been logged out.');
   };
+
+  // Sync Auth State to localStorage
+  useEffect(() => {
+    localStorage.setItem('gt_auth_session', JSON.stringify({
+      isAuthenticated,
+      currentUser,
+      isAdminAuthenticated
+    }));
+  }, [isAuthenticated, currentUser, isAdminAuthenticated]);
+
+  // Sync URL Hash whenever navigation state changes
+  useEffect(() => {
+    const newHash = buildHashFromState(
+      activePortal,
+      gtViewMode,
+      adminViewMode,
+      selectedSessionId,
+      activeQuiz?.id || null,
+      sessionDetailTab,
+      sessionDetailTopicId,
+      activeAdminSession?.id || null
+    );
+
+    if (window.location.hash !== newHash) {
+      window.history.replaceState(null, '', newHash);
+    }
+  }, [
+    activePortal,
+    gtViewMode,
+    adminViewMode,
+    selectedSessionId,
+    activeQuiz,
+    sessionDetailTab,
+    sessionDetailTopicId,
+    activeAdminSession
+  ]);
+
+  // Listen to Hash Changes (Browser Back / Forward / Direct URL Entry)
+  useEffect(() => {
+    const handleHashChange = () => {
+      const state = getHashState();
+      setActivePortal(state.portal);
+      if (state.portal === 'GT') {
+        if ('gtViewMode' in state) setGtViewMode(state.gtViewMode);
+        if ('selectedSessionId' in state) setSelectedSessionId(state.selectedSessionId);
+        if ('sessionTab' in state && state.sessionTab) setSessionDetailTab(state.sessionTab);
+        if ('sessionTopicId' in state && state.sessionTopicId !== undefined) setSessionDetailTopicId(state.sessionTopicId);
+      } else if (state.portal === 'Admin') {
+        if ('adminViewMode' in state) setAdminViewMode(state.adminViewMode);
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    window.addEventListener('popstate', handleHashChange);
+    return () => {
+      window.removeEventListener('hashchange', handleHashChange);
+      window.removeEventListener('popstate', handleHashChange);
+    };
+  }, []);
 
   // Reset Admin authentication whenever leaving the Admin portal
   useEffect(() => {
@@ -132,7 +307,8 @@ export function App() {
 
   useEffect(() => {
     if (restoredActiveQuiz || !sessions.length) return;
-    const savedQuizId = sessionStorage.getItem('activeQuizId');
+    const state = getHashState();
+    const savedQuizId = (state.portal === 'GT' && 'quizId' in state && state.quizId) || sessionStorage.getItem('activeQuizId');
     if (!savedQuizId) return;
 
     const sessionContainingQuiz = sessions.find(s => (s.quizzes || []).some(q => q.id === savedQuizId));
@@ -145,18 +321,14 @@ export function App() {
   }, [sessions, restoredActiveQuiz]);
 
   useEffect(() => {
-    if (restoredActiveQuiz || !sessions.length) return;
-    const savedQuizId = sessionStorage.getItem('activeQuizId');
-    if (!savedQuizId) return;
-
-    const sessionContainingQuiz = sessions.find(s => (s.quizzes || []).some(q => q.id === savedQuizId));
-    const savedQuiz = sessionContainingQuiz?.quizzes?.find(q => q.id === savedQuizId) || null;
-    if (savedQuiz) {
-      setSelectedSessionId(sessionContainingQuiz?.id || null);
-      setActiveQuiz(savedQuiz);
+    if (activePortal === 'Admin' && sessions.length > 0 && !activeAdminSession) {
+      const state = getHashState();
+      if (state.portal === 'Admin' && 'adminSessionId' in state && state.adminSessionId) {
+        const match = sessions.find(s => s.id === state.adminSessionId);
+        if (match) setActiveAdminSession(match);
+      }
     }
-    setRestoredActiveQuiz(true);
-  }, [sessions, restoredActiveQuiz]);
+  }, [sessions, activePortal, activeAdminSession]);
 
   // Handlers
   const handleToggleBookmark = (sessionId: string) => {
@@ -309,13 +481,22 @@ export function App() {
             ) : selectedSession ? (
               <SessionDetailView
                 session={selectedSession}
-                onBack={() => setSelectedSessionId(null)}
+                onBack={() => {
+                  setSelectedSessionId(null);
+                  setActiveQuiz(null);
+                }}
                 onStartQuiz={(quiz) => {
                   setActiveQuiz(quiz);
                   sessionStorage.setItem('activeQuizId', quiz.id);
                   logActivityApi('StartQuiz', `User started quiz for session: ${selectedSession.name}`);
                 }}
                 onToggleBookmark={handleToggleBookmark}
+                initialTab={sessionDetailTab}
+                initialTopicId={sessionDetailTopicId}
+                onStateChange={(tab, topicId) => {
+                  setSessionDetailTab(tab);
+                  if (topicId !== undefined) setSessionDetailTopicId(topicId);
+                }}
               />
             ) : gtViewMode === 'knowledge-hub' ? (
               <KnowledgeHubView currentUser={currentUser} />

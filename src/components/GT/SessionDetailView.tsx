@@ -55,17 +55,30 @@ interface SessionDetailViewProps {
   onBack: () => void;
   onStartQuiz: (quiz: Quiz) => void;
   onToggleBookmark: (sessionId: string) => void;
+  initialTab?: string;
+  initialTopicId?: string;
+  onStateChange?: (tab: string, topicId?: string) => void;
 }
 
 export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   session,
   onBack,
   onStartQuiz,
-  onToggleBookmark
+  onToggleBookmark,
+  initialTab,
+  initialTopicId,
+  onStateChange
 }) => {
   // 3 Primary Fields / Tabs: 'roadmap' (Road Map), 'provided-materials' (Provided Materials), 'additional-materials' (Additional Materials)
-  const [activeTab, setActiveTab] = useState<'roadmap' | 'provided-materials' | 'additional-materials' | 'assignments' | 'quiz' | 'notes'>('roadmap');
-  const [selectedTopicId, setSelectedTopicId] = useState<string>(session?.topics?.[0]?.id || '');
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'provided-materials' | 'additional-materials' | 'assignments' | 'quiz' | 'notes'>(
+    (initialTab as any) || 'roadmap'
+  );
+  const [selectedTopicId, setSelectedTopicId] = useState<string>(initialTopicId || '');
+  
+  const handleTabSelect = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    onStateChange?.(tab, selectedTopicId);
+  };
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<Record<string, string>>({});
   
@@ -480,7 +493,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         
         {/* Field 1: Road Map */}
         <button
-          onClick={() => setActiveTab('roadmap')}
+          onClick={() => handleTabSelect('roadmap')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'roadmap'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -493,7 +506,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         {/* Field 2: Provided Materials */}
         <button
-          onClick={() => setActiveTab('provided-materials')}
+          onClick={() => handleTabSelect('provided-materials')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'provided-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -506,7 +519,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         {/* Field 3: Additional Materials */}
         <button
-          onClick={() => setActiveTab('additional-materials')}
+          onClick={() => handleTabSelect('additional-materials')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'additional-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -518,7 +531,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveTab('assignments')}
+          onClick={() => handleTabSelect('assignments')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'assignments'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -530,7 +543,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         </button>
 
         <button
-          onClick={() => setActiveTab('quiz')}
+          onClick={() => handleTabSelect('quiz')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'quiz'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -544,7 +557,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <div className="h-6 w-px bg-slate-300 my-auto mx-1" />
 
         <button
-          onClick={() => setActiveTab('notes')}
+          onClick={() => handleTabSelect('notes')}
           className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
             activeTab === 'notes'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
@@ -575,29 +588,12 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           <InteractiveRoadmap
             topics={session?.topics || []}
             selectedTopicId={selectedTopicId}
-            onSelectTopic={(id) => setSelectedTopicId(id)}
+            onSelectTopic={(id) => {
+              const nextId = selectedTopicId === id ? '' : id;
+              setSelectedTopicId(nextId);
+              onStateChange?.(activeTab, nextId);
+            }}
           />
-
-          {/* Subtopics Breakdown */}
-          {selectedTopic && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-blue-600" />
-                  <span>Topic Modules & Subtopics: {selectedTopic.title}</span>
-                </h3>
-                <span className="text-xs font-mono text-slate-500 font-semibold">{(selectedTopic?.subtopics || []).length} Subtopics</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
-                {(selectedTopic?.subtopics || []).map((sub) => (
-                  <div key={sub.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
-                    <span className="font-bold text-slate-800 text-xs">{sub.title}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
