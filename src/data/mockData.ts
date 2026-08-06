@@ -174,9 +174,12 @@ export const mockSessions: Session[] = [
         status: 'Completed',
         description: 'C# Runtime environment (.NET 8), CLR, JIT compilation, and basic program execution flow.',
         subtopics: [
-          { id: 'st-1', title: 'NET Ecosystem & CLR', durationMinutes: 20, status: 'Completed' },
+          { id: 'st-1', title: '.NET Ecosystem & CLR', durationMinutes: 20, status: 'Completed' },
           { id: 'st-2', title: 'Variables, Constants & Data Types', durationMinutes: 30, status: 'Completed' },
-          { id: 'st-3', title: 'Control Flow & Loops', durationMinutes: 25, status: 'Completed' }
+          { id: 'st-3', title: 'Control Flow & Loops', durationMinutes: 25, status: 'Completed' },
+          { id: 'st-4', title: 'Operators & Expressions', durationMinutes: 20, status: 'Completed' },
+          { id: 'st-5', title: 'Methods & Parameters', durationMinutes: 30, status: 'Completed' },
+          { id: 'st-6', title: 'Namespaces & Project Structure', durationMinutes: 25, status: 'Completed' }
         ]
       },
       {
@@ -186,9 +189,12 @@ export const mockSessions: Session[] = [
         status: 'Completed',
         description: 'Classes, Objects, Encapsulation, Inheritance, Polymorphism, Abstraction, and Interfaces.',
         subtopics: [
-          { id: 'st-4', title: 'Classes, Structs & Records', durationMinutes: 45, status: 'Completed' },
-          { id: 'st-5', title: 'Inheritance & Polymorphism', durationMinutes: 40, status: 'Completed' },
-          { id: 'st-6', title: 'Interfaces & Abstract Classes', durationMinutes: 35, status: 'Completed' }
+          { id: 'st-7', title: 'Classes, Structs & Records', durationMinutes: 45, status: 'Completed' },
+          { id: 'st-8', title: 'Inheritance & Polymorphism', durationMinutes: 40, status: 'Completed' },
+          { id: 'st-9', title: 'Interfaces & Abstract Classes', durationMinutes: 35, status: 'Completed' },
+          { id: 'st-10', title: 'Constructors & Destructors', durationMinutes: 25, status: 'Completed' },
+          { id: 'st-11', title: 'Access Modifiers', durationMinutes: 20, status: 'Completed' },
+          { id: 'st-12', title: 'Properties & Indexers', durationMinutes: 30, status: 'Completed' }
         ]
       },
       {
@@ -198,9 +204,12 @@ export const mockSessions: Session[] = [
         status: 'Completed',
         description: 'Generic Collections, Delegates, Lambda Expressions, Deferred Execution, and LINQ Query Operators.',
         subtopics: [
-          { id: 'st-7', title: 'List, Dictionary & HashSet', durationMinutes: 30, status: 'Completed' },
-          { id: 'st-8', title: 'Delegates & Events', durationMinutes: 40, status: 'Completed' },
-          { id: 'st-9', title: 'LINQ Query Syntaxes & Method Chaining', durationMinutes: 50, status: 'Completed' }
+          { id: 'st-13', title: 'List, Dictionary & HashSet', durationMinutes: 30, status: 'Completed' },
+          { id: 'st-14', title: 'Delegates & Events', durationMinutes: 40, status: 'Completed' },
+          { id: 'st-15', title: 'LINQ Query Syntaxes & Method Chaining', durationMinutes: 50, status: 'Completed' },
+          { id: 'st-16', title: 'Lambda Expressions', durationMinutes: 30, status: 'Completed' },
+          { id: 'st-17', title: 'Extension Methods', durationMinutes: 25, status: 'Completed' },
+          { id: 'st-18', title: 'Grouping, Ordering & Filtering Data', durationMinutes: 35, status: 'Completed' }
         ]
       },
       {
@@ -210,9 +219,87 @@ export const mockSessions: Session[] = [
         status: 'In Progress',
         description: 'Async/Await pattern, Task Parallel Library (TPL), CancellationTokens, custom exception filters.',
         subtopics: [
-          { id: 'st-10', title: 'Task & Async/Await Under the Hood', durationMinutes: 45, status: 'Completed' },
-          { id: 'st-11', title: 'Handling Race Conditions & SemaphoreSlim', durationMinutes: 35, status: 'In Progress' },
-          { id: 'st-12', title: 'Global Exception Middleware', durationMinutes: 30, status: 'Unlocked' }
+          { id: 'st-19', title: 'Task & Async/Await Under the Hood', durationMinutes: 45, status: 'Completed' },
+          { id: 'st-20', title: 'Handling Race Conditions & SemaphoreSlim', durationMinutes: 35, status: 'In Progress' },
+          { id: 'st-21', title: 'Global Exception Middleware', durationMinutes: 30, status: 'Unlocked' },
+          { id: 'st-22', title: 'Cancellation Tokens', durationMinutes: 25, status: 'Unlocked' },
+          { id: 'st-23', title: 'Custom Exceptions & Logging', durationMinutes: 30, status: 'Unlocked' },
+          { id: 'st-24', title: 'Parallel Programming (TPL)', durationMinutes: 40, status: 'Unlocked' }
+        ]
+      },
+      {
+        id: 'dotnet-t5',
+        title: 'File Handling & Serialization',
+        order: 5,
+        status: 'Locked',
+        description: 'Working with files, streams, JSON/XML serialization, and configuration files.',
+        subtopics: [
+          { id: 'st-25', title: 'File & Directory Operations', durationMinutes: 30, status: 'Locked' },
+          { id: 'st-26', title: 'Streams & StreamReader/Writer', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-27', title: 'JSON Serialization', durationMinutes: 40, status: 'Locked' },
+          { id: 'st-28', title: 'XML Serialization', durationMinutes: 30, status: 'Locked' },
+          { id: 'st-29', title: 'Configuration Files', durationMinutes: 25, status: 'Locked' },
+          { id: 'st-30', title: 'Logging with ILogger', durationMinutes: 25, status: 'Locked' }
+        ]
+      },
+      {
+        id: 'dotnet-t6',
+        title: 'Entity Framework Core',
+        order: 6,
+        status: 'Locked',
+        description: 'Database connectivity, ORM concepts, migrations, and CRUD operations using EF Core.',
+        subtopics: [
+          { id: 'st-31', title: 'DbContext & DbSet', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-32', title: 'Code First Approach', durationMinutes: 40, status: 'Locked' },
+          { id: 'st-33', title: 'Migrations', durationMinutes: 30, status: 'Locked' },
+          { id: 'st-34', title: 'CRUD Operations', durationMinutes: 45, status: 'Locked' },
+          { id: 'st-35', title: 'Relationships & Navigation Properties', durationMinutes: 40, status: 'Locked' },
+          { id: 'st-36', title: 'LINQ with EF Core', durationMinutes: 35, status: 'Locked' }
+        ]
+      },
+      {
+        id: 'dotnet-t7',
+        title: 'ASP.NET Core Web API',
+        order: 7,
+        status: 'Locked',
+        description: 'Building REST APIs using ASP.NET Core, dependency injection, middleware, and authentication.',
+        subtopics: [
+          { id: 'st-37', title: 'Creating REST APIs', durationMinutes: 40, status: 'Locked' },
+          { id: 'st-38', title: 'Controllers & Routing', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-39', title: 'Dependency Injection', durationMinutes: 30, status: 'Locked' },
+          { id: 'st-40', title: 'Middleware Pipeline', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-41', title: 'JWT Authentication', durationMinutes: 45, status: 'Locked' },
+          { id: 'st-42', title: 'Swagger & API Testing', durationMinutes: 25, status: 'Locked' }
+        ]
+      },
+      {
+        id: 'dotnet-t8',
+        title: 'Testing & Design Patterns',
+        order: 8,
+        status: 'Locked',
+        description: 'Unit testing, mocking frameworks, SOLID principles, and common design patterns.',
+        subtopics: [
+          { id: 'st-43', title: 'Unit Testing with xUnit', durationMinutes: 40, status: 'Locked' },
+          { id: 'st-44', title: 'Mocking with Moq', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-45', title: 'SOLID Principles', durationMinutes: 45, status: 'Locked' },
+          { id: 'st-46', title: 'Repository Pattern', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-47', title: 'Factory & Singleton Patterns', durationMinutes: 30, status: 'Locked' },
+          { id: 'st-48', title: 'Clean Architecture Basics', durationMinutes: 40, status: 'Locked' }
+        ]
+      },
+      {
+        id: 'dotnet-t9',
+        title: 'Deployment & Capstone Project',
+        order: 9,
+        status: 'Locked',
+        description: 'Deploying .NET applications and building an end-to-end real-world project.',
+        subtopics: [
+          { id: 'st-49', title: 'Application Configuration', durationMinutes: 25, status: 'Locked' },
+          { id: 'st-50', title: 'Docker Basics', durationMinutes: 40, status: 'Locked' },
+          { id: 'st-51', title: 'Azure Deployment', durationMinutes: 45, status: 'Locked' },
+          { id: 'st-52', title: 'CI/CD Pipeline Basics', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-53', title: 'Performance Optimization', durationMinutes: 35, status: 'Locked' },
+          { id: 'st-54', title: 'Capstone Project Implementation', durationMinutes: 90, status: 'Locked' }
         ]
       }
     ]
@@ -241,24 +328,145 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'ins-t1',
-        title: 'Introduction to Insurance & Risk Transfer',
+        title: 'Insurance Fundamentals',
         order: 1,
         status: 'Completed',
-        description: 'Concept of Risk Pooling, Moral Hazard, Adverse Selection, and Insurance Market Ecosystem.',
+        description: 'Introduction to insurance, risk management, and core insurance concepts.',
         subtopics: [
-          { id: 'ist-1', title: 'Core Principles of Insurance', durationMinutes: 30, status: 'Completed' },
-          { id: 'ist-2', title: 'Types of Coverage: P&C vs Life & Health', durationMinutes: 40, status: 'Completed' }
+          { id: 'ist-1', title: 'What is Insurance?', durationMinutes: 25, status: 'Completed' },
+          { id: 'ist-2', title: 'Risk & Risk Transfer', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-3', title: 'Risk Pooling', durationMinutes: 25, status: 'Completed' },
+          { id: 'ist-4', title: 'Insurer vs Insured', durationMinutes: 20, status: 'Completed' },
+          { id: 'ist-5', title: 'Premium, Policy & Claim', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-6', title: 'Insurance Market Ecosystem', durationMinutes: 35, status: 'Completed' }
         ]
       },
+
       {
         id: 'ins-t2',
-        title: 'Underwriting & Policy Administration',
+        title: 'Insurance Principles',
         order: 2,
-        status: 'In Progress',
-        description: 'Risk Assessment, Premium Calculation Rate Making, Binder Issuance, Policy Renewals & Endorsements.',
+        status: 'Completed',
+        description: 'Fundamental principles governing insurance contracts.',
         subtopics: [
-          { id: 'ist-3', title: 'Underwriting Guidelines & Actuarial Basics', durationMinutes: 50, status: 'Completed' },
-          { id: 'ist-4', title: 'Policy Lifecycle Management System Architecture', durationMinutes: 45, status: 'In Progress' }
+          { id: 'ist-7', title: 'Utmost Good Faith', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-8', title: 'Insurable Interest', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-9', title: 'Principle of Indemnity', durationMinutes: 35, status: 'Completed' },
+          { id: 'ist-10', title: 'Contribution', durationMinutes: 25, status: 'Completed' },
+          { id: 'ist-11', title: 'Subrogation', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-12', title: 'Proximate Cause & Loss Minimization', durationMinutes: 35, status: 'Completed' }
+        ]
+      },
+
+      {
+        id: 'ins-t3',
+        title: 'Insurance Products',
+        order: 3,
+        status: 'Completed',
+        description: 'Insurance product categories and product configuration.',
+        subtopics: [
+          { id: 'ist-13', title: 'Life Insurance', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-14', title: 'Health Insurance', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-15', title: 'Property Insurance', durationMinutes: 35, status: 'Completed' },
+          { id: 'ist-16', title: 'Casualty Insurance', durationMinutes: 35, status: 'Completed' },
+          { id: 'ist-17', title: 'Coverage, Rules & Forms', durationMinutes: 40, status: 'Completed' },
+          { id: 'ist-18', title: 'Product System', durationMinutes: 35, status: 'Completed' }
+        ]
+      },
+
+      {
+        id: 'ins-t4',
+        title: 'Sales, Underwriting & Rating',
+        order: 4,
+        status: 'In Progress',
+        description: 'Customer onboarding, underwriting, premium calculation and quote generation.',
+        subtopics: [
+          { id: 'ist-19', title: 'Sales Lifecycle', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-20', title: 'Lead, Prospect & Customer', durationMinutes: 30, status: 'Completed' },
+          { id: 'ist-21', title: 'Risk Assessment', durationMinutes: 40, status: 'In Progress' },
+          { id: 'ist-22', title: 'Underwriting Process', durationMinutes: 40, status: 'In Progress' },
+          { id: 'ist-23', title: 'Rating Engine & Rate Tables', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'ist-24', title: 'Quote Management System (QMS)', durationMinutes: 35, status: 'Unlocked' }
+        ]
+      },
+
+      {
+        id: 'ins-t5',
+        title: 'Policy Administration',
+        order: 5,
+        status: 'Locked',
+        description: 'Policy lifecycle and administration activities.',
+        subtopics: [
+          { id: 'ist-25', title: 'Policy Administration System (PAS)', durationMinutes: 40, status: 'Locked' },
+          { id: 'ist-26', title: 'Policy Issuance', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-27', title: 'Endorsements', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-28', title: 'Renewals', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-29', title: 'Cancellation & Reinstatement', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-30', title: 'Policy Servicing', durationMinutes: 30, status: 'Locked' }
+        ]
+      },
+
+      {
+        id: 'ins-t6',
+        title: 'Claims Management',
+        order: 6,
+        status: 'Locked',
+        description: 'End-to-end claims processing lifecycle.',
+        subtopics: [
+          { id: 'ist-31', title: 'First Notice of Loss (FNOL)', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-32', title: 'Claim Registration', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-33', title: 'Coverage Verification', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-34', title: 'Claim Investigation', durationMinutes: 40, status: 'Locked' },
+          { id: 'ist-35', title: 'Claim Settlement', durationMinutes: 40, status: 'Locked' },
+          { id: 'ist-36', title: 'Claim Closure', durationMinutes: 25, status: 'Locked' }
+        ]
+      },
+
+      {
+        id: 'ins-t7',
+        title: 'Financial & Documentation Flow',
+        order: 7,
+        status: 'Locked',
+        description: 'Billing, remittance, documentation and financial activities.',
+        subtopics: [
+          { id: 'ist-37', title: 'Billing System', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-38', title: 'Premium Collection', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-39', title: 'Remittance', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-40', title: 'Document Management System (DMS)', durationMinutes: 40, status: 'Locked' },
+          { id: 'ist-41', title: 'Policy & Claim Documents', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-42', title: 'Financial Records & Reserves', durationMinutes: 35, status: 'Locked' }
+        ]
+      },
+
+      {
+        id: 'ins-t8',
+        title: 'Claims Valuation & Policy Transactions',
+        order: 8,
+        status: 'Locked',
+        description: 'Loss valuation methods and policy transaction types.',
+        subtopics: [
+          { id: 'ist-43', title: 'Deductibles', durationMinutes: 25, status: 'Locked' },
+          { id: 'ist-44', title: 'Actual Cash Value (ACV)', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-45', title: 'Replacement Cost Value (RCV)', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-46', title: 'New Business', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-47', title: 'Renewals & Endorsements', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-48', title: 'Policy Lifecycle Transactions', durationMinutes: 35, status: 'Locked' }
+        ]
+      },
+
+      {
+        id: 'ins-t9',
+        title: 'Insurance Technology & SDLC',
+        order: 9,
+        status: 'Locked',
+        description: 'Connecting insurance business with software development.',
+        subtopics: [
+          { id: 'ist-49', title: 'Insurance System Architecture', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-50', title: 'Business Requirements (BRD)', durationMinutes: 30, status: 'Locked' },
+          { id: 'ist-51', title: 'FRD, SRS & PRD', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-52', title: 'Epics, Features & User Stories', durationMinutes: 35, status: 'Locked' },
+          { id: 'ist-53', title: 'Business to Technology Flow', durationMinutes: 40, status: 'Locked' },
+          { id: 'ist-54', title: 'End-to-End Insurance Ecosystem Review', durationMinutes: 45, status: 'Locked' }
         ]
       }
     ]
@@ -284,30 +492,151 @@ export const mockSessions: Session[] = [
       'Analyze Query Execution Plans (EXPLAIN ANALYZE) and implement B-Tree / Hash Indexes',
       'Manage ACID Transactions, Isolation Levels, and Concurrent Locking'
     ],
-    topics: [
-      {
-        id: 'sql-t1',
-        title: 'Relational Schema Design & Normalization',
-        order: 1,
-        status: 'Completed',
-        description: '1NF, 2NF, 3NF, BCNF, Primary Keys, Composite Keys, Foreign Key CASCADE constraints.',
-        subtopics: [
-          { id: 'sqlst-1', title: 'Database Normalization Rules', durationMinutes: 40, status: 'Completed' },
-          { id: 'sqlst-2', title: 'DDL Constraints & Data Types', durationMinutes: 30, status: 'Completed' }
-        ]
-      },
-      {
-        id: 'sql-t2',
-        title: 'Advanced Querying & Window Functions',
-        order: 2,
-        status: 'In Progress',
-        description: 'CTEs (Common Table Expressions), Recursive CTEs, Partitioning, Window Aggregates.',
-        subtopics: [
-          { id: 'sqlst-3', title: 'Joins, Subqueries & CTEs', durationMinutes: 50, status: 'Completed' },
-          { id: 'sqlst-4', title: 'Window Functions OVER (PARTITION BY)', durationMinutes: 60, status: 'In Progress' }
-        ]
-      }
+  topics: [
+  {
+    id: 'sql-t1',
+    title: 'Introduction to PostgreSQL & Database Fundamentals',
+    order: 1,
+    status: 'Completed',
+    description: 'Introduction to PostgreSQL, database creation, schema design, data types, and constraints.',
+    subtopics: [
+      { id: 'sqlst-1', title: 'Introduction to PostgreSQL', durationMinutes: 20, status: 'Completed' },
+      { id: 'sqlst-2', title: 'Create Database & Schema', durationMinutes: 30, status: 'Completed' },
+      { id: 'sqlst-3', title: 'Create Tables', durationMinutes: 35, status: 'Completed' },
+      { id: 'sqlst-4', title: 'PostgreSQL Data Types', durationMinutes: 30, status: 'Completed' },
+      { id: 'sqlst-5', title: 'Database Constraints', durationMinutes: 35, status: 'Completed' },
+      { id: 'sqlst-6', title: 'Primary & Foreign Keys', durationMinutes: 35, status: 'Completed' }
     ]
+  },
+
+  {
+    id: 'sql-t2',
+    title: 'Data Manipulation & Basic Queries',
+    order: 2,
+    status: 'Completed',
+    description: 'Working with data using INSERT, SELECT, UPDATE, DELETE and filtering techniques.',
+    subtopics: [
+      { id: 'sqlst-7', title: 'INSERT Statement', durationMinutes: 30, status: 'Completed' },
+      { id: 'sqlst-8', title: 'SELECT Statement', durationMinutes: 35, status: 'Completed' },
+      { id: 'sqlst-9', title: 'WHERE Clause', durationMinutes: 30, status: 'Completed' },
+      { id: 'sqlst-10', title: 'UPDATE Statement', durationMinutes: 25, status: 'Completed' },
+      { id: 'sqlst-11', title: 'DELETE Statement', durationMinutes: 25, status: 'Completed' },
+      { id: 'sqlst-12', title: 'ORDER BY Clause', durationMinutes: 25, status: 'Completed' }
+    ]
+  },
+
+  {
+    id: 'sql-t3',
+    title: 'Table Design & Constraints',
+    order: 3,
+    status: 'Completed',
+    description: 'Managing tables, constraints, normalization, and schema modifications.',
+    subtopics: [
+      { id: 'sqlst-13', title: 'NOT NULL Constraint', durationMinutes: 20, status: 'Completed' },
+      { id: 'sqlst-14', title: 'UNIQUE Constraint', durationMinutes: 20, status: 'Completed' },
+      { id: 'sqlst-15', title: 'CHECK Constraint', durationMinutes: 25, status: 'Completed' },
+      { id: 'sqlst-16', title: 'DEFAULT Constraint', durationMinutes: 20, status: 'Completed' },
+      { id: 'sqlst-17', title: 'ALTER TABLE', durationMinutes: 35, status: 'Completed' },
+      { id: 'sqlst-18', title: 'Normalization Basics (1NF-3NF)', durationMinutes: 40, status: 'Completed' }
+    ]
+  },
+
+  {
+    id: 'sql-t4',
+    title: 'Functions & Aggregations',
+    order: 4,
+    status: 'In Progress',
+    description: 'Aggregate functions, grouping, filtering grouped data, and built-in functions.',
+    subtopics: [
+      { id: 'sqlst-19', title: 'COUNT(), SUM()', durationMinutes: 30, status: 'Completed' },
+      { id: 'sqlst-20', title: 'AVG(), MIN(), MAX()', durationMinutes: 30, status: 'Completed' },
+      { id: 'sqlst-21', title: 'GROUP BY', durationMinutes: 35, status: 'In Progress' },
+      { id: 'sqlst-22', title: 'HAVING Clause', durationMinutes: 30, status: 'Unlocked' },
+      { id: 'sqlst-23', title: 'String & Date Functions', durationMinutes: 35, status: 'Unlocked' },
+      { id: 'sqlst-24', title: 'Mathematical Functions', durationMinutes: 25, status: 'Unlocked' }
+    ]
+  },
+
+  {
+    id: 'sql-t5',
+    title: 'Joins & Advanced Queries',
+    order: 5,
+    status: 'Locked',
+    description: 'Retrieving related data using joins, subqueries, and views.',
+    subtopics: [
+      { id: 'sqlst-25', title: 'INNER JOIN', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-26', title: 'LEFT JOIN', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-27', title: 'RIGHT JOIN', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-28', title: 'FULL OUTER JOIN', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-29', title: 'Subqueries', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-30', title: 'Views', durationMinutes: 30, status: 'Locked' }
+    ]
+  },
+
+  {
+    id: 'sql-t6',
+    title: 'Indexes & Database Objects',
+    order: 6,
+    status: 'Locked',
+    description: 'Improving query performance and creating reusable database objects.',
+    subtopics: [
+      { id: 'sqlst-31', title: 'Indexes', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-32', title: 'Unique Indexes', durationMinutes: 25, status: 'Locked' },
+      { id: 'sqlst-33', title: 'Views vs Materialized Views', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-34', title: 'Sequences', durationMinutes: 25, status: 'Locked' },
+      { id: 'sqlst-35', title: 'Schemas', durationMinutes: 25, status: 'Locked' },
+      { id: 'sqlst-36', title: 'Performance Optimization', durationMinutes: 40, status: 'Locked' }
+    ]
+  },
+
+  {
+    id: 'sql-t7',
+    title: 'PL/pgSQL Programming',
+    order: 7,
+    status: 'Locked',
+    description: 'Writing procedural code using PL/pgSQL with functions, procedures, variables, and cursors.',
+    subtopics: [
+      { id: 'sqlst-37', title: 'SQL DO Blocks', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-38', title: 'Variables & Control Statements', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-39', title: 'Stored Procedures', durationMinutes: 40, status: 'Locked' },
+      { id: 'sqlst-40', title: 'User Defined Functions (UDF)', durationMinutes: 40, status: 'Locked' },
+      { id: 'sqlst-41', title: 'Built-in Functions', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-42', title: 'Cursors', durationMinutes: 35, status: 'Locked' }
+    ]
+  },
+
+  {
+    id: 'sql-t8',
+    title: 'Triggers & Dynamic SQL',
+    order: 8,
+    status: 'Locked',
+    description: 'Automating database operations using triggers and executing dynamic SQL.',
+    subtopics: [
+      { id: 'sqlst-43', title: 'Introduction to Triggers', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-44', title: 'DML Triggers', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-45', title: 'DDL Triggers', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-46', title: 'Dynamic SQL', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-47', title: 'Exception & Error Handling', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-48', title: 'Debugging PL/pgSQL Code', durationMinutes: 30, status: 'Locked' }
+    ]
+  },
+
+  {
+    id: 'sql-t9',
+    title: 'Transactions & Database Management',
+    order: 9,
+    status: 'Locked',
+    description: 'Managing transactions, concurrency, and database reliability.',
+    subtopics: [
+      { id: 'sqlst-49', title: 'BEGIN Transaction', durationMinutes: 25, status: 'Locked' },
+      { id: 'sqlst-50', title: 'COMMIT Transaction', durationMinutes: 25, status: 'Locked' },
+      { id: 'sqlst-51', title: 'ROLLBACK Transaction', durationMinutes: 30, status: 'Locked' },
+      { id: 'sqlst-52', title: 'Transaction Isolation Levels', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-53', title: 'Concurrency Control', durationMinutes: 35, status: 'Locked' },
+      { id: 'sqlst-54', title: 'End-to-End PostgreSQL Project', durationMinutes: 60, status: 'Locked' }
+    ]
+  }
+]
   },
   {
     id: 'session-c2c',
@@ -353,7 +682,252 @@ export const mockSessions: Session[] = [
         ]
       }
     ]
+  },
+  {
+    id: 'session-data-modeling-fundamentals',
+    name: 'Data Modelling Fundamentals',
+    category: 'Data',
+    trainerName: 'Gabriel N Maria Linton',
+    description: 'Introduction to Data Modeling, Entity Relationships, Cardinality, Keys, Normalization, SDLC, and Project Roles in Enterprise Software Development.',
+    thumbnail: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=600&auto=format&fit=crop&q=80',
+    durationHours: 12,
+    difficulty: 'Beginner',
+    progressPercent: 0,
+    isBookmarked: false,
+    lastAccessed: 'Never',
+    isPublished: true,
+    rating: 4.8,
+    ratingCount: 92,
+    learningObjectives: [
+      'Understand the fundamentals of data modeling and database design',
+      'Learn entity relationships, cardinality, and identifiers',
+      'Apply normalization techniques to improve data quality',
+      'Understand SDLC phases and project stakeholder responsibilities'
+    ],
+    topics: [
+      {
+        id: 'dm-t1',
+        title: 'Data Modeling Foundations',
+        order: 1,
+        status: 'Completed',
+        description: 'Introduction to data modeling concepts, entities, attributes, relationships, and database structures.',
+        subtopics: [
+          { id: 'dmst-1', title: 'Entities, Attributes & Relationships', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-2', title: 'Cardinality & Keys', durationMinutes: 45, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'dm-t2',
+        title: 'Normalization & SDLC',
+        order: 2,
+        status: 'Completed',
+        description: 'Understanding normalization techniques and project lifecycle fundamentals.',
+        subtopics: [
+          { id: 'dmst-3', title: 'Normalization Principles', durationMinutes: 60, status: 'Completed' },
+          { id: 'dmst-4', title: 'Software Development Life Cycle', durationMinutes: 45, status: 'Completed' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'session-data-fundamentals',
+    name: 'Data Fundamentals',
+    category: 'Data',
+    trainerName: 'Parthiban Arumugam',
+    description: 'Core Data Concepts, Data Quality, Medallion Architecture, Azure Services, Power BI, Excel Analytics, and Business Reporting.',
+    thumbnail: 'https://images.unsplash.com/photo-1518186285589-2f7649de83e0?w=600&auto=format&fit=crop&q=80',
+    durationHours: 18,
+    difficulty: 'Beginner',
+    progressPercent: 0,
+    isBookmarked: false,
+    lastAccessed: 'Never',
+    isPublished: true,
+    rating: 4.8,
+    ratingCount: 108,
+    learningObjectives: [
+      'Understand how organizations collect and process data',
+      'Learn data quality, redundancy, and governance basics',
+      'Explore Medallion Architecture and modern analytics platforms',
+      'Build executive dashboards and business reports'
+    ],
+    topics: [
+      {
+        id: 'df-t1',
+        title: 'Data Foundations',
+        order: 1,
+        status: 'Completed',
+        description: 'Understanding data generation, collection, aggregation, and quality management.',
+        subtopics: [
+          { id: 'dfst-1', title: 'Data Lifecycle & Quality', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-2', title: 'Data Redundancy & Governance', durationMinutes: 45, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'df-t2',
+        title: 'Analytics & Reporting',
+        order: 2,
+        status: 'Completed',
+        description: 'Introduction to reporting tools, dashboards, and business intelligence techniques.',
+        subtopics: [
+          { id: 'dfst-3', title: 'Power BI & Azure Fundamentals', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-4', title: 'Excel Analytics & Dashboard Creation', durationMinutes: 75, status: 'Completed' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'session-html-css-js',
+    name: 'HTML, CSS & JavaScript',
+    category: 'Frontend',
+    trainerName: 'Sre Leka Rajan',
+    description: 'Web Development Fundamentals covering HTML Structure, CSS Styling, Responsive Design, JavaScript Programming, DOM Manipulation, and Asynchronous Programming.',
+    thumbnail: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&auto=format&fit=crop&q=80',
+    durationHours: 25,
+    difficulty: 'Intermediate',
+    progressPercent: 0,
+    isBookmarked: false,
+    lastAccessed: 'Never',
+    isPublished: true,
+    rating: 4.9,
+    ratingCount: 125,
+    learningObjectives: [
+      'Build responsive and accessible web pages',
+      'Apply modern CSS layouts and responsive design patterns',
+      'Develop interactive applications using JavaScript',
+      'Understand advanced JavaScript concepts and asynchronous programming'
+    ],
+    topics: [
+      {
+        id: 'web-t1',
+        title: 'Web Development Foundations',
+        order: 1,
+        status: 'Completed',
+        description: 'Learning HTML page structures and CSS styling fundamentals.',
+        subtopics: [
+          { id: 'webst-1', title: 'HTML Structure & Semantic Tags', durationMinutes: 60, status: 'Completed' },
+          { id: 'webst-2', title: 'CSS Layouts & Responsive Design', durationMinutes: 75, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'web-t2',
+        title: 'JavaScript Essentials',
+        order: 2,
+        status: 'Completed',
+        description: 'Core JavaScript programming concepts and browser interactivity.',
+        subtopics: [
+          { id: 'webst-3', title: 'Functions, Loops & DOM Manipulation', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-4', title: 'Event Loop, Closures & Async Programming', durationMinutes: 90, status: 'Completed' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'session-modern-data-platforms',
+    name: 'Advanced Data Modeling & Modern Data Platforms',
+    category: 'Data Engineering',
+    trainerName: 'Anitha',
+    description: 'Advanced Data Modeling, Cloud Data Platforms, ETL Processes, Data Lakes, Lakehouses, Microsoft Fabric, Databricks, Data Governance, Analytics, and AI.',
+    thumbnail: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600&auto=format&fit=crop&q=80',
+    durationHours: 24,
+    difficulty: 'Advanced',
+    progressPercent: 0,
+    isBookmarked: false,
+    lastAccessed: 'Never',
+    isPublished: true,
+    rating: 5.0,
+    ratingCount: 98,
+    learningObjectives: [
+      'Design conceptual, logical, and physical data models',
+      'Understand cloud-based modern data architectures',
+      'Learn ETL, data warehousing, and lakehouse concepts',
+      'Apply governance, analytics, visualization, and AI principles'
+    ],
+    topics: [
+      {
+        id: 'mdp-t1',
+        title: 'Enterprise Data Architecture',
+        order: 1,
+        status: 'Completed',
+        description: 'Understanding modern data platforms and advanced modeling concepts.',
+        subtopics: [
+          { id: 'mdpst-1', title: 'Conceptual, Logical & Physical Models', durationMinutes: 60, status: 'Completed' },
+          { id: 'mdpst-2', title: 'Data Lakes, Warehouses & Lakehouses', durationMinutes: 75, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'mdp-t2',
+        title: 'Modern Data Ecosystem',
+        order: 2,
+        status: 'Completed',
+        description: 'Learning ETL, analytics, governance, and cloud technologies.',
+        subtopics: [
+          { id: 'mdpst-3', title: 'Azure Data Factory, Fabric & Databricks', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-4', title: 'Data Governance, AI & Visualization', durationMinutes: 90, status: 'Completed' }
+        ]
+      }
+    ]
+  },
+  {
+    id: 'session-software-testing',
+    name: 'Software Testing Fundamentals',
+    category: 'Quality Assurance',
+    trainerName: 'Swathi',
+    description: 'Comprehensive introduction to Software Testing covering Testing Fundamentals, Types of Testing, Test Case Design Techniques, Defect Management, and Quality Assurance Best Practices.',
+    thumbnail: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80',
+    durationHours: 16,
+    difficulty: 'Beginner',
+    progressPercent: 0,
+    isBookmarked: false,
+    lastAccessed: 'Never',
+    isPublished: true,
+    rating: 4.8,
+    ratingCount: 96,
+    learningObjectives: [
+      'Understand the importance of software testing in the SDLC',
+      'Differentiate between various testing types and approaches',
+      'Design effective test scenarios and test cases',
+      'Apply equivalence partitioning and boundary value analysis techniques',
+      'Understand defect tracking and the defect life cycle'
+    ],
+    topics: [
+      {
+        id: 'st-t1',
+        title: 'Introduction to Software Testing',
+        order: 1,
+        status: 'Completed',
+        description: 'Understanding software quality, the need for testing, and various testing methodologies used in modern software projects.',
+        subtopics: [
+          { id: 'stst-1', title: 'Why Testing is Necessary', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-2', title: 'Types of Testing (Functional & Non-Functional)', durationMinutes: 60, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'st-t2',
+        title: 'Test Design & Execution',
+        order: 2,
+        status: 'Completed',
+        description: 'Learning how to create effective test scenarios and test cases using industry-standard test design techniques.',
+        subtopics: [
+          { id: 'stst-3', title: 'Test Scenario Identification', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-4', title: 'Test Case Design Techniques', durationMinutes: 60, status: 'Completed' },
+          { id: 'stst-5', title: 'Equivalence Partitioning', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-6', title: 'Boundary Value Analysis', durationMinutes: 45, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'st-t3',
+        title: 'Defect Management',
+        order: 3,
+        status: 'Completed',
+        description: 'Understanding bug tracking, reporting, and the defect life cycle followed in software development projects.',
+        subtopics: [
+          { id: 'stst-7', title: 'Defect Identification & Reporting', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-8', title: 'Defect Life Cycle & Status Workflow', durationMinutes: 60, status: 'Completed' }
+        ]
+      }
+    ]
   }
+
 ];
 
 export const mockStudyMaterials = [
