@@ -172,7 +172,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               }`}
             >
               <UserCheck className="w-3.5 h-3.5" />
-              <span>Graduate Trainee</span>
+              <span>Associates</span>
             </button>
             <button
               type="button"
@@ -184,7 +184,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Administrator</span>
+              <span>Learning and Development</span>
             </button>
           </div>
         )}

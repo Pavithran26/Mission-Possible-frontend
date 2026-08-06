@@ -58,9 +58,9 @@ export const LandingPage: React.FC<LandingPageProps> = ({
 
             {/* Product Name & Hero Headline */}
             <div className="space-y-3">
-              <span className="text-xs font-mono font-bold text-slate-500 tracking-widest uppercase block">
-                GT Companion
-              </span>
+              {/* <span className="text-xs font-mono font-bold text-slate-500 tracking-widest uppercase block">
+                GT Compan
+              </span> */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-slate-900">
                 Learn from{' '}
                 <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">
