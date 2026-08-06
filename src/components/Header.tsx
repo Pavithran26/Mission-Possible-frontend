@@ -64,10 +64,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div className="text-left">
               <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-700 bg-clip-text text-transparent">
-                GT Learning Hub
+                GT Companion
               </span>
               <span className="block text-[10px] font-mono tracking-wider uppercase font-bold text-blue-700">
-                Enterprise Learning Platform
+                Built by GT's, for GT's
               </span>
             </div>
           </button>
@@ -88,7 +88,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
           )}
-
           {/* Unauthenticated Landing Navigation Links */}
           {!isAuthenticated && (
             <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-600">
@@ -98,7 +97,6 @@ export const Header: React.FC<HeaderProps> = ({
             </nav>
           )}
         </div>
-
           {/* Right Header Actions */}
           <div className="flex items-center gap-3">
             {!isAuthenticated && (
@@ -133,13 +131,13 @@ export const Header: React.FC<HeaderProps> = ({
               </button> */}
 
               {/* Bookmarks Toggle */}
-              <button
+              {/* <button
                 onClick={onOpenBookmarks}
                 className="p-2 text-slate-600 hover:text-amber-600 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-colors relative"
                 title="Saved Bookmarks"
               >
                 <Bookmark className="w-4 h-4" />
-              </button>
+              </button> */}
 
               {/* Profile Menu */}
               <div className="relative">

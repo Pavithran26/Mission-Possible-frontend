@@ -70,12 +70,26 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   const [summaries, setSummaries] = useState<Record<string, string>>({});
   
   // Overview Video State
-  const [overviewVideoUrl, setOverviewVideoUrl] = useState<string>(
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-  );
-  const [overviewVideoTitle, setOverviewVideoTitle] = useState<string>(
-    'Session Overview'
-  );
+  // Use local project asset for the hero overview video (assets/Final overview.mp4)
+  const defaultOverviewUrl = (() => {
+    // Try project folders in priority: assets (correct), Assests (user-supplied path), then external fallback
+    const candidates = [
+      '../../../assets/Final overview.mp4',
+      '../../../Assests/Final overview.mp4'
+    ];
+    for (const rel of candidates) {
+      try {
+        const resolved = new URL(rel, import.meta.url).href;
+        return resolved;
+      } catch (err) {
+        // try next
+      }
+    }
+    return 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
+  })();
+
+  const [overviewVideoUrl, setOverviewVideoUrl] = useState<string>(defaultOverviewUrl);
+  const [overviewVideoTitle, setOverviewVideoTitle] = useState<string>('Final overview');
   const [overviewVideoDesc, setOverviewVideoDesc] = useState<string>(
     `Comprehensive attendee video walkthrough covering key architectural concepts, trainer expectations, and session prerequisites for ${session.name}.`
   );
@@ -126,9 +140,9 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       fileSizeOrDuration: '45 mins'
     },
     {
-      id: 'prov-4',
-      title: 'Official Trainer Key Syntax & Cheat Sheet Notes',
-      type: 'Notes / Guide',
+      id: 'prov-notes-1',
+      title: `${session.name} - Quick Trainer Reference Sheet`,
+      type: 'Notes / Guide' as CustomMaterialItem['type'],
       url: '#',
       description: 'Concise reference notes and cheat sheet provided directly by the trainer for quick review.',
       updatedAt: '4 days ago',
@@ -144,6 +158,28 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       updatedAt: 'Official L&D',
       tags: sm.tags || ['Official'],
       fileSizeOrDuration: sm.durationOrPages || 'Standard'
+    })),
+    // Include any materials specifically set on the session by admins
+    ...(session.providedMaterials || []).map((pm, idx) => ({
+      id: `prov-pm-${idx}`,
+      title: pm.title,
+      type: (pm.type === 'PowerPoint' ? 'PowerPoint (PPT)' : pm.type === 'Video' ? 'Video File (MP4)' : pm.type === 'PDF' || pm.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
+      url: pm.url || '#',
+      description: pm.description,
+      updatedAt: 'Provided',
+      tags: pm.tags || ['Provided'],
+      fileSizeOrDuration: pm.durationOrPages || 'Standard'
+    })),
+    // Include any assignment attachments so uploaded docs are discoverable in materials
+    ...(session.assignments || []).filter(a => a.attachmentUrl).map((a, idx) => ({
+      id: `prov-assign-${idx}`,
+      title: `${a.title} (Assignment Attachment)`,
+      type: 'Doc (PDF/Word)' as CustomMaterialItem['type'],
+      url: a.attachmentUrl || '#',
+      description: a.instructions || 'Assignment attachment file',
+      updatedAt: a.dueDate || 'Assignment',
+      tags: ['Assignment'],
+      fileSizeOrDuration: 'Attached File'
     }))
   ]);
 
@@ -193,6 +229,17 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       tags: ['Notes', 'Collaborative'],
       fileSizeOrDuration: 'Text Document'
     }
+    ,
+    ...(session.additionalMaterials || []).map((am, idx) => ({
+      id: `add-am-${idx}`,
+      title: am.title,
+      type: (am.type === 'PowerPoint' ? 'PowerPoint (PPT)' : am.type === 'Video' ? 'Video File (MP4)' : am.type === 'PDF' || am.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
+      url: am.url || '#',
+      description: am.description,
+      updatedAt: 'Additional',
+      tags: am.tags || ['Additional'],
+      fileSizeOrDuration: am.durationOrPages || 'Standard'
+    }))
   ]);
 
   // Modals for Uploading Materials
@@ -301,7 +348,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       id: `note-${Date.now()}`,
       sessionId: session.id,
       topicId: selectedTopicId,
-      topicTitle: 'Your Personal Notes',
+      topicTitle: 'Reference Notes',
       content: newNoteText,
       createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -807,60 +854,25 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           </div>
 
           {activeQuiz ? (
-            <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6">
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h4 className="text-lg font-bold text-slate-900">{activeQuiz.title}</h4>
-                    <p className="text-slate-500 text-sm">{activeQuiz.description || 'No quiz description provided.'}</p>
-                  </div>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 shadow-sm max-w-full">
+              <div className="space-y-5">
+                <div>
+                  <h4 className="text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">{activeQuiz.title}</h4>
+                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                    {activeQuiz.description || 'Complete the assessment to check your understanding.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-base font-medium text-slate-900 dark:text-white">Questions: {activeQuiz.questions.length}</p>
                   <button
                     type="button"
                     onClick={() => onStartQuiz(activeQuiz)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl shadow-md shadow-blue-600/20 transition-all"
+                    className="w-full sm:w-[160px] h-12 rounded-[14px] bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20 transition-all"
                   >
                     Start Quiz
                   </button>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[12px] text-slate-600">
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block font-bold text-slate-900">Passing</span>
-                    <span>{activeQuiz.passingScorePercent}%</span>
-                  </div>
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block font-bold text-slate-900">Time Limit</span>
-                    <span>{activeQuiz.timeLimitMinutes} min</span>
-                  </div>
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block font-bold text-slate-900">Questions</span>
-                    <span>{activeQuiz.questions.length}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {activeQuiz.questions.slice(0, 3).map((question, qIdx) => (
-                    <div key={question.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-slate-900 text-sm font-semibold">Q{qIdx + 1}. {question.prompt}</p>
-                      <p className="text-slate-500 text-[12px]">Type: {question.type}</p>
-                    </div>
-                  ))}
-                  {activeQuiz.questions.length > 3 && (
-                    <div className="text-xs text-slate-500">And {activeQuiz.questions.length - 3} more questions in the full assessment.</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-                <h4 className="text-sm font-bold text-slate-900">Preparation Notes</h4>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Review session topics, official materials, and assignment instructions before launching the quiz. Use the references provided in this session for the best outcome.
-                </p>
-                <ul className="space-y-2 text-slate-600 text-sm list-disc list-inside">
-                  <li>Read the materials and assignment instructions carefully.</li>
-                  <li>Track your time under the quiz limit.</li>
-                  <li>Use the start button when you are ready.</li>
-                </ul>
               </div>
             </div>
           ) : (
@@ -875,7 +887,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {activeTab === 'notes' && (
         <div className="space-y-6">
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-3">
-            <h3 className="text-sm font-bold text-slate-900">Your Personal Notes</h3>
+            <h3 className="text-sm font-bold text-slate-900">Your Reference Notes</h3>
             <textarea
               value={newNoteText}
               onChange={(e) => setNewNoteText(e.target.value)}

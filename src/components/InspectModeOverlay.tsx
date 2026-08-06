@@ -4,20 +4,26 @@ import { InspectMetadata } from '../types';
 import { Terminal, Code, Database, FileText, CheckCircle, HelpCircle, X, Layers, Cpu, Server, Shield } from 'lucide-react';
 
 interface InspectModeOverlayProps {
-  inspectModeActive: boolean;
-  onCloseInspectMode: () => void;
+  inspectModeActive?: boolean;
+  onCloseInspectMode?: () => void;
+  isActive?: boolean;
+  onToggle?: () => void;
 }
 
 export const InspectModeOverlay: React.FC<InspectModeOverlayProps> = ({
   inspectModeActive,
-  onCloseInspectMode
+  onCloseInspectMode,
+  isActive,
+  onToggle
 }) => {
+  const active = isActive ?? inspectModeActive ?? false;
+  const handleClose = onToggle ?? onCloseInspectMode ?? (() => {});
   const [hoveredInfo, setHoveredInfo] = useState<{ rect: DOMRect; inspectId: string } | null>(null);
   const [selectedMetadata, setSelectedMetadata] = useState<InspectMetadata | null>(null);
   const [activeTab, setActiveTab] = useState<'overview' | 'architecture' | 'learning'>('overview');
 
   useEffect(() => {
-    if (!inspectModeActive) {
+    if (!active) {
       setHoveredInfo(null);
       setSelectedMetadata(null);
       return;

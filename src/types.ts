@@ -118,6 +118,7 @@ export interface StudyMaterial {
   title: string;
   type: MaterialType;
   url: string;
+  urlType?: string;
   description: string;
   durationOrPages?: string;
   currentVersion: number;
@@ -208,7 +209,8 @@ export interface Session {
   rating: number;
   ratingCount: number;
   trainerName?: string;
-  status?: 'Published' | 'Draft' | 'Archived';
+  status?: 'Published' | 'Draft' | 'Archived' | 'Publish' | 'Archive';
+  videoUrl?: string;
 }
 
 export interface PersonalNote {

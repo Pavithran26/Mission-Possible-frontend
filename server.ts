@@ -44,7 +44,8 @@ const getGeminiClient = () => {
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const requestedPort = Number(process.env.PORT || 3000);
+  const PORT = requestedPort;
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -209,7 +210,9 @@ async function startServer() {
 
     if (passed) {
       currentUser.xp += 150;
-      currentUser.todayMinutesSpent += Math.round(timeTakenSeconds / 60);
+      if (typeof timeTakenSeconds === 'number' && !Number.isNaN(timeTakenSeconds)) {
+        currentUser.todayMinutesSpent += Math.round(timeTakenSeconds / 60);
+      }
     }
 
     res.json({
@@ -510,8 +513,8 @@ User Query: ${message}`
     });
   }
 
-  app.listen(PORT, "localhost0", () => {
-    console.log(`Server running on http://localhost0:${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on http://localhost${PORT}`);
   });
 }
 

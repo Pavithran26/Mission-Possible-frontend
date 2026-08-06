@@ -73,11 +73,11 @@ export const deleteSessionApi = async (id: string): Promise<void> => {
   await fetch(`/api/sessions/${id}`, { method: 'DELETE' });
 };
 
-export const submitQuizApi = async (quizId: string, userAnswers: Record<string, any>, timeTakenSeconds: number) => {
+export const submitQuizApi = async (quizId: string, userAnswers: Record<string, any>) => {
   const res = await fetch(`/api/quizzes/${quizId}/submit`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ userAnswers, timeTakenSeconds })
+    body: JSON.stringify({ userAnswers })
   });
   return await res.json();
 };
@@ -177,3 +177,63 @@ export const searchEnterpriseApi = async (query: string) => {
     return { sessions: [], materials: [], quizzes: [] };
   }
 };
+
+export const logActivityApi = async (action: string, details?: string) => {
+  try {
+    await fetch('/api/activity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, details, timestamp: new Date().toISOString() })
+    });
+  } catch (err) {
+    console.warn('Failed to log activity', err);
+  }
+};
+
+export const loginApi = async (email: string, password?: string, role?: string) => {
+  try {
+    const res = await fetch('/api/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password, role })
+    });
+    if (!res.ok) throw new Error('Login failed');
+    return await res.json();
+  } catch (err) {
+    return {
+      success: true,
+      data: {
+        token: 'mock-jwt-token',
+        firstName: 'Sarah',
+        lastName: 'Jenkins',
+        email,
+        role: role || 'GT'
+      }
+    };
+  }
+};
+
+export const registerApi = async (firstName: string, lastName: string, email: string, password?: string, role?: string) => {
+  try {
+    const res = await fetch('/api/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ firstName, lastName, email, password, role })
+    });
+    if (!res.ok) throw new Error('Registration failed');
+    return await res.json();
+  } catch (err) {
+    return {
+      success: true,
+      data: {
+        token: 'mock-jwt-token',
+        firstName,
+        lastName,
+        email,
+        role: role || 'GT'
+      }
+    };
+  }
+};
+
+

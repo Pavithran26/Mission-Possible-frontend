@@ -142,17 +142,17 @@ export const AuthModal: React.FC<AuthModalProps> = ({
 
         {/* Header */}
         <div className="text-center space-y-2 mb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200/80 text-[11px] font-semibold text-blue-700 font-mono shadow-sm">
+          {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50/90 border border-blue-200/80 text-[11px] font-semibold text-blue-700 font-mono shadow-sm">
             <Building2 className="w-3.5 h-3.5 text-blue-600" />
-            <span>GT Learning Hub Enterprise</span>
-          </div>
+            <span>GT Companion</span>
+          </div> */}
 
           <h2 className="text-2xl font-extrabold tracking-tight text-slate-900">
-            {mode === 'login' ? 'Corporate Login' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
+            {mode === 'login' ? 'Welcome to GT Companion' : mode === 'signup' ? 'Create Account' : 'Reset Password'}
           </h2>
           <p className="text-xs text-slate-600 font-medium">
             {mode === 'login'
-              ? 'Access your structured learning portal or administration tools'
+              ? 'Your companion for knowledge, resources, and growth.'
               : mode === 'signup'
               ? 'Register your employee profile for GT Learning Hub'
               : 'Enter your employee email and set your new password'}
@@ -184,7 +184,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               }`}
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              <span>L&D Admin</span>
+              <span>Administrator</span>
             </button>
           </div>
         )}

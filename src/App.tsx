@@ -40,13 +40,14 @@ export function App() {
   
   // Navigation State
   const [activePortal, setActivePortal] = useState<'Landing' | 'GT' | 'Admin'>('Landing');
-  const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub'>('sessions');
+  const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub' | 'playground'>('sessions');
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>('dashboard');
 
   // Detail Selection State
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
   const [activeAdminSession, setActiveAdminSession] = useState<Session | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
+  const [restoredActiveQuiz, setRestoredActiveQuiz] = useState<boolean>(false);
 
   // Features State
   const [inspectModeActive, setInspectModeActive] = useState<boolean>(false);
@@ -60,6 +61,7 @@ export function App() {
       title: 'New Material Version Added',
       message: 'Version 2.1 of .NET Memory Profiling guide has been published by Admin.',
       timestamp: '10 mins ago',
+      type: 'material',
       read: false
     },
     {
@@ -67,6 +69,7 @@ export function App() {
       title: 'Batch Leaderboard Updated',
       message: 'You unlocked C# Champion badge (+100 XP)!',
       timestamp: '1 hour ago',
+      type: 'announcement',
       read: false
     }
   ]);
@@ -123,6 +126,34 @@ export function App() {
     }).catch(err => console.error(err));
   }, []);
 
+  useEffect(() => {
+    if (restoredActiveQuiz || !sessions.length) return;
+    const savedQuizId = sessionStorage.getItem('activeQuizId');
+    if (!savedQuizId) return;
+
+    const sessionContainingQuiz = sessions.find(s => (s.quizzes || []).some(q => q.id === savedQuizId));
+    const savedQuiz = sessionContainingQuiz?.quizzes?.find(q => q.id === savedQuizId) || null;
+    if (savedQuiz) {
+      setSelectedSessionId(sessionContainingQuiz?.id || null);
+      setActiveQuiz(savedQuiz);
+    }
+    setRestoredActiveQuiz(true);
+  }, [sessions, restoredActiveQuiz]);
+
+  useEffect(() => {
+    if (restoredActiveQuiz || !sessions.length) return;
+    const savedQuizId = sessionStorage.getItem('activeQuizId');
+    if (!savedQuizId) return;
+
+    const sessionContainingQuiz = sessions.find(s => (s.quizzes || []).some(q => q.id === savedQuizId));
+    const savedQuiz = sessionContainingQuiz?.quizzes?.find(q => q.id === savedQuizId) || null;
+    if (savedQuiz) {
+      setSelectedSessionId(sessionContainingQuiz?.id || null);
+      setActiveQuiz(savedQuiz);
+    }
+    setRestoredActiveQuiz(true);
+  }, [sessions, restoredActiveQuiz]);
+
   // Handlers
   const handleToggleBookmark = (sessionId: string) => {
     setSessions(prev => prev.map(s => {
@@ -149,7 +180,13 @@ export function App() {
     setSessions(prev => prev.filter(s => s.id !== sessionId));
   };
 
-  const selectedSession = sessions.find(s => s.id === selectedSessionId);
+  const rawSelectedSession = sessions.find(s => s.id === selectedSessionId);
+  const selectedSession = rawSelectedSession ? {
+    ...rawSelectedSession,
+    studyMaterials: rawSelectedSession.studyMaterials || [],
+    quizzes: rawSelectedSession.quizzes || [],
+    discussions: []
+  } : undefined;
   const bookmarkedSessions = sessions.filter(s => s.isBookmarked);
 
   return (
@@ -240,7 +277,10 @@ export function App() {
             {activeQuiz ? (
               <QuizView
                 quiz={activeQuiz}
-                onBack={() => setActiveQuiz(null)}
+                onBack={() => {
+                  setActiveQuiz(null);
+                  sessionStorage.removeItem('activeQuizId');
+                }}
                 onQuizCompleted={(score) => {
                   setCurrentUser(prev => ({
                     ...prev,
@@ -254,6 +294,7 @@ export function App() {
                 onBack={() => setSelectedSessionId(null)}
                 onStartQuiz={(quiz) => {
                   setActiveQuiz(quiz);
+                  sessionStorage.setItem('activeQuizId', quiz.id);
                   logActivityApi('StartQuiz', `User started quiz for session: ${selectedSession.name}`);
                 }}
                 onToggleBookmark={handleToggleBookmark}
@@ -287,7 +328,10 @@ export function App() {
               <SessionDetailView
                 session={selectedSession}
                 onBack={() => setSelectedSessionId(null)}
-                onStartQuiz={(quiz) => setActiveQuiz(quiz)}
+                onStartQuiz={(quiz) => {
+                  setActiveQuiz(quiz);
+                  sessionStorage.setItem('activeQuizId', quiz.id);
+                }}
                 onToggleBookmark={handleToggleBookmark}
               />
             ) : (

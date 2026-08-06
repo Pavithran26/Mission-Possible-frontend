@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Sparkles, 
-  Code2, 
-  ShieldCheck, 
-  Database, 
-  Cloud, 
-  Cpu, 
-  BookOpen, 
-  CheckCircle2, 
-  ArrowRight, 
-  X, 
+import {
+  Sparkles,
+  Code2,
+  ShieldCheck,
+  Database,
+  Cloud,
+  Cpu,
+  BookOpen,
+  CheckCircle2,
+  ArrowRight,
+  X,
   Star,
   Zap,
   Layers,
@@ -191,7 +191,7 @@ export const PopCardGrid: React.FC<PopCardGridProps> = ({
 
   return (
     <div className="relative w-full py-4 space-y-6 select-none">
-      
+
       {/* Component Title & Instruction Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white border border-slate-200 rounded-3xl p-6 shadow-sm">
         <div className="space-y-1">
@@ -224,9 +224,8 @@ export const PopCardGrid: React.FC<PopCardGridProps> = ({
       */}
       <div
         onClick={handleCloseActiveCard}
-        className={`fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-md transition-opacity duration-300 ease-in-out ${
-          activeCardId !== null ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
+        className={`fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-md transition-opacity duration-300 ease-in-out ${activeCardId !== null ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
         aria-hidden="true"
       />
 
@@ -245,10 +244,9 @@ export const PopCardGrid: React.FC<PopCardGridProps> = ({
               className={`
                 group relative bg-white border rounded-2xl p-6 flex flex-col justify-between
                 transition-all duration-300 ease-out transform cursor-pointer
-                ${
-                  isActive
-                    ? 'z-50 scale-105 sm:scale-108 bg-white border-blue-500 shadow-[0_20px_60px_-10px_rgba(37,99,235,0.25)] ring-2 ring-blue-500/50'
-                    : 'z-10 border-slate-200 hover:border-blue-400 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-blue-900/10'
+                ${isActive
+                  ? 'z-50 scale-105 sm:scale-108 bg-white border-blue-500 shadow-[0_20px_60px_-10px_rgba(37,99,235,0.25)] ring-2 ring-blue-500/50'
+                  : 'z-10 border-slate-200 hover:border-blue-400 hover:-translate-y-1.5 hover:shadow-xl hover:shadow-blue-900/10'
                 }
               `}
               style={{
@@ -369,10 +367,9 @@ export const PopCardGrid: React.FC<PopCardGridProps> = ({
                   data-inspect-id="PrimaryButton"
                   className={`
                     px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 transition-all
-                    ${
-                      isActive
-                        ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30'
-                        : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 shadow-sm'
+                    ${isActive
+                      ? 'bg-blue-600 hover:bg-blue-500 text-white shadow-md shadow-blue-600/30'
+                      : 'bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 shadow-sm'
                     }
                   `}
                 >
