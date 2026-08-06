@@ -22,6 +22,7 @@ import { AIAssistant } from './components/AIAssistant';
 import { InspectModeOverlay } from './components/InspectModeOverlay';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { Bookmark, X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles, Table } from 'lucide-react';
+import { useToast } from './context/ToastContext';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<User>(mockUser);
@@ -100,12 +101,15 @@ export function App() {
     setIsAuthModalOpen(false);
   };
 
+  const { addToast } = useToast();
+
   const handleLogout = () => {
     setIsAuthenticated(false);
     setIsAdminAuthenticated(false);
     setActivePortal('Landing');
     setSelectedSessionId(null);
     setActiveQuiz(null);
+    addToast('info', 'You have been logged out.');
   };
 
   // Reset Admin authentication whenever leaving the Admin portal
@@ -125,12 +129,22 @@ export function App() {
 
   // Handlers
   const handleToggleBookmark = (sessionId: string) => {
-    setSessions(prev => prev.map(s => {
-      if (s.id === sessionId) {
-        return { ...s, isBookmarked: !s.isBookmarked };
+    setSessions(prev => {
+      let isAdded = false;
+      const newSessions = prev.map(s => {
+        if (s.id === sessionId) {
+          isAdded = !s.isBookmarked;
+          return { ...s, isBookmarked: !s.isBookmarked };
+        }
+        return s;
+      });
+      if (isAdded) {
+        addToast('success', 'Session bookmarked');
+      } else {
+        addToast('info', 'Bookmark removed');
       }
-      return s;
-    }));
+      return newSessions;
+    });
   };
 
   const handleSaveAdminSession = (sessionData: Partial<Session>) => {
@@ -138,8 +152,10 @@ export function App() {
     setSessions(prev => {
       const exists = prev.some(s => s.id === sessionData.id);
       if (exists) {
+        addToast('success', 'Session updated successfully');
         return prev.map(s => s.id === sessionData.id ? { ...s, ...sessionData } as Session : s);
       } else {
+        addToast('success', 'New session created successfully');
         return [sessionData as Session, ...prev];
       }
     });
@@ -147,6 +163,7 @@ export function App() {
 
   const handleDeleteAdminSession = (sessionId: string) => {
     setSessions(prev => prev.filter(s => s.id !== sessionId));
+    addToast('info', 'Session deleted');
   };
 
   const selectedSession = sessions.find(s => s.id === selectedSessionId);
@@ -246,6 +263,7 @@ export function App() {
                     ...prev,
                     xp: prev.xp + Math.round(score * 1.5)
                   }));
+                  addToast('success', `Quiz completed! You earned ${Math.round(score * 1.5)} XP.`);
                 }}
               />
             ) : selectedSession ? (
