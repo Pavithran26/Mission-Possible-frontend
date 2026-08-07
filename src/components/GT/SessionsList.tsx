@@ -161,16 +161,34 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     }, 250);
   };
 
-  const filteredSessions = sessions.filter((s) => {
-    const matchesCategory =
-      selectedCategories.length === 0 || selectedCategories.includes(s.category);
-    const matchesQuery =
-      s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (s.studyMaterials && s.studyMaterials.some(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())));
-    return matchesCategory && matchesQuery;
-  });
+  const filteredSessions = sessions
+    .filter((s) => {
+      const matchesCategory =
+        selectedCategories.length === 0 || selectedCategories.includes(s.category);
+      const matchesQuery =
+        s.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (s.studyMaterials && s.studyMaterials.some(m => m.title.toLowerCase().includes(searchQuery.toLowerCase())));
+      return matchesCategory && matchesQuery;
+    })
+    .sort((a, b) => {
+      const getCourseSortPriority = (s: Session): number => {
+        const cat = (s.category || '').toLowerCase();
+        const name = (s.name || '').toLowerCase();
+        if (cat.includes('.net') || name.includes('.net') || cat.includes('c#') || name.includes('c#')) {
+          return 1;
+        }
+        if (cat.includes('sql') || name.includes('sql')) {
+          return 2;
+        }
+        return 3;
+      };
+      const pA = getCourseSortPriority(a);
+      const pB = getCourseSortPriority(b);
+      if (pA !== pB) return pA - pB;
+      return 0;
+    });
 
   return (
     <div className="space-y-6">

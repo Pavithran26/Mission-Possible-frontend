@@ -563,14 +563,15 @@ export function App() {
                 {/* Sub-Navigation Bar for Admin Portal */}
                 <div className="bg-slate-100/90 dark:bg-slate-800/90 backdrop-blur-md p-2 rounded-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 overflow-x-auto no-scrollbar shadow-sm">
                   <button
-                    onClick={() => setAdminViewMode('dashboard')}
+                    onClick={() => setAdminViewMode('tracker')}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      adminViewMode === 'dashboard'
+                      adminViewMode === 'tracker'
                         ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
                         : 'text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                     }`}
                   >
-                    Admin Overview
+                    <Table className={`w-3.5 h-3.5 ${adminViewMode === 'tracker' ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`} />
+                    <span>Session Tracker</span>
                   </button>
                   <button
                     onClick={() => setAdminViewMode('sessions')}
@@ -583,15 +584,14 @@ export function App() {
                     Session Management
                   </button>
                   <button
-                    onClick={() => setAdminViewMode('tracker')}
+                    onClick={() => setAdminViewMode('dashboard')}
                     className={`px-4 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-                      adminViewMode === 'tracker'
+                      adminViewMode === 'dashboard'
                         ? 'bg-emerald-600 text-white shadow-md shadow-emerald-600/30'
                         : 'text-slate-700 dark:text-slate-200 hover:text-emerald-700 dark:hover:text-white hover:bg-slate-200/80 dark:hover:bg-slate-700/70'
                     }`}
                   >
-                    <Table className={`w-3.5 h-3.5 ${adminViewMode === 'tracker' ? 'text-white' : 'text-emerald-600 dark:text-emerald-400'}`} />
-                    <span>Session Tracker</span>
+                    Admin Overview
                   </button>
                 </div>
 

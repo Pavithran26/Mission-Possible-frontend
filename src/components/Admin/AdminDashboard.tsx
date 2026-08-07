@@ -136,6 +136,22 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       sessionMats.some(m => m.title.toLowerCase().includes(searchQuery.toLowerCase()) || m.description.toLowerCase().includes(searchQuery.toLowerCase()));
 
     return matchesCategory && matchesSearch;
+  }).sort((a, b) => {
+    const getCourseSortPriority = (s: Session): number => {
+      const cat = (s.category || '').toLowerCase();
+      const name = (s.name || '').toLowerCase();
+      if (cat.includes('.net') || name.includes('.net') || cat.includes('c#') || name.includes('c#')) {
+        return 1;
+      }
+      if (cat.includes('sql') || name.includes('sql')) {
+        return 2;
+      }
+      return 3;
+    };
+    const pA = getCourseSortPriority(a);
+    const pB = getCourseSortPriority(b);
+    if (pA !== pB) return pA - pB;
+    return 0;
   });
 
   const categories = ['ALL', '.NET with C#', 'Insurance', 'SQL', 'C2C', 'Frontend'];
