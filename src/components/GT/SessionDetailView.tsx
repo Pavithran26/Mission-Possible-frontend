@@ -5,23 +5,23 @@ import { summarizeMaterialAiApi } from '../../services/api';
 import { SessionDiscussionHub } from '../KnowledgeHub/SessionDiscussionHub';
 import { initialDiscussions, initialDocuments, initialChatMessages } from '../../data/knowledgeHubData';
 import { mockUser } from '../../data/mockData';
-import { 
-  ArrowLeft, 
-  BookOpen, 
-  FileText, 
-  Video, 
-  HelpCircle, 
-  MessageSquare, 
-  Award, 
-  Star, 
-  Play, 
-  Download, 
-  ExternalLink, 
-  Sparkles, 
-  Plus, 
-  Send, 
-  Bookmark, 
-  CheckCircle2, 
+import {
+  ArrowLeft,
+  BookOpen,
+  FileText,
+  Video,
+  HelpCircle,
+  MessageSquare,
+  Award,
+  Star,
+  Play,
+  Download,
+  ExternalLink,
+  Sparkles,
+  Plus,
+  Send,
+  Bookmark,
+  CheckCircle2,
   Clock,
   Layers,
   Edit3,
@@ -74,32 +74,16 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
     (initialTab as any) || 'roadmap'
   );
   const [selectedTopicId, setSelectedTopicId] = useState<string>(initialTopicId || '');
-  
+
   const handleTabSelect = (tab: typeof activeTab) => {
     setActiveTab(tab);
     onStateChange?.(tab, selectedTopicId);
   };
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<Record<string, string>>({});
-  
+
   // Overview Video State
-  // Use local project asset for the hero overview video (assets/Final overview.mp4)
-  const defaultOverviewUrl = (() => {
-    // Try project folders in priority: assets (correct), Assests (user-supplied path), then external fallback
-    const candidates = [
-      '../../../assets/Final overview.mp4',
-      '../../../Assests/Final overview.mp4'
-    ];
-    for (const rel of candidates) {
-      try {
-        const resolved = new URL(rel, import.meta.url).href;
-        return resolved;
-      } catch (err) {
-        // try next
-      }
-    }
-    return 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4';
-  })();
+  const defaultOverviewUrl = '/videos/overall-final-vid-new.mp4';
 
   const [overviewVideoUrl, setOverviewVideoUrl] = useState<string>(defaultOverviewUrl);
   const [overviewVideoTitle, setOverviewVideoTitle] = useState<string>('Final overview');
@@ -444,7 +428,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
   return (
     <div className="space-y-8 animate-fadeIn text-slate-900 dark:text-slate-100">
-      
+
       {/* Top Navigation */}
       <div className="flex items-center justify-between">
         <button
@@ -490,15 +474,14 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* THREE CORE FIELDS (Road Map, Provided Materials, Additional Materials) */}
       {/* ======================================================== */}
       <div className="bg-slate-100 p-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2 overflow-x-auto no-scrollbar">
-        
+
         {/* Field 1: Road Map */}
         <button
           onClick={() => handleTabSelect('roadmap')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'roadmap'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'roadmap'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <Layers className={`w-4 h-4 ${activeTab === 'roadmap' ? 'text-white' : 'text-blue-600'}`} />
           <span>Road Map</span>
@@ -507,11 +490,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         {/* Field 2: Provided Materials */}
         <button
           onClick={() => handleTabSelect('provided-materials')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'provided-materials'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'provided-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <FileText className={`w-4 h-4 ${activeTab === 'provided-materials' ? 'text-white' : 'text-blue-600'}`} />
           <span>Provided Materials ({providedMaterialsList.length})</span>
@@ -520,11 +502,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         {/* Field 3: Additional Materials */}
         <button
           onClick={() => handleTabSelect('additional-materials')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'additional-materials'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'additional-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <FolderPlus className={`w-4 h-4 ${activeTab === 'additional-materials' ? 'text-white' : 'text-blue-600'}`} />
           <span>Additional Materials ({additionalMaterialsList.length})</span>
@@ -532,11 +513,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         <button
           onClick={() => handleTabSelect('assignments')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'assignments'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'assignments'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <ClipboardList className={`w-4 h-4 ${activeTab === 'assignments' ? 'text-white' : 'text-blue-600'}`} />
           <span>Assignments ({assignmentsCount})</span>
@@ -544,11 +524,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         <button
           onClick={() => handleTabSelect('quiz')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'quiz'
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'quiz'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <HelpCircle className={`w-4 h-4 ${activeTab === 'quiz' ? 'text-white' : 'text-blue-600'}`} />
           <span>Quiz ({quizzesCount})</span>
@@ -558,11 +537,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         <button
           onClick={() => handleTabSelect('notes')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'notes'
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'notes'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <Edit3 className={`w-3.5 h-3.5 ${activeTab === 'notes' ? 'text-white' : 'text-blue-600'}`} />
           <span>Notes ({personalNotesList.length})</span>
@@ -576,11 +554,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {activeTab === 'roadmap' && (
         <div className="space-y-6 animate-fadeIn">
           {/* <div className="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between text-xs"> */}
-            {/* <div className="flex items-center gap-2 text-blue-900 font-medium">
+          {/* <div className="flex items-center gap-2 text-blue-900 font-medium">
               <Layers className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <span>Interactive Session Roadmap — GTs can view this pathway for structured reference & topic progression.</span>
             </div> */}
-            {/* <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
+          {/* <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
               {(session?.topics || []).length} Topics Total
             </span> */}
           {/* </div> */}
@@ -602,7 +580,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {activeTab === 'provided-materials' && (
         <div className="space-y-6 animate-fadeIn">
-          
+
           {/* Action Header */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -625,11 +603,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   <button
                     key={t}
                     onClick={() => setProvidedFilterType(t)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                      providedFilterType === t
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${providedFilterType === t
                         ? 'bg-blue-600 text-white shadow-sm'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
+                      }`}
                   >
                     {t}
                   </button>
@@ -688,7 +665,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {activeTab === 'additional-materials' && (
         <div className="space-y-6 animate-fadeIn">
-          
+
           {/* Action Header */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -711,11 +688,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   <button
                     key={t}
                     onClick={() => setAdditionalFilterType(t)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                      additionalFilterType === t
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${additionalFilterType === t
                         ? 'bg-purple-600 text-white shadow-sm'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
+                      }`}
                   >
                     {t}
                   </button>

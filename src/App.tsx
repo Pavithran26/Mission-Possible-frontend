@@ -21,6 +21,7 @@ import { AdminAuthGate } from './components/Admin/AdminAuthGate';
 import { AIAssistant } from './components/AIAssistant';
 import { InspectModeOverlay } from './components/InspectModeOverlay';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
+import { UserGuideModal } from './components/UserGuideModal';
 import { Bookmark, X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles, Table } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
@@ -168,6 +169,19 @@ export function App() {
   const [inspectModeActive, setInspectModeActive] = useState<boolean>(false);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isBookmarksOpen, setIsBookmarksOpen] = useState<boolean>(false);
+  const [isUserGuideOpen, setIsUserGuideOpen] = useState<boolean>(false);
+
+  // Keyboard shortcut listener for '?' to open User Guide
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === '?' || (e.shiftKey && e.key === '/')) && !['INPUT', 'TEXTAREA'].includes((e.target as HTMLElement)?.tagName)) {
+        e.preventDefault();
+        setIsUserGuideOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
 
   // Notifications State
   const [notifications, setNotifications] = useState<AppNotification[]>([
@@ -240,7 +254,7 @@ export function App() {
     }));
   }, [isAuthenticated, currentUser, isAdminAuthenticated]);
 
-  // Sync URL Hash whenever navigation state changes
+  // Sync URL Hash whenever navigation state changes (Pushing browser history entries)
   useEffect(() => {
     const newHash = buildHashFromState(
       activePortal,
@@ -254,7 +268,7 @@ export function App() {
     );
 
     if (window.location.hash !== newHash) {
-      window.history.replaceState(null, '', newHash);
+      window.history.pushState(null, '', newHash);
     }
   }, [
     activePortal,
@@ -274,9 +288,17 @@ export function App() {
       setActivePortal(state.portal);
       if (state.portal === 'GT') {
         if ('gtViewMode' in state) setGtViewMode(state.gtViewMode);
-        if ('selectedSessionId' in state) setSelectedSessionId(state.selectedSessionId);
+        setSelectedSessionId('selectedSessionId' in state ? state.selectedSessionId : null);
         if ('sessionTab' in state && state.sessionTab) setSessionDetailTab(state.sessionTab);
         if ('sessionTopicId' in state && state.sessionTopicId !== undefined) setSessionDetailTopicId(state.sessionTopicId);
+        
+        if ('quizId' in state && state.quizId) {
+          const foundSession = sessions.find(s => s.id === state.selectedSessionId);
+          const foundQuiz = foundSession?.quizzes?.find(q => q.id === state.quizId);
+          if (foundQuiz) setActiveQuiz(foundQuiz);
+        } else {
+          setActiveQuiz(null);
+        }
       } else if (state.portal === 'Admin') {
         if ('adminViewMode' in state) setAdminViewMode(state.adminViewMode);
       }
@@ -288,7 +310,7 @@ export function App() {
       window.removeEventListener('hashchange', handleHashChange);
       window.removeEventListener('popstate', handleHashChange);
     };
-  }, []);
+  }, [sessions]);
 
   // Reset Admin authentication whenever leaving the Admin portal
   useEffect(() => {
@@ -418,6 +440,7 @@ export function App() {
           setSelectedSessionId(null);
           logActivityApi('OpenPlayground', 'User opened the interactive coding playground');
         }}
+        onOpenUserGuide={() => setIsUserGuideOpen(true)}
       />
 
       {/* Main Body View Switching */}
@@ -428,6 +451,7 @@ export function App() {
           <LandingPage
             onOpenLogin={handleOpenLogin}
             onOpenSignUp={handleOpenSignUp}
+            onOpenUserGuide={() => setIsUserGuideOpen(true)}
           />
         )}
 
@@ -751,6 +775,12 @@ export function App() {
       <footer className="border-t border-slate-200 py-6 bg-white/80 backdrop-blur-md text-center text-xs text-slate-500 font-mono">
         Enterprise L&D Student Portal System • Built for Graduate Trainee Programs
       </footer>
+
+      {/* User Guide Full-Screen Modal */}
+      <UserGuideModal
+        isOpen={isUserGuideOpen}
+        onClose={() => setIsUserGuideOpen(false)}
+      />
 
     </div>
   );

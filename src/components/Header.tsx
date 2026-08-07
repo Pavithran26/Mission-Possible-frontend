@@ -6,7 +6,8 @@ import {
   ShieldCheck, 
   UserCheck,
   ArrowLeft,
-  LogOut
+  LogOut,
+  BookOpen
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -23,6 +24,7 @@ interface HeaderProps {
   onMarkNotificationsRead: () => void;
   onOpenBookmarks: () => void;
   onOpenPlayground: () => void;
+  onOpenUserGuide?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenLogin,
   onOpenSignUp,
   onLogout,
-  onOpenBookmarks
+  onOpenBookmarks,
+  onOpenUserGuide
 }) => {
   const [showProfilePopover, setShowProfilePopover] = useState(false);
 
@@ -99,6 +102,16 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
           {/* Right Header Actions */}
           <div className="flex items-center gap-3">
+            {/* User Guide Secondary CTA Button */}
+            <button
+              onClick={onOpenUserGuide}
+              className="h-[42px] px-5 rounded-xl text-xs font-bold bg-white text-[#2563EB] border border-[#D7E7FF] hover:bg-[#F3F8FF] hover:border-[#2563EB] active:bg-[#2563EB] active:text-white transition-all duration-200 shadow-sm flex items-center gap-2 -translate-y-0 hover:-translate-y-0.5 cursor-pointer group select-none"
+              title="Open User Guide (Shortcut: Shift + ?)"
+            >
+              <BookOpen className="w-4 h-4 text-[#2563EB] group-active:text-white transition-colors" />
+              <span>User Guide</span>
+            </button>
+
             {!isAuthenticated && (
               <div className="flex items-center gap-2">
                 <button

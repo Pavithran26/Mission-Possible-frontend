@@ -42,6 +42,7 @@ export type CategoryType =
   | '.NET with C#' 
   | 'Frontend' 
   | 'SQL' 
+  | 'Data'
   | 'Data Modeling'
   | 'Database Modelling' 
   | 'C2C'
@@ -54,6 +55,7 @@ export type CategoryType =
   | 'API Development' 
   | 'Microservices' 
   | 'Testing' 
+  | 'Quality Assurance'
   | 'Architecture';
 
 export type RoadmapNodeStatus = 'Locked' | 'Unlocked' | 'In Progress' | 'Completed';

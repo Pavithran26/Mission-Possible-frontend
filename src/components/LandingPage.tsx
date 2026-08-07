@@ -1,18 +1,21 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { 
-  ArrowRight
+  ArrowRight,
+  BookOpen
 } from 'lucide-react';
 
 interface LandingPageProps {
   onOpenLogin: (role?: 'GT' | 'Admin') => void;
   onOpenSignUp: () => void;
   onExplorePlatform?: () => void;
+  onOpenUserGuide?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenLogin,
-  onOpenSignUp
+  onOpenSignUp,
+  onOpenUserGuide
 }) => {
   return (
     <div className="min-h-screen text-slate-900 flex flex-col justify-between relative overflow-hidden selection:bg-blue-600 selection:text-white">

@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { EnterpriseHeroSection } from '../KnowledgeHub/EnterpriseHeroSection';
 import { Session, CategoryType, StudyMaterial } from '../../types';
 import {
   Search,
@@ -174,62 +175,8 @@ export const SessionsList: React.FC<SessionsListProps> = ({
   return (
     <div className="space-y-6">
 
-      {/* Course Academy Hero Banner with Playable Right Video */}
-      <div
-        className="enterprise-hero-card p-6 lg:p-8 relative overflow-hidden"
-        style={{
-          background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
-          borderRadius: '24px',
-          border: '1px solid #BFDBFE',
-          boxShadow: '0 10px 30px rgba(37, 99, 235, 0.08)',
-          color: '#0F172A'
-        }}
-      >
-        <div
-          className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none blur-3xl opacity-40"
-          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 70%)' }}
-        />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-          {/* Left Text Information */}
-          <div className="space-y-3 max-w-xl">
-            <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm"
-              style={{
-                backgroundColor: '#DBEAFE',
-                color: '#1D4ED8',
-                border: '1px solid #BFDBFE'
-              }}
-            >
-              <BookOpen className="w-3.5 h-3.5 text-blue-600" />
-              <span>Resource Center • {filteredSessions.length} Modules</span>
-            </div>
-
-            <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
-              Knowledge Repository
-            </h2>
-
-            <p className="hero-desc text-xs lg:text-sm leading-relaxed text-slate-600 font-medium">
-              Browse notes, guides, documents, and valuable resources organized to support your Graduate Trainee journey.
-            </p>
-          </div>
-
-          {/* Right Side Playable Video Player */}
-          <div
-            className="w-full lg:w-[380px] xl:w-[420px] aspect-video flex-shrink-0 rounded-2xl overflow-hidden border border-slate-300 shadow-lg bg-black relative z-20"
-          >
-            <video
-              src={heroVideo}
-              controls
-              preload="metadata"
-              playsInline
-              className="w-full h-full object-cover"
-            >
-              Your browser does not support HTML5 video playback.
-            </video>
-          </div>
-        </div>
-      </div>
+      {/* Premium Enterprise Hero Section */}
+      <EnterpriseHeroSection modulesCount={sessions.length} />
       {/* Search Bar & Multi-Select Filter Row */}
       <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
