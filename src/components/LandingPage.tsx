@@ -1,18 +1,21 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { 
-  ArrowRight
+  ArrowRight,
+  BookOpen
 } from 'lucide-react';
 
 interface LandingPageProps {
   onOpenLogin: (role?: 'GT' | 'Admin') => void;
   onOpenSignUp: () => void;
   onExplorePlatform?: () => void;
+  onOpenUserGuide?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenLogin,
-  onOpenSignUp
+  onOpenSignUp,
+  onOpenUserGuide
 }) => {
   return (
     <div className="min-h-screen text-slate-900 flex flex-col justify-between relative overflow-hidden selection:bg-blue-600 selection:text-white">
@@ -53,26 +56,30 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             {/* Small Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/80 backdrop-blur-md border border-slate-200 text-blue-700 text-xs font-semibold tracking-wider uppercase shadow-sm">
               <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <span>ENTERPRISE LEARNING MANAGEMENT SYSTEM</span>
+              <span>GRADUATE TRAINEE KNOWLEDGE BASE</span>
             </div>
 
             {/* Product Name & Hero Headline */}
             <div className="space-y-3">
-              <span className="text-xs font-mono font-bold text-slate-500 tracking-widest uppercase block">
-                GT Learning Hub
-              </span>
+              {/* <span className="text-xs font-mono font-bold text-slate-500 tracking-widest uppercase block">
+                GT Compan
+              </span> */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.1] text-slate-900">
-                Build Skills.{' '}
+                Learn from{' '}
                 <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">
-                  Track Progress.
+                  Previous Batches.
                 </span>{' '}
-                Accelerate Growth.
+                <span className="bg-gradient-to-r from-blue-700 via-indigo-600 to-emerald-600 bg-clip-text text-transparent">
+                   Share with 
+                </span>{' '}
+                the Next.
+
               </h1>
             </div>
 
             {/* Supporting Text */}
             <p className="text-slate-600 text-base sm:text-lg font-normal leading-relaxed max-w-2xl mx-auto">
-              A centralized learning platform for Graduate Trainees and L&D teams to learn, assess, manage, and grow through structured enterprise learning paths.
+             A centralized knowledge hub where Graduate Trainees can discover, access, and share notes, guides, documents, and valuable resources throughout their journey.
             </p>
 
             {/* Hero CTAs */}

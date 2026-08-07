@@ -6,7 +6,8 @@ import {
   ShieldCheck, 
   UserCheck,
   ArrowLeft,
-  LogOut
+  LogOut,
+  BookOpen
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -23,6 +24,7 @@ interface HeaderProps {
   onMarkNotificationsRead: () => void;
   onOpenBookmarks: () => void;
   onOpenPlayground: () => void;
+  onOpenUserGuide?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -33,7 +35,8 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenLogin,
   onOpenSignUp,
   onLogout,
-  onOpenBookmarks
+  onOpenBookmarks,
+  onOpenUserGuide
 }) => {
   const [showProfilePopover, setShowProfilePopover] = useState(false);
 
@@ -64,10 +67,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div className="text-left">
               <span className="font-extrabold text-lg tracking-tight bg-gradient-to-r from-slate-900 via-blue-900 to-indigo-700 bg-clip-text text-transparent">
-                GT Learning Hub
+                GT Companion
               </span>
               <span className="block text-[10px] font-mono tracking-wider uppercase font-bold text-blue-700">
-                Enterprise Learning Platform
+                Built by GT's, for GT's
               </span>
             </div>
           </button>
@@ -88,7 +91,6 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </div>
           )}
-
           {/* Unauthenticated Landing Navigation Links */}
           {!isAuthenticated && (
             <nav className="hidden md:flex items-center gap-6 text-xs font-medium text-slate-600">
@@ -98,9 +100,18 @@ export const Header: React.FC<HeaderProps> = ({
             </nav>
           )}
         </div>
-
           {/* Right Header Actions */}
           <div className="flex items-center gap-3">
+            {/* User Guide Secondary CTA Button */}
+            <button
+              onClick={onOpenUserGuide}
+              className="h-[42px] px-5 rounded-xl text-xs font-bold bg-white text-[#2563EB] border border-[#D7E7FF] hover:bg-[#F3F8FF] hover:border-[#2563EB] active:bg-[#2563EB] active:text-white transition-all duration-200 shadow-sm flex items-center gap-2 -translate-y-0 hover:-translate-y-0.5 cursor-pointer group select-none"
+              title="Open User Guide (Shortcut: Shift + ?)"
+            >
+              <BookOpen className="w-4 h-4 text-[#2563EB] group-active:text-white transition-colors" />
+              <span>User Guide</span>
+            </button>
+
             {!isAuthenticated && (
               <div className="flex items-center gap-2">
                 <button
@@ -133,13 +144,13 @@ export const Header: React.FC<HeaderProps> = ({
               </button> */}
 
               {/* Bookmarks Toggle */}
-              <button
+              {/* <button
                 onClick={onOpenBookmarks}
                 className="p-2 text-slate-600 hover:text-amber-600 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-colors relative"
                 title="Saved Bookmarks"
               >
                 <Bookmark className="w-4 h-4" />
-              </button>
+              </button> */}
 
               {/* Profile Menu */}
               <div className="relative">

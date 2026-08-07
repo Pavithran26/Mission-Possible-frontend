@@ -2,26 +2,26 @@ import React, { useState } from 'react';
 import { Session, StudyMaterial, CategoryType } from '../../types';
 import { mockStudyMaterials } from '../../data/mockData';
 import { SessionTracker } from './SessionTracker';
-import { 
-  ShieldCheck, 
-  Plus, 
-  Search, 
-  FileText, 
-  Layers, 
-  HelpCircle, 
-  Edit3, 
-  Trash2, 
-  ExternalLink, 
-  BookOpen, 
-  Download, 
-  Eye, 
-  Clock, 
-  Star, 
-  Award, 
-  CheckCircle2, 
-  X, 
-  Sparkles, 
-  Video, 
+import {
+  ShieldCheck,
+  Plus,
+  Search,
+  FileText,
+  Layers,
+  HelpCircle,
+  Edit3,
+  Trash2,
+  ExternalLink,
+  BookOpen,
+  Download,
+  Eye,
+  Clock,
+  Star,
+  Award,
+  CheckCircle2,
+  X,
+  Sparkles,
+  Video,
   GraduationCap,
   ChevronDown,
   ChevronUp,
@@ -74,7 +74,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
-  
+
   // State for Material Reader Modal
   const [activeReadingMaterial, setActiveReadingMaterial] = useState<StudyMaterial | null>(null);
   const [showVersionHistoryId, setShowVersionHistoryId] = useState<string | null>(null);
@@ -121,20 +121,20 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
   // Filter sessions based on search & category
   const filteredSessions = sessions.filter(session => {
-    const matchesCategory = selectedCategory === 'ALL' || 
+    const matchesCategory = selectedCategory === 'ALL' ||
       session.category === selectedCategory ||
       (selectedCategory === '.NET with C#' && (session.category === '.NET' || session.category === '.NET with C#')) ||
       (selectedCategory === 'SQL' && (session.category === 'SQL' || session.category === 'Data Modeling')) ||
       (selectedCategory === 'C2C' && (session.category === 'C2C' || session.category === 'Campus to Corporate'));
 
     const sessionMats = getSessionMaterials(session);
-    const matchesSearch = 
+    const matchesSearch =
       session.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       session.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
       session.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
       (session.trainerName && session.trainerName.toLowerCase().includes(searchQuery.toLowerCase())) ||
       sessionMats.some(m => m.title.toLowerCase().includes(searchQuery.toLowerCase()) || m.description.toLowerCase().includes(searchQuery.toLowerCase()));
-    
+
     return matchesCategory && matchesSearch;
   });
 
@@ -185,11 +185,10 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
-                  selectedCategory === cat
+                className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${selectedCategory === cat
                     ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
                     : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-                }`}
+                  }`}
               >
                 {cat}
               </button>
@@ -317,7 +316,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               >
                 {/* Session Card Content: Name, Trainer, Category, Description */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  
+
                   {/* Thumbnail & Text Info */}
                   <div className="flex items-start gap-4">
                     <img
@@ -341,13 +340,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                         {/* Status Badge */}
                         <span
-                          className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${
-                            (session.status || (session.isPublished !== false ? 'Published' : 'Draft')) === 'Published'
+                          className={`text-[11px] font-mono font-bold px-2.5 py-0.5 rounded-full border ${(session.status || (session.isPublished !== false ? 'Published' : 'Draft')) === 'Published'
                               ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
                               : (session.status === 'Archived')
-                              ? 'bg-slate-100 text-slate-700 border-slate-300'
-                              : 'bg-amber-50 text-amber-800 border-amber-300'
-                          }`}
+                                ? 'bg-slate-100 text-slate-700 border-slate-300'
+                                : 'bg-amber-50 text-amber-800 border-amber-300'
+                            }`}
                         >
                           {session.status || (session.isPublished !== false ? 'Published' : 'Draft')}
                         </span>
@@ -391,7 +389,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       {activeReadingMaterial && (
         <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-4">
           <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-3xl max-h-[85vh] shadow-2xl flex flex-col overflow-hidden animate-fadeIn">
-            
+
             {/* Modal Header */}
             <div className="p-6 border-b border-slate-800 flex items-center justify-between bg-slate-950">
               <div className="flex items-center gap-3">

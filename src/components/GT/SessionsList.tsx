@@ -1,19 +1,18 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
+import { EnterpriseHeroSection } from '../KnowledgeHub/EnterpriseHeroSection';
 import { Session, CategoryType, StudyMaterial } from '../../types';
-import { 
-  Search, 
-  Filter, 
-  Bookmark, 
-  ChevronDown, 
-  ChevronRight, 
-  Play, 
-  FileText, 
+import {
+  Search,
+  Filter,
+  //Bookmark, 
+  ChevronDown,
+  ChevronRight,
+  Play,
+  FileText,
   FolderOpen,
   BookOpen,
   X,
-  Check,
-  CheckSquare,
-  Square
+  Check
 } from 'lucide-react';
 
 interface SessionsListProps {
@@ -22,23 +21,6 @@ interface SessionsListProps {
   onToggleBookmark: (sessionId: string) => void;
 }
 
-const ALL_CATEGORIES: { raw: CategoryType; display: string }[] = [
-  { raw: '.NET with C#', display: '.NET' },
-  { raw: 'Insurance', display: 'Insurance' },
-  { raw: 'SQL', display: 'SQL' },
-  { raw: 'C2C', display: 'C2C' },
-  { raw: 'Frontend', display: 'Frontend' },
-  { raw: 'Database Modelling', display: 'Database' },
-  { raw: 'Data Engineering', display: 'Data Eng' },
-  { raw: 'System Design', display: 'System Design' },
-  { raw: 'Git', display: 'Git' },
-  { raw: 'DevOps', display: 'DevOps' },
-  { raw: 'API Development', display: 'API Dev' },
-  { raw: 'Testing', display: 'Testing' },
-  { raw: 'Architecture', display: 'Architecture' }
-];
-
-// Professional domain-specific course thumbnails
 const DOMAIN_THUMBNAILS: Record<string, string> = {
   '.NET with C#': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80',
   '.NET': 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800&auto=format&fit=crop&q=80',
@@ -57,28 +39,26 @@ const getDisplayCategory = (category: string): string => {
   return category;
 };
 
+const heroVideo = '/videos/overall-final-vid-new.mp4';
+
 export const SessionsList: React.FC<SessionsListProps> = ({
   sessions,
   onSelectSession,
   onToggleBookmark
 }) => {
-  // Pop to Front Active Card State
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
 
-  // Filter state (multi-select)
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
   const [filterSearchQuery, setFilterSearchQuery] = useState<string>('');
   const [removingChip, setRemovingChip] = useState<string | null>(null);
 
-  // Search state
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [isSearchFocused, setIsSearchFocused] = useState<boolean>(false);
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const filterDropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdowns & active card when clicking outside or pressing ESC
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (searchContainerRef.current && !searchContainerRef.current.contains(e.target as Node)) {
@@ -92,7 +72,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Handle ESC key to close dropdowns and active popped card
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -105,7 +84,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     return () => document.removeEventListener('keydown', handleKeyDown);
   }, []);
 
-  // Collect all study materials across sessions
   const allMaterials = useMemo(() => {
     const map = new Map<string, StudyMaterial>();
     sessions.forEach(s => {
@@ -116,7 +94,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     return Array.from(map.values());
   }, [sessions]);
 
-  // Matching Sessions for Autocomplete
   const suggestedSessions = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
@@ -127,7 +104,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     ).slice(0, 5);
   }, [sessions, searchQuery]);
 
-  // Matching Documents for Autocomplete
   const suggestedDocs = useMemo(() => {
     if (!searchQuery.trim()) return [];
     const q = searchQuery.toLowerCase();
@@ -138,7 +114,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     ).slice(0, 5);
   }, [allMaterials, searchQuery]);
 
-  // Categories present in sessions
   const availableCategories = useMemo(() => {
     const catsMap = new Map<string, number>();
     sessions.forEach(s => {
@@ -152,7 +127,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     }));
   }, [sessions]);
 
-  // Filtered categories in dropdown search
   const filteredCategoryOptions = useMemo(() => {
     if (!filterSearchQuery.trim()) return availableCategories;
     const q = filterSearchQuery.toLowerCase();
@@ -161,7 +135,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     );
   }, [availableCategories, filterSearchQuery]);
 
-  // Toggle individual category selection
   const handleToggleCategory = (categoryRaw: string) => {
     setSelectedCategories(prev => {
       if (prev.includes(categoryRaw)) {
@@ -172,17 +145,14 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     });
   };
 
-  // Select All Categories
   const handleSelectAll = () => {
     setSelectedCategories(availableCategories.map(c => c.raw));
   };
 
-  // Clear All Category Filters
   const handleClearAll = () => {
     setSelectedCategories([]);
   };
 
-  // Remove single filter chip with smooth animation
   const handleRemoveChip = (categoryRaw: string) => {
     setRemovingChip(categoryRaw);
     setTimeout(() => {
@@ -191,7 +161,6 @@ export const SessionsList: React.FC<SessionsListProps> = ({
     }, 250);
   };
 
-  // Final Filtered Sessions
   const filteredSessions = sessions.filter((s) => {
     const matchesCategory =
       selectedCategories.length === 0 || selectedCategories.includes(s.category);
@@ -205,184 +174,127 @@ export const SessionsList: React.FC<SessionsListProps> = ({
 
   return (
     <div className="space-y-6">
-      
-      {/* Course Academy Hero Banner with Modern Enterprise SaaS Styling */}
-      <div 
-        className="enterprise-hero-card p-6 lg:p-8 space-y-5 relative"
-        style={{
-          background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
-          borderRadius: '24px',
-          border: '1px solid #BFDBFE',
-          boxShadow: '0 10px 30px rgba(37, 99, 235, 0.08)',
-          color: '#0F172A'
-        }}
-      >
-        {/* Subtle radial glow behind title */}
-        <div 
-          className="absolute top-0 left-1/4 w-96 h-96 rounded-full pointer-events-none blur-3xl opacity-40" 
-          style={{ background: 'radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(59, 130, 246, 0) 70%)' }}
-        />
-        
-        {/* Header Title & Video */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-2">
-            <div 
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-bold shadow-sm"
-              style={{
-                backgroundColor: '#DBEAFE',
-                color: '#1D4ED8',
-                border: '1px solid #BFDBFE'
+
+      {/* Premium Enterprise Hero Section */}
+      <EnterpriseHeroSection modulesCount={sessions.length} />
+      {/* Search Bar & Multi-Select Filter Row */}
+      <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+          <div ref={searchContainerRef} className="relative w-full sm:w-72 md:w-80">
+            <Search className="w-4 h-4 absolute left-3.5 top-3 z-10 text-blue-600" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setIsSearchFocused(true);
               }}
-            >
-              <BookOpen className="w-3.5 h-3.5" style={{ color: '#2563EB' }} />
-              <span>GT Learning Academy Catalog • {filteredSessions.length} Modules</span>
-            </div>
-            <h2 className="text-2xl lg:text-3xl font-extrabold tracking-tight text-slate-900">
-              Technical Learning Sessions
-            </h2>
-            <p className="hero-desc text-xs lg:text-sm max-w-2xl leading-relaxed text-slate-600 font-medium">
-              Explore hands-on GT engineering curricula, deep-dive technical modules, architectural frameworks, and domain tracks.
-            </p>
-          </div>
-
-          {/* Hero Right Video Player */}
-          <div className="w-full lg:w-80 flex-shrink-0 rounded-2xl overflow-hidden border border-slate-200 shadow-xl bg-white relative">
-            <video 
-              controls
-              poster="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=600&auto=format&fit=crop&q=80"
-              src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4"
-              className="w-full h-40 object-cover"
+              onFocus={() => setIsSearchFocused(true)}
+              placeholder="Search sessions, topics, documents, or tags..."
+              className="w-full rounded-xl pl-10 pr-4 py-2.5 text-xs bg-white text-slate-900 placeholder-slate-500 border border-slate-300 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm transition-all duration-200"
             />
-          </div>
-        </div>
 
-        {/* Search Bar & Multi-Select Dropdown Filter Row */}
-        <div className="pt-4 flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10" style={{ borderTop: '1px solid rgba(37, 99, 235, 0.15)' }}>
-          
-          <div className="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
-            {/* Search Bar on the Left of Dropdown Box */}
-            <div ref={searchContainerRef} className="relative w-full sm:w-72 md:w-80">
-              <Search className="w-4 h-4 absolute left-3.5 top-3 z-10 text-blue-600" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => {
-                  setSearchQuery(e.target.value);
-                  setIsSearchFocused(true);
-                }}
-                onFocus={() => setIsSearchFocused(true)}
-                placeholder="Search sessions, topics, documents, or tags..."
-                className="w-full rounded-xl pl-10 pr-4 py-2.5 text-xs bg-white text-slate-900 placeholder-slate-500 border border-slate-300 focus:outline-none focus:border-blue-600 focus:ring-4 focus:ring-blue-500/12 shadow-sm transition-all duration-200"
-              />
+            {isSearchFocused && searchQuery.trim().length > 0 && (
+              <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto">
+                {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
+                  <div className="p-3 text-center text-xs text-slate-500 font-mono">
+                    No matching sessions or documents found
+                  </div>
+                ) : (
+                  <>
+                    {suggestedSessions.length > 0 && (
+                      <div className="space-y-1.5">
+                        <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block px-2">
+                          Suggested Sessions ({suggestedSessions.length})
+                        </span>
+                        {suggestedSessions.map((s) => (
+                          <div
+                            key={s.id}
+                            onClick={() => {
+                              onSelectSession(s.id);
+                              setIsSearchFocused(false);
+                            }}
+                            className="p-2 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
+                          >
+                            <div className="flex items-center gap-2 min-w-0">
+                              <div className="w-6 h-6 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 flex-shrink-0 font-bold">
+                                <FolderOpen className="w-3.5 h-3.5" />
+                              </div>
+                              <div className="truncate">
+                                <span className="font-bold text-slate-900 group-hover:text-blue-700 block truncate">{s.name}</span>
+                                <span className="text-[10px] text-slate-500 font-mono">{getDisplayCategory(s.category)}</span>
+                              </div>
+                            </div>
+                            <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 flex-shrink-0" />
+                          </div>
+                        ))}
+                      </div>
+                    )}
 
-              {/* Autocomplete Suggestions Dropdown */}
-              {isSearchFocused && searchQuery.trim().length > 0 && (
-                <div className="absolute left-0 right-0 top-full mt-2 z-50 bg-white border border-slate-200 rounded-2xl shadow-2xl p-3 space-y-3 max-h-96 overflow-y-auto animate-fadeIn">
-                  {suggestedSessions.length === 0 && suggestedDocs.length === 0 ? (
-                    <div className="p-3 text-center text-xs text-slate-500 font-mono">
-                      No matching sessions or documents found
-                    </div>
-                  ) : (
-                    <>
-                      {/* Matching Sessions Section */}
-                      {suggestedSessions.length > 0 && (
-                        <div className="space-y-1.5">
-                          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block px-2">
-                            Suggested Sessions ({suggestedSessions.length})
-                          </span>
-                          {suggestedSessions.map((s) => (
+                    {suggestedDocs.length > 0 && (
+                      <div className="space-y-1.5 border-t border-slate-100 pt-2">
+                        <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block px-2">
+                          Suggested Documents ({suggestedDocs.length})
+                        </span>
+                        {suggestedDocs.map((doc) => {
+                          const parentSession = sessions.find(s => s.id === doc.sessionId);
+
+                          return (
                             <div
-                              key={s.id}
+                              key={doc.id}
                               onClick={() => {
-                                onSelectSession(s.id);
+                                onSelectSession(doc.sessionId);
                                 setIsSearchFocused(false);
                               }}
                               className="p-2 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <div className="w-6 h-6 rounded-lg bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 flex-shrink-0 font-bold">
-                                  <FolderOpen className="w-3.5 h-3.5" />
-                                </div>
-                                <div className="truncate">
-                                  <span className="font-bold text-slate-900 group-hover:text-blue-700 block truncate">{s.name}</span>
-                                  <span className="text-[10px] text-slate-500 font-mono">{getDisplayCategory(s.category)}</span>
-                                </div>
-                              </div>
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-blue-600 flex-shrink-0" />
-                            </div>
-                          ))}
-                        </div>
-                      )}
-
-                      {/* Matching Documents Section */}
-                      {suggestedDocs.length > 0 && (
-                        <div className="space-y-1.5 border-t border-slate-100 pt-2">
-                          <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block px-2">
-                            Suggested Documents ({suggestedDocs.length})
-                          </span>
-                          {suggestedDocs.map((doc) => {
-                            const parentSession = sessions.find(s => s.id === doc.sessionId);
-
-                            return (
-                              <div
-                                key={doc.id}
-                                onClick={() => {
-                                  onSelectSession(doc.sessionId);
-                                  setIsSearchFocused(false);
-                                }}
-                                className="p-2 hover:bg-blue-50 rounded-xl cursor-pointer transition-colors flex items-center justify-between text-xs group"
-                              >
-                                <div className="flex items-center gap-2 min-w-0">
-                                  <span className="px-2 py-0.5 rounded border border-purple-200 bg-purple-50 text-purple-700 text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0">
-                                    <FileText className="w-3 h-3" />
-                                    <span>{doc.type}</span>
-                                  </span>
-                                  <div className="truncate">
-                                    <span className="font-bold text-slate-900 group-hover:text-blue-700 block truncate">{doc.title}</span>
-                                    {parentSession && (
-                                      <span className="text-[10px] text-slate-500 font-mono block truncate">
-                                        Session: {parentSession.name}
-                                      </span>
-                                    )}
-                                  </div>
-                                </div>
-                                <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 group-hover:bg-blue-100 flex-shrink-0 ml-2">
-                                  Open Track
+                                <span className="px-2 py-0.5 rounded border border-purple-200 bg-purple-50 text-purple-700 text-[10px] font-mono font-bold flex items-center gap-1 flex-shrink-0">
+                                  <FileText className="w-3 h-3" />
+                                  <span>{doc.type}</span>
                                 </span>
+                                <div className="truncate">
+                                  <span className="font-bold text-slate-900 group-hover:text-blue-700 block truncate">{doc.title}</span>
+                                  {parentSession && (
+                                    <span className="text-[10px] text-slate-500 font-mono block truncate">
+                                      Session: {parentSession.name}
+                                    </span>
+                                  )}
+                                </div>
                               </div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              )}
-            </div>
+                              <span className="text-[10px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200 group-hover:bg-blue-100 flex-shrink-0 ml-2">
+                                Open Track
+                              </span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </>
+                )}
+              </div>
+            )}
+          </div>
 
-            {/* Dropdown Box to the Right of Search Bar */}
-            <div ref={filterDropdownRef} className="relative inline-block text-left w-full sm:w-auto">
-              {/* Filter Dropdown Trigger Button */}
-              <button
-                type="button"
-                onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-                className="px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all duration-200 w-full sm:w-auto justify-between sm:justify-start bg-white text-slate-900 border border-slate-300 hover:bg-blue-50 hover:border-blue-200 shadow-sm"
-              >
-                <div className="flex items-center gap-2.5">
-                  <Filter className="w-3.5 h-3.5 text-blue-600" />
-                  <span>
-                    {selectedCategories.length === 0
-                      ? 'All Learning Tracks'
-                      : `Learning Tracks (${selectedCategories.length} selected)`}
-                  </span>
-                </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
-              </button>
+          <div ref={filterDropdownRef} className="relative inline-block text-left w-full sm:w-auto">
+            <button
+              type="button"
+              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
+              className="px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2.5 transition-all duration-200 w-full sm:w-auto justify-between sm:justify-start bg-white text-slate-900 border border-slate-300 hover:bg-blue-50 hover:border-blue-200 shadow-sm"
+            >
+              <div className="flex items-center gap-2.5">
+                <Filter className="w-3.5 h-3.5 text-blue-600" />
+                <span>
+                  {selectedCategories.length === 0
+                    ? 'All Learning Tracks'
+                    : `Learning Tracks (${selectedCategories.length} selected)`}
+                </span>
+              </div>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-500 transition-transform duration-200 ${isFilterDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
 
-            {/* Dropdown Menu */}
             {isFilterDropdownOpen && (
-              <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-2xl p-3 z-50 space-y-3 animate-fadeIn">
-                {/* Search Box Inside Dropdown */}
+              <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-2xl p-3 z-50 space-y-3">
                 <div className="relative">
                   <Search className="w-3 h-3 text-slate-400 absolute left-2.5 top-2.5" />
                   <input
@@ -394,23 +306,15 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                   />
                 </div>
 
-                {/* Dropdown Actions: Select All / Clear All */}
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2 text-[11px] font-semibold">
-                  <button
-                    onClick={handleSelectAll}
-                    className="text-blue-600 hover:text-blue-800 transition-colors"
-                  >
+                  <button onClick={handleSelectAll} className="text-blue-600 hover:text-blue-800">
                     Select All
                   </button>
-                  <button
-                    onClick={handleClearAll}
-                    className="text-slate-500 hover:text-slate-800 transition-colors"
-                  >
+                  <button onClick={handleClearAll} className="text-slate-500 hover:text-slate-800">
                     Clear All
                   </button>
                 </div>
 
-                {/* Checkboxes List */}
                 <div className="max-h-56 overflow-y-auto space-y-1 pr-1 custom-scrollbar">
                   {filteredCategoryOptions.map((cat) => {
                     const isChecked = selectedCategories.includes(cat.raw);
@@ -422,11 +326,10 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                       >
                         <div className="flex items-center gap-2.5">
                           <div
-                            className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${
-                              isChecked
-                                ? 'bg-blue-600 border-blue-600 text-white'
-                                : 'border-slate-300 bg-white group-hover:border-blue-400'
-                            }`}
+                            className={`w-4 h-4 rounded border flex items-center justify-center transition-all ${isChecked
+                              ? 'bg-blue-600 border-blue-600 text-white'
+                              : 'border-slate-300 bg-white group-hover:border-blue-400'
+                              }`}
                           >
                             {isChecked && <Check className="w-3 h-3 stroke-[3]" />}
                           </div>
@@ -446,61 +349,52 @@ export const SessionsList: React.FC<SessionsListProps> = ({
           </div>
         </div>
 
-          <div className="text-xs text-slate-700 font-mono font-medium">
-            Showing <span className="font-extrabold text-blue-950">{filteredSessions.length}</span> of <span className="font-extrabold text-blue-950">{sessions.length}</span> tracks
-          </div>
+        <div className="text-xs text-slate-700 font-mono font-medium">
+          Showing <span className="font-extrabold text-blue-950">{filteredSessions.length}</span> of <span className="font-extrabold text-blue-950">{sessions.length}</span> tracks
         </div>
-
-        {/* Selected Filter Chips Row */}
-        {selectedCategories.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-blue-200/60">
-            <span className="text-[11px] text-slate-600 font-mono font-medium">Selected Filters:</span>
-            {selectedCategories.map((catRaw) => {
-              const display = getDisplayCategory(catRaw);
-              const isRemoving = removingChip === catRaw;
-
-              return (
-                <div
-                  key={catRaw}
-                  className={`bg-white/90 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 text-xs text-blue-950 font-bold shadow-sm transition-all duration-250 ease-in-out ${
-                    isRemoving ? 'opacity-0 scale-90 -translate-x-2' : 'opacity-100 scale-100'
-                  }`}
-                >
-                  <span>{display}</span>
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveChip(catRaw)}
-                    aria-label="Remove filter"
-                    title="Remove filter"
-                    className="p-0.5 rounded-full hover:bg-rose-500 transition-all duration-200 group focus:outline-none"
-                  >
-                    <X className="w-3.5 h-3.5 text-blue-700 group-hover:text-white transition-colors" />
-                  </button>
-                </div>
-              );
-            })}
-
-            <button
-              onClick={handleClearAll}
-              className="text-xs text-blue-700 hover:text-blue-900 font-bold underline underline-offset-2 ml-1 transition-colors"
-            >
-              Reset Filters
-            </button>
-          </div>
-        )}
-
       </div>
 
-      {/* Semi-transparent dark overlay fading in behind the active popped card */}
+      {selectedCategories.length > 0 && (
+        <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-blue-200/60">
+          <span className="text-[11px] text-slate-600 font-mono font-medium">Selected Filters:</span>
+          {selectedCategories.map((catRaw) => {
+            const display = getDisplayCategory(catRaw);
+            const isRemoving = removingChip === catRaw;
+
+            return (
+              <div
+                key={catRaw}
+                className={`bg-white/90 border border-blue-200 px-3 py-1 rounded-full flex items-center gap-2 text-xs text-blue-950 font-bold shadow-sm transition-all duration-250 ease-in-out ${isRemoving ? 'opacity-0 scale-90 -translate-x-2' : 'opacity-100 scale-100'
+                  }`}
+              >
+                <span>{display}</span>
+                <button
+                  type="button"
+                  onClick={() => handleRemoveChip(catRaw)}
+                  className="p-0.5 rounded-full hover:bg-rose-500 transition-all duration-200 group focus:outline-none"
+                >
+                  <X className="w-3.5 h-3.5 text-blue-700 group-hover:text-white transition-colors" />
+                </button>
+              </div>
+            );
+          })}
+
+          <button
+            onClick={handleClearAll}
+            className="text-xs text-blue-700 hover:text-blue-900 font-bold underline underline-offset-2 ml-1"
+          >
+            Reset Filters
+          </button>
+        </div>
+      )}
+
       <div
         onClick={() => setActiveCardId(null)}
-        className={`fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300 ease-in-out ${
-          activeCardId !== null ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        aria-hidden="true"
+        className={`fixed inset-0 z-40 bg-slate-950/80 backdrop-blur-md transition-opacity duration-300 ease-in-out ${activeCardId !== null ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+          }`}
       />
 
-      {/* Grid of Sessions Cards with Pop-to-Front Interaction */}
+      {/* Grid of Session Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
         {filteredSessions.map((session) => {
           const thumbnail = getThumbnail(session.category, session.thumbnail);
@@ -514,19 +408,16 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               className={`
                 group relative bg-white border rounded-[20px] overflow-hidden flex flex-col justify-between h-full
                 transition-all duration-300 ease-out transform cursor-pointer
-                ${
-                  isActive
-                    ? 'z-50 scale-105 sm:scale-108 border-blue-600 shadow-[0_20px_50px_rgba(37,99,235,0.25)] ring-2 ring-blue-500/40'
-                    : 'z-10 border-slate-200 hover:border-blue-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(37,99,235,0.15)]'
+                ${isActive
+                  ? 'z-50 scale-105 sm:scale-108 border-blue-600 shadow-[0_20px_50px_rgba(37,99,235,0.25)] ring-2 ring-blue-500/40'
+                  : 'z-10 border-slate-200 hover:border-blue-300 hover:-translate-y-1 hover:shadow-[0_18px_40px_rgba(37,99,235,0.15)]'
                 }
               `}
               style={{
                 boxShadow: isActive ? undefined : '0 10px 30px rgba(15, 23, 42, 0.08)'
               }}
-              data-inspect-id="SessionCard"
             >
               <div>
-                {/* Thumbnail & Bookmark / Close Button */}
                 <div className="relative h-44 overflow-hidden">
                   <img
                     src={thumbnail}
@@ -534,8 +425,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-in-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 via-transparent to-transparent" />
-                  
-                  {/* Category & Trainer Badges Overlay on Image */}
+
                   <div className="absolute top-3 left-3 right-14 flex flex-wrap items-center gap-1.5 z-10">
                     <span className="bg-[#DBEAFE] text-[#1D4ED8] text-[11px] font-mono font-bold px-2.5 py-1 rounded-full border border-[#BFDBFE] shadow-sm">
                       {categoryDisplay}
@@ -547,9 +437,8 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                     )}
                   </div>
 
-                  {/* Bookmark or Pop Dismiss Button */}
                   <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10">
-                    {isActive ? (
+                    {isActive && (
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
@@ -560,28 +449,11 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                       >
                         <X className="w-4 h-4" />
                       </button>
-                    ) : (
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          onToggleBookmark(session.id);
-                        }}
-                        className={`w-8 h-8 rounded-full bg-white border flex items-center justify-center transition-all duration-200 hover:scale-110 shadow-md ${
-                          session.isBookmarked
-                            ? 'text-blue-600 fill-blue-600 border-blue-300'
-                            : 'text-blue-600 border-slate-200 hover:border-blue-400 hover:bg-blue-50'
-                        }`}
-                        title="Save Learning Track"
-                      >
-                        <Bookmark className={`w-4 h-4 ${session.isBookmarked ? 'fill-blue-600 text-blue-600' : 'text-blue-600'}`} />
-                      </button>
                     )}
                   </div>
                 </div>
 
-                {/* Card Body - Name and Description */}
                 <div className="p-5 space-y-3">
-                  {/* Session Name & Description */}
                   <div className="space-y-1.5">
                     <h3 className={`text-base font-bold transition-colors leading-snug ${isActive ? 'text-blue-700 text-lg' : 'text-slate-900 group-hover:text-blue-700'}`}>
                       {session.name}
@@ -592,9 +464,8 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                     </p>
                   </div>
 
-                  {/* Expanded Active Details */}
                   {isActive && session.topics && session.topics.length > 0 && (
-                    <div className="pt-2 border-t border-slate-200 space-y-2 animate-fadeIn">
+                    <div className="pt-2 border-t border-slate-200 space-y-2">
                       <span className="text-[10px] font-mono font-bold text-blue-700 uppercase tracking-wider block">
                         Included Topics ({session.topics.length})
                       </span>
@@ -611,14 +482,12 @@ export const SessionsList: React.FC<SessionsListProps> = ({
                 </div>
               </div>
 
-              {/* Card Footer Primary Button */}
               <div className="p-5 pt-0">
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
                     onSelectSession(session.id);
                   }}
-                  data-inspect-id="PrimaryButton"
                   style={{
                     background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
                     border: '1px solid #BFDBFE',

@@ -31,9 +31,9 @@
 /* Light Modern Blue Theme Enterprise Hero Card */
 .enterprise-hero-card {
   background: linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%) !important;
-  border-radius: 24px !important;
+  border-radius: 28px !important;
   border: 1px solid #BFDBFE !important;
-  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08) !important;
+  box-shadow: 0 12px 40px rgba(37, 99, 235, 0.08) !important;
   color: #0F172A !important;
   position: relative;
   overflow: hidden;
@@ -177,8 +177,13 @@ body {
 
 /* Keyframe for rotating animation */
 @keyframes spin-gradient {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-spin-gradient {

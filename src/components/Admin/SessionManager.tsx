@@ -1050,34 +1050,9 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                   <h3 className="font-extrabold text-blue-950 text-sm">Session Quiz & Assessments</h3>
                   <p className="text-slate-600 font-medium">Configure questions, correct answers, time limit, and passing thresholds.</p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const currentQuizzes = editingSession.quizzes || [];
-                    const defaultQuiz = currentQuizzes[0] || {
-                      id: `quiz-${Date.now()}`,
-                      sessionId: editingSession.id || '',
-                      title: `${editingSession.name || 'Session'} Assessment`,
-                      passingScorePercent: 80,
-                      timeLimitMinutes: 15,
-                      questions: []
-                    };
-                    const newQ: QuizQuestion = {
-                      id: `q-${Date.now()}`,
-                      type: 'MCQ',
-                      prompt: 'Enter new question prompt...',
-                      options: ['Option A', 'Option B', 'Option C', 'Option D'],
-                      correctAnswer: 'Option A',
-                      explanation: 'Explanation for correct answer.'
-                    };
-                    defaultQuiz.questions = [...(defaultQuiz.questions || []), newQ];
-                    setEditingSession({ ...editingSession, quizzes: [defaultQuiz] });
-                  }}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all"
-                >
-                  <Plus className="w-4 h-4" /> Add Quiz Question
-                </button>
               </div>
+
+              {/* Add button moved below the question form so admins can fill fields then click Add */}
 
               {((editingSession.quizzes?.[0]?.questions) || []).map((q, qIdx) => (
                 <div key={q.id || qIdx} className="bg-white/90 backdrop-blur-sm border border-slate-200/90 rounded-2xl p-4 space-y-3 shadow-sm">
@@ -1152,6 +1127,50 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                   </div>
                 </div>
               ))}
+
+                <div className="flex justify-end pt-3">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const currentQuizzes = editingSession.quizzes || [];
+                      const defaultQuiz = currentQuizzes[0] || {
+                        id: `quiz-${Date.now()}`,
+                        sessionId: editingSession.id || '',
+                        title: `${editingSession.name || 'Session'} Assessment`,
+                        passingScorePercent: 80,
+                        timeLimitMinutes: 15,
+                        questions: []
+                      };
+                      const newQ: QuizQuestion = {
+                        id: `q-${Date.now()}`,
+                        type: 'MCQ',
+                        prompt: 'Enter new question prompt...',
+                        options: ['Option A', 'Option B', 'Option C', 'Option D'],
+                        correctAnswer: 'Option A',
+                        explanation: 'Explanation for correct answer.',
+                        points: 10
+                      };
+                      defaultQuiz.questions = [...(defaultQuiz.questions || []), newQ];
+                      setEditingSession({ ...editingSession, quizzes: [defaultQuiz] });
+
+                      // UX: after adding, scroll to and focus the newly created question prompt input
+                      setTimeout(() => {
+                        const el = document.getElementById(`${newQ.id}-prompt`);
+                        if (el) {
+                          try {
+                            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            (el as HTMLInputElement).focus();
+                          } catch (err) {
+                            // ignore in non-browser environments
+                          }
+                        }
+                      }, 80);
+                    }}
+                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3 py-1.5 rounded-xl flex items-center gap-1.5 shadow-md shadow-blue-600/20 transition-all text-xs"
+                  >
+                    <Plus className="w-3.5 h-3.5" /> Add Quiz Question
+                  </button>
+                </div>
             </div>
           )}
 

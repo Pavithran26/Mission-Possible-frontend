@@ -42,6 +42,7 @@ export type CategoryType =
   | '.NET with C#' 
   | 'Frontend' 
   | 'SQL' 
+  | 'Data'
   | 'Data Modeling'
   | 'Database Modelling' 
   | 'C2C'
@@ -54,6 +55,7 @@ export type CategoryType =
   | 'API Development' 
   | 'Microservices' 
   | 'Testing' 
+  | 'Quality Assurance'
   | 'Architecture';
 
 export type RoadmapNodeStatus = 'Locked' | 'Unlocked' | 'In Progress' | 'Completed';
@@ -118,6 +120,7 @@ export interface StudyMaterial {
   title: string;
   type: MaterialType;
   url: string;
+  urlType?: string;
   description: string;
   durationOrPages?: string;
   currentVersion: number;
@@ -208,7 +211,8 @@ export interface Session {
   rating: number;
   ratingCount: number;
   trainerName?: string;
-  status?: 'Published' | 'Draft' | 'Archived';
+  status?: 'Published' | 'Draft' | 'Archived' | 'Publish' | 'Archive';
+  videoUrl?: string;
 }
 
 export interface PersonalNote {

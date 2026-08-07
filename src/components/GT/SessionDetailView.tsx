@@ -5,23 +5,23 @@ import { summarizeMaterialAiApi } from '../../services/api';
 import { SessionDiscussionHub } from '../KnowledgeHub/SessionDiscussionHub';
 import { initialDiscussions, initialDocuments, initialChatMessages } from '../../data/knowledgeHubData';
 import { mockUser } from '../../data/mockData';
-import { 
-  ArrowLeft, 
-  BookOpen, 
-  FileText, 
-  Video, 
-  HelpCircle, 
-  MessageSquare, 
-  Award, 
-  Star, 
-  Play, 
-  Download, 
-  ExternalLink, 
-  Sparkles, 
-  Plus, 
-  Send, 
-  Bookmark, 
-  CheckCircle2, 
+import {
+  ArrowLeft,
+  BookOpen,
+  FileText,
+  Video,
+  HelpCircle,
+  MessageSquare,
+  Award,
+  Star,
+  Play,
+  Download,
+  ExternalLink,
+  Sparkles,
+  Plus,
+  Send,
+  Bookmark,
+  CheckCircle2,
   Clock,
   Layers,
   Edit3,
@@ -55,27 +55,38 @@ interface SessionDetailViewProps {
   onBack: () => void;
   onStartQuiz: (quiz: Quiz) => void;
   onToggleBookmark: (sessionId: string) => void;
+  initialTab?: string;
+  initialTopicId?: string;
+  onStateChange?: (tab: string, topicId?: string) => void;
 }
 
 export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   session,
   onBack,
   onStartQuiz,
-  onToggleBookmark
+  onToggleBookmark,
+  initialTab,
+  initialTopicId,
+  onStateChange
 }) => {
   // 3 Primary Fields / Tabs: 'roadmap' (Road Map), 'provided-materials' (Provided Materials), 'additional-materials' (Additional Materials)
-  const [activeTab, setActiveTab] = useState<'roadmap' | 'provided-materials' | 'additional-materials' | 'assignments' | 'quiz' | 'notes'>('roadmap');
-  const [selectedTopicId, setSelectedTopicId] = useState<string>(session?.topics?.[0]?.id || '');
+  const [activeTab, setActiveTab] = useState<'roadmap' | 'provided-materials' | 'additional-materials' | 'assignments' | 'quiz' | 'notes'>(
+    (initialTab as any) || 'roadmap'
+  );
+  const [selectedTopicId, setSelectedTopicId] = useState<string>(initialTopicId || '');
+
+  const handleTabSelect = (tab: typeof activeTab) => {
+    setActiveTab(tab);
+    onStateChange?.(tab, selectedTopicId);
+  };
   const [summarizingId, setSummarizingId] = useState<string | null>(null);
   const [summaries, setSummaries] = useState<Record<string, string>>({});
-  
+
   // Overview Video State
-  const [overviewVideoUrl, setOverviewVideoUrl] = useState<string>(
-    'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
-  );
-  const [overviewVideoTitle, setOverviewVideoTitle] = useState<string>(
-    'Session Overview'
-  );
+  const defaultOverviewUrl = '/videos/overall-final-vid-new.mp4';
+
+  const [overviewVideoUrl, setOverviewVideoUrl] = useState<string>(defaultOverviewUrl);
+  const [overviewVideoTitle, setOverviewVideoTitle] = useState<string>('Final overview');
   const [overviewVideoDesc, setOverviewVideoDesc] = useState<string>(
     `Comprehensive attendee video walkthrough covering key architectural concepts, trainer expectations, and session prerequisites for ${session.name}.`
   );
@@ -126,9 +137,9 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       fileSizeOrDuration: '45 mins'
     },
     {
-      id: 'prov-4',
-      title: 'Official Trainer Key Syntax & Cheat Sheet Notes',
-      type: 'Notes / Guide',
+      id: 'prov-notes-1',
+      title: `${session.name} - Quick Trainer Reference Sheet`,
+      type: 'Notes / Guide' as CustomMaterialItem['type'],
       url: '#',
       description: 'Concise reference notes and cheat sheet provided directly by the trainer for quick review.',
       updatedAt: '4 days ago',
@@ -144,6 +155,28 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       updatedAt: 'Official L&D',
       tags: sm.tags || ['Official'],
       fileSizeOrDuration: sm.durationOrPages || 'Standard'
+    })),
+    // Include any materials specifically set on the session by admins
+    ...(session.providedMaterials || []).map((pm, idx) => ({
+      id: `prov-pm-${idx}`,
+      title: pm.title,
+      type: (pm.type === 'PowerPoint' ? 'PowerPoint (PPT)' : pm.type === 'Video' ? 'Video File (MP4)' : pm.type === 'PDF' || pm.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
+      url: pm.url || '#',
+      description: pm.description,
+      updatedAt: 'Provided',
+      tags: pm.tags || ['Provided'],
+      fileSizeOrDuration: pm.durationOrPages || 'Standard'
+    })),
+    // Include any assignment attachments so uploaded docs are discoverable in materials
+    ...(session.assignments || []).filter(a => a.attachmentUrl).map((a, idx) => ({
+      id: `prov-assign-${idx}`,
+      title: `${a.title} (Assignment Attachment)`,
+      type: 'Doc (PDF/Word)' as CustomMaterialItem['type'],
+      url: a.attachmentUrl || '#',
+      description: a.instructions || 'Assignment attachment file',
+      updatedAt: a.dueDate || 'Assignment',
+      tags: ['Assignment'],
+      fileSizeOrDuration: 'Attached File'
     }))
   ]);
 
@@ -193,6 +226,17 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       tags: ['Notes', 'Collaborative'],
       fileSizeOrDuration: 'Text Document'
     }
+    ,
+    ...(session.additionalMaterials || []).map((am, idx) => ({
+      id: `add-am-${idx}`,
+      title: am.title,
+      type: (am.type === 'PowerPoint' ? 'PowerPoint (PPT)' : am.type === 'Video' ? 'Video File (MP4)' : am.type === 'PDF' || am.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
+      url: am.url || '#',
+      description: am.description,
+      updatedAt: 'Additional',
+      tags: am.tags || ['Additional'],
+      fileSizeOrDuration: am.durationOrPages || 'Standard'
+    }))
   ]);
 
   // Modals for Uploading Materials
@@ -301,7 +345,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       id: `note-${Date.now()}`,
       sessionId: session.id,
       topicId: selectedTopicId,
-      topicTitle: 'Your Personal Notes',
+      topicTitle: 'Reference Notes',
       content: newNoteText,
       createdAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       updatedAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -384,7 +428,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
   return (
     <div className="space-y-8 animate-fadeIn text-slate-900 dark:text-slate-100">
-      
+
       {/* Top Navigation */}
       <div className="flex items-center justify-between">
         <button
@@ -430,15 +474,14 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* THREE CORE FIELDS (Road Map, Provided Materials, Additional Materials) */}
       {/* ======================================================== */}
       <div className="bg-slate-100 p-2 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-2 overflow-x-auto no-scrollbar">
-        
+
         {/* Field 1: Road Map */}
         <button
-          onClick={() => setActiveTab('roadmap')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'roadmap'
+          onClick={() => handleTabSelect('roadmap')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'roadmap'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <Layers className={`w-4 h-4 ${activeTab === 'roadmap' ? 'text-white' : 'text-blue-600'}`} />
           <span>Road Map</span>
@@ -446,12 +489,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         {/* Field 2: Provided Materials */}
         <button
-          onClick={() => setActiveTab('provided-materials')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'provided-materials'
+          onClick={() => handleTabSelect('provided-materials')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'provided-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <FileText className={`w-4 h-4 ${activeTab === 'provided-materials' ? 'text-white' : 'text-blue-600'}`} />
           <span>Provided Materials ({providedMaterialsList.length})</span>
@@ -459,36 +501,33 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
 
         {/* Field 3: Additional Materials */}
         <button
-          onClick={() => setActiveTab('additional-materials')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'additional-materials'
+          onClick={() => handleTabSelect('additional-materials')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'additional-materials'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <FolderPlus className={`w-4 h-4 ${activeTab === 'additional-materials' ? 'text-white' : 'text-blue-600'}`} />
           <span>Additional Materials ({additionalMaterialsList.length})</span>
         </button>
 
         <button
-          onClick={() => setActiveTab('assignments')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'assignments'
+          onClick={() => handleTabSelect('assignments')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'assignments'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <ClipboardList className={`w-4 h-4 ${activeTab === 'assignments' ? 'text-white' : 'text-blue-600'}`} />
           <span>Assignments ({assignmentsCount})</span>
         </button>
 
         <button
-          onClick={() => setActiveTab('quiz')}
-          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'quiz'
+          onClick={() => handleTabSelect('quiz')}
+          className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'quiz'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <HelpCircle className={`w-4 h-4 ${activeTab === 'quiz' ? 'text-white' : 'text-blue-600'}`} />
           <span>Quiz ({quizzesCount})</span>
@@ -497,12 +536,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <div className="h-6 w-px bg-slate-300 my-auto mx-1" />
 
         <button
-          onClick={() => setActiveTab('notes')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${
-            activeTab === 'notes'
+          onClick={() => handleTabSelect('notes')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'notes'
               ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
               : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
-          }`}
+            }`}
         >
           <Edit3 className={`w-3.5 h-3.5 ${activeTab === 'notes' ? 'text-white' : 'text-blue-600'}`} />
           <span>Notes ({personalNotesList.length})</span>
@@ -516,11 +554,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {activeTab === 'roadmap' && (
         <div className="space-y-6 animate-fadeIn">
           {/* <div className="bg-blue-50 border border-blue-200 p-4 rounded-2xl flex items-center justify-between text-xs"> */}
-            {/* <div className="flex items-center gap-2 text-blue-900 font-medium">
+          {/* <div className="flex items-center gap-2 text-blue-900 font-medium">
               <Layers className="w-4 h-4 text-blue-600 flex-shrink-0" />
               <span>Interactive Session Roadmap — GTs can view this pathway for structured reference & topic progression.</span>
             </div> */}
-            {/* <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
+          {/* <span className="font-mono text-[11px] font-bold text-blue-700 bg-white px-3 py-1 rounded-lg border border-blue-200">
               {(session?.topics || []).length} Topics Total
             </span> */}
           {/* </div> */}
@@ -528,29 +566,12 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           <InteractiveRoadmap
             topics={session?.topics || []}
             selectedTopicId={selectedTopicId}
-            onSelectTopic={(id) => setSelectedTopicId(id)}
+            onSelectTopic={(id) => {
+              const nextId = selectedTopicId === id ? '' : id;
+              setSelectedTopicId(nextId);
+              onStateChange?.(activeTab, nextId);
+            }}
           />
-
-          {/* Subtopics Breakdown */}
-          {selectedTopic && (
-            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                  <BookOpen className="w-4 h-4 text-blue-600" />
-                  <span>Topic Modules & Subtopics: {selectedTopic.title}</span>
-                </h3>
-                <span className="text-xs font-mono text-slate-500 font-semibold">{(selectedTopic?.subtopics || []).length} Subtopics</span>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 pt-2">
-                {(selectedTopic?.subtopics || []).map((sub) => (
-                  <div key={sub.id} className="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center justify-between">
-                    <span className="font-bold text-slate-800 text-xs">{sub.title}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
       )}
 
@@ -559,7 +580,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {activeTab === 'provided-materials' && (
         <div className="space-y-6 animate-fadeIn">
-          
+
           {/* Action Header */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -582,11 +603,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   <button
                     key={t}
                     onClick={() => setProvidedFilterType(t)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                      providedFilterType === t
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${providedFilterType === t
                         ? 'bg-blue-600 text-white shadow-sm'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
+                      }`}
                   >
                     {t}
                   </button>
@@ -645,7 +665,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {/* ======================================================== */}
       {activeTab === 'additional-materials' && (
         <div className="space-y-6 animate-fadeIn">
-          
+
           {/* Action Header */}
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -668,11 +688,10 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   <button
                     key={t}
                     onClick={() => setAdditionalFilterType(t)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
-                      additionalFilterType === t
+                    className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${additionalFilterType === t
                         ? 'bg-purple-600 text-white shadow-sm'
                         : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                    }`}
+                      }`}
                   >
                     {t}
                   </button>
@@ -807,60 +826,25 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
           </div>
 
           {activeQuiz ? (
-            <div className="grid grid-cols-1 xl:grid-cols-[1.2fr_0.8fr] gap-6">
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-                <div className="flex items-center justify-between gap-3">
-                  <div>
-                    <h4 className="text-lg font-bold text-slate-900">{activeQuiz.title}</h4>
-                    <p className="text-slate-500 text-sm">{activeQuiz.description || 'No quiz description provided.'}</p>
-                  </div>
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 shadow-sm max-w-full">
+              <div className="space-y-5">
+                <div>
+                  <h4 className="text-2xl font-extrabold text-slate-900 dark:text-white leading-tight">{activeQuiz.title}</h4>
+                  <p className="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                    {activeQuiz.description || 'Complete the assessment to check your understanding.'}
+                  </p>
+                </div>
+
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-base font-medium text-slate-900 dark:text-white">Questions: {activeQuiz.questions.length}</p>
                   <button
                     type="button"
                     onClick={() => onStartQuiz(activeQuiz)}
-                    className="bg-blue-600 hover:bg-blue-700 text-white font-bold px-4 py-2 rounded-xl shadow-md shadow-blue-600/20 transition-all"
+                    className="w-full sm:w-[160px] h-12 rounded-[14px] bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/20 transition-all"
                   >
                     Start Quiz
                   </button>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-[12px] text-slate-600">
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block font-bold text-slate-900">Passing</span>
-                    <span>{activeQuiz.passingScorePercent}%</span>
-                  </div>
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block font-bold text-slate-900">Time Limit</span>
-                    <span>{activeQuiz.timeLimitMinutes} min</span>
-                  </div>
-                  <div className="rounded-3xl border border-slate-200 bg-slate-50 p-3">
-                    <span className="block font-bold text-slate-900">Questions</span>
-                    <span>{activeQuiz.questions.length}</span>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  {activeQuiz.questions.slice(0, 3).map((question, qIdx) => (
-                    <div key={question.id} className="rounded-3xl border border-slate-200 bg-slate-50 p-4">
-                      <p className="text-slate-900 text-sm font-semibold">Q{qIdx + 1}. {question.prompt}</p>
-                      <p className="text-slate-500 text-[12px]">Type: {question.type}</p>
-                    </div>
-                  ))}
-                  {activeQuiz.questions.length > 3 && (
-                    <div className="text-xs text-slate-500">And {activeQuiz.questions.length - 3} more questions in the full assessment.</div>
-                  )}
-                </div>
-              </div>
-
-              <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-4">
-                <h4 className="text-sm font-bold text-slate-900">Preparation Notes</h4>
-                <p className="text-slate-600 text-sm leading-relaxed">
-                  Review session topics, official materials, and assignment instructions before launching the quiz. Use the references provided in this session for the best outcome.
-                </p>
-                <ul className="space-y-2 text-slate-600 text-sm list-disc list-inside">
-                  <li>Read the materials and assignment instructions carefully.</li>
-                  <li>Track your time under the quiz limit.</li>
-                  <li>Use the start button when you are ready.</li>
-                </ul>
               </div>
             </div>
           ) : (
@@ -875,7 +859,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       {activeTab === 'notes' && (
         <div className="space-y-6">
           <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-md space-y-3">
-            <h3 className="text-sm font-bold text-slate-900">Your Personal Notes</h3>
+            <h3 className="text-sm font-bold text-slate-900">Your Reference Notes</h3>
             <textarea
               value={newNoteText}
               onChange={(e) => setNewNoteText(e.target.value)}

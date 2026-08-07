@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Quiz, QuizQuestion } from '../../types';
 import { submitQuizApi } from '../../services/api';
-import { HelpCircle, CheckCircle2, XCircle, Clock, Award, RefreshCw, ChevronRight, ArrowLeft, Zap, Sparkles } from 'lucide-react';
+import { QuizReview } from './QuizReview';
+import { HelpCircle, CheckCircle2, XCircle, Award, RefreshCw, ChevronRight, ArrowLeft, Zap, Sparkles } from 'lucide-react';
 
 interface QuizViewProps {
   quiz: Quiz;
@@ -9,28 +10,90 @@ interface QuizViewProps {
   onQuizCompleted?: (scorePercent: number) => void;
 }
 
+class QuizReviewErrorBoundary extends React.Component<{
+  onReset: () => void;
+  onGoToCourse: () => void;
+  children: React.ReactNode;
+}, { hasError: boolean }> {
+  state = { hasError: false };
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error, info: React.ErrorInfo) {
+    console.error('QuizReview render error:', error, info);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="max-w-3xl mx-auto p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg text-center space-y-4">
+          <p className="text-sm font-semibold text-rose-600">Something went wrong while loading the quiz review.</p>
+          <p className="text-slate-600 dark:text-slate-300">Please try again or return to the course.</p>
+          <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
+            <button onClick={this.props.onReset} className="px-5 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold">Retry Review</button>
+            <button onClick={this.props.onGoToCourse} className="px-5 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold">Back to Course</button>
+          </div>
+        </div>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizCompleted }) => {
+  const storageKey = `quiz-review-${quiz.id}`;
   const [answers, setAnswers] = useState<Record<string, any>>({});
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-  const [timeLeftSeconds, setTimeLeftSeconds] = useState(quiz.timeLimitMinutes * 60);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<any>(null);
+  const [showReviewPage, setShowReviewPage] = useState(false);
+  const [confirmingLeave, setConfirmingLeave] = useState(false);
 
   useEffect(() => {
-    if (submitted) return;
-    const timer = setInterval(() => {
-      setTimeLeftSeconds((prev) => {
-        if (prev <= 1) {
-          clearInterval(timer);
-          handleSubmit();
-          return 0;
+    try {
+      const saved = sessionStorage.getItem(storageKey);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.answers && parsed.result) {
+          setAnswers(parsed.answers);
+          setResult(parsed.result);
+          setSubmitted(true);
+          setShowReviewPage(parsed.showReviewPage === true);
         }
-        return prev - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [submitted]);
+      }
+    } catch (err) {
+      console.error('Failed to restore quiz review data:', err);
+    }
+  }, [storageKey]);
+
+  useEffect(() => {
+    if (submitted && result) {
+      try {
+        sessionStorage.setItem(
+          storageKey,
+          JSON.stringify({ answers, result, quizId: quiz.id, showReviewPage })
+        );
+      } catch (err) {
+        console.error('Failed to persist quiz review data:', err);
+      }
+    }
+  }, [submitted, result, answers, showReviewPage, quiz.id, storageKey]);
+
+  useEffect(() => {
+    if (showReviewPage && submitted && result) {
+      try {
+        const saved = sessionStorage.getItem(storageKey);
+        const parsed = saved ? JSON.parse(saved) : {};
+        sessionStorage.setItem(storageKey, JSON.stringify({ ...parsed, answers, result, quizId: quiz.id, showReviewPage: true }));
+      } catch (err) {
+        console.error('Failed to update review visibility state:', err);
+      }
+    }
+  }, [showReviewPage, submitted, result, answers, quiz.id, storageKey]);
 
   const currentQ = quiz.questions[currentQuestionIndex];
 
@@ -51,11 +114,11 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
   const handleSubmit = async () => {
     if (submitted || submitting) return;
     setSubmitting(true);
-    const timeTaken = quiz.timeLimitMinutes * 60 - timeLeftSeconds;
     try {
-      const res = await submitQuizApi(quiz.id, answers, timeTaken);
+      const res = await submitQuizApi(quiz.id, answers);
       setResult(res);
       setSubmitted(true);
+      sessionStorage.setItem(storageKey, JSON.stringify({ answers, result: res, quizId: quiz.id, showReviewPage: false }));
       if (onQuizCompleted) onQuizCompleted(res.scorePercent);
     } catch (err) {
       console.error(err);
@@ -64,20 +127,46 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
     }
   };
 
-  const formatTime = (secs: number) => {
-    const m = Math.floor(secs / 60);
-    const s = secs % 60;
-    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  const handleBackAttempt = () => {
+    if (Object.keys(answers).length > 0 && !submitted) {
+      setConfirmingLeave(true);
+      return;
+    }
+    onBack();
+  };
+
+  const handleLeaveConfirmed = () => {
+    setConfirmingLeave(false);
+    onBack();
+  };
+
+  const handleCancelLeave = () => {
+    setConfirmingLeave(false);
   };
 
   if (submitted && result) {
+    if (showReviewPage) {
+      return (
+        <QuizReviewErrorBoundary onReset={() => setShowReviewPage(false)} onGoToCourse={onBack}>
+          <QuizReview
+            quiz={quiz}
+            answers={answers}
+            onBack={() => setShowReviewPage(false)}
+            onGoToCourse={onBack}
+            scorePercent={result.scorePercent}
+            passed={result.passed}
+          />
+        </QuizReviewErrorBoundary>
+      );
+    }
+
     return (
       <div className="max-w-3xl mx-auto space-y-8 animate-fadeIn">
         <button
-          onClick={onBack}
+          onClick={handleBackAttempt}
           className="inline-flex items-center gap-2 text-xs text-slate-400 hover:text-white bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800"
         >
-          <ArrowLeft className="w-3.5 h-3.5" /> Back to Session
+          <ArrowLeft className="w-3.5 h-3.5" /> Back
         </button>
 
         {/* Quiz Score Summary Card */}
@@ -91,36 +180,31 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
               {result.passed ? '🎉 Quiz Passed Successfully!' : 'Needs Revision — Keep Practicing'}
             </h2>
             <p className="text-slate-400 text-xs mt-1">
-              Passing threshold was {quiz.passingScorePercent}%. You answered {result.correctCount} out of {result.totalQuestions} questions correctly.
+              You answered {result.correctCount} out of {result.totalQuestions} questions correctly.
             </p>
           </div>
 
-          <div className="grid grid-cols-3 gap-4 max-w-md mx-auto pt-2 text-xs">
-            <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800">
-              <span className="block font-bold text-emerald-400 text-base">{result.correctCount}</span>
-              <span className="block text-slate-400 text-[10px]">Correct</span>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto pt-2 text-xs text-left">
+            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+              <p className="text-slate-400 uppercase tracking-[0.3em] text-[10px]">Your Score</p>
+              <p className="mt-3 text-2xl font-bold text-white">{result.correctCount} / {result.totalQuestions}</p>
             </div>
-            <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800">
-              <span className="block font-bold text-rose-400 text-base">{result.totalQuestions - result.correctCount}</span>
-              <span className="block text-slate-400 text-[10px]">Incorrect</span>
+            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+              <p className="text-slate-400 uppercase tracking-[0.3em] text-[10px]">Percentage</p>
+              <p className="mt-3 text-2xl font-bold text-white">{result.scorePercent}%</p>
             </div>
-            <div className="bg-slate-950 p-3 rounded-2xl border border-slate-800">
-              <span className="block font-bold text-blue-400 text-base">{result.timeTakenSeconds}s</span>
-              <span className="block text-slate-400 text-[10px]">Time Taken</span>
+            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
+              <p className="text-slate-400 uppercase tracking-[0.3em] text-[10px]">Status</p>
+              <p className={`mt-3 text-2xl font-bold ${result.passed ? 'text-emerald-400' : 'text-rose-400'}`}>{result.passed ? 'Passed' : 'Failed'}</p>
             </div>
           </div>
 
-          <div className="pt-4 flex items-center justify-center gap-4">
+          <div className="pt-4 flex items-center justify-center gap-4 flex-wrap">
             <button
-              onClick={() => {
-                setSubmitted(false);
-                setAnswers({});
-                setCurrentQuestionIndex(0);
-                setTimeLeftSeconds(quiz.timeLimitMinutes * 60);
-              }}
-              className="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold px-5 py-2.5 rounded-xl border border-slate-700 flex items-center gap-2"
+              onClick={() => setShowReviewPage(true)}
+              className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl shadow-md"
             >
-              <RefreshCw className="w-4 h-4" /> Retry Quiz
+              Review Answers
             </button>
             <button
               onClick={onBack}
@@ -130,55 +214,42 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
             </button>
           </div>
         </div>
-
-        {/* Detailed Question Explanations */}
-        <div className="space-y-4">
-          <h3 className="text-lg font-bold text-white">Answer Breakdown & Explanations</h3>
-          {result.explanations.map((e: any, idx: number) => (
-            <div
-              key={e.questionId}
-              className={`p-5 rounded-2xl border space-y-3 ${
-                e.isCorrect
-                  ? 'bg-slate-900/90 border-emerald-500/30'
-                  : 'bg-slate-900/90 border-rose-500/30'
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <span className="font-bold text-white text-xs">
-                  Q{idx + 1}. {e.prompt}
-                </span>
-                {e.isCorrect ? (
-                  <span className="flex items-center gap-1 text-xs text-emerald-400 font-bold">
-                    <CheckCircle2 className="w-4 h-4" /> Correct
-                  </span>
-                ) : (
-                  <span className="flex items-center gap-1 text-xs text-rose-400 font-bold">
-                    <XCircle className="w-4 h-4" /> Incorrect
-                  </span>
-                )}
-              </div>
-
-              <div className="bg-slate-950 p-3 rounded-xl border border-slate-800 text-xs space-y-1">
-                <p className="text-slate-300">
-                  <strong className="text-slate-500">Your Answer:</strong> {JSON.stringify(e.userAnswer || 'None')}
-                </p>
-                <p className="text-emerald-400 font-semibold">
-                  <strong className="text-slate-500">Correct Answer:</strong> {JSON.stringify(e.correctAnswer)}
-                </p>
-              </div>
-
-              <p className="text-slate-400 text-xs italic bg-slate-900 p-3 rounded-xl border border-slate-800/80">
-                💡 <strong className="text-slate-300">Explanation:</strong> {e.explanation}
-              </p>
-            </div>
-          ))}
-        </div>
       </div>
     );
   }
 
   return (
     <div className="max-w-3xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <button
+          onClick={handleBackAttempt}
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 px-3 py-2 rounded-full hover:bg-slate-200 dark:hover:bg-slate-700 transition"
+        >
+          <ArrowLeft className="w-4 h-4" /> Back
+        </button>
+      </div>
+
+      {confirmingLeave && (
+        <div className="rounded-3xl border border-rose-200/70 dark:border-rose-500/30 bg-white dark:bg-slate-950 p-5 shadow-md">
+          <p className="text-sm font-semibold text-rose-600">Leave Quiz?</p>
+          <p className="mt-2 text-slate-600 dark:text-slate-300">Your current quiz progress will not be saved.</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              onClick={handleCancelLeave}
+              className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={handleLeaveConfirmed}
+              className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-semibold"
+            >
+              Leave Quiz
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Quiz Header Bar */}
       <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex items-center justify-between">
         <div>
@@ -188,11 +259,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
           <h2 className="text-xl font-bold text-white">{quiz.title}</h2>
         </div>
 
-        {/* Timer */}
-        <div className="bg-slate-950 px-4 py-2 rounded-2xl border border-slate-800 flex items-center gap-2 font-mono text-xs font-bold text-amber-400">
-          <Clock className="w-4 h-4" />
-          <span>{formatTime(timeLeftSeconds)}</span>
-        </div>
+        {/* No timer shown per updated quiz requirements */}
       </div>
 
       {/* Question Card */}
