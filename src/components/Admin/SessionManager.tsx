@@ -49,11 +49,29 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
   const [filterStatus, setFilterStatus] = useState<'ALL' | 'Published' | 'Draft' | 'Archived'>('ALL');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredSessions = sessions.filter((s) => {
-    const matchesStatus = filterStatus === 'ALL' || s.status === filterStatus;
-    const matchesQuery = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.category.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesStatus && matchesQuery;
-  });
+  const filteredSessions = sessions
+    .filter((s) => {
+      const matchesStatus = filterStatus === 'ALL' || s.status === filterStatus;
+      const matchesQuery = s.name.toLowerCase().includes(searchQuery.toLowerCase()) || s.category.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchesStatus && matchesQuery;
+    })
+    .sort((a, b) => {
+      const getCourseSortPriority = (s: Session): number => {
+        const cat = (s.category || '').toLowerCase();
+        const name = (s.name || '').toLowerCase();
+        if (cat.includes('.net') || name.includes('.net') || cat.includes('c#') || name.includes('c#')) {
+          return 1;
+        }
+        if (cat.includes('sql') || name.includes('sql')) {
+          return 2;
+        }
+        return 3;
+      };
+      const pA = getCourseSortPriority(a);
+      const pB = getCourseSortPriority(b);
+      if (pA !== pB) return pA - pB;
+      return 0;
+    });
 
   const handleCreateNew = () => {
     setEditingSession({
