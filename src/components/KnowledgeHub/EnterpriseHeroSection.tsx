@@ -1,14 +1,14 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { 
-  BookOpen, 
-  Play, 
-  Pause, 
-  Clock, 
-  User as UserIcon, 
-  Volume2, 
-  Settings, 
-  Maximize2, 
-  Sparkles, 
+import {
+  BookOpen,
+  Play,
+  Pause,
+  Clock,
+  User as UserIcon,
+  Volume2,
+  Settings,
+  Maximize2,
+  Sparkles,
   X
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -28,8 +28,8 @@ interface VideoData {
 const videos: VideoData[] = [
   {
     id: 'leadership',
-    title: 'Leadership Insight',
-    badgeTag: 'Leadership Insight',
+    title: 'Leadership Insights',
+    badgeTag: 'Leadership Insights',
     heading: 'About this video',
     description: 'Discover the lessons, experiences, and leadership perspectives that shaped our graduate trainee journey.',
     duration: '19:37 min',
@@ -105,7 +105,7 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
   };
 
   return (
-    <div 
+    <div
       className="enterprise-hero-card relative overflow-hidden w-full p-8 sm:p-10 lg:p-12 transition-all duration-300 hover:shadow-[0_16px_48px_rgba(37,99,235,0.12)]"
       style={{
         background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 45%, #BFDBFE 100%)',
@@ -115,32 +115,32 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
         color: '#0F172A'
       }}
     >
-      
+
       {/* Background Details */}
       {/* Soft blue radial gradient overlay */}
-      <div 
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/70 via-white to-slate-50/40 pointer-events-none" 
+      <div
+        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-blue-50/70 via-white to-slate-50/40 pointer-events-none"
       />
 
       {/* Blurred glowing shapes */}
-      <div 
-        className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-400/15 blur-3xl pointer-events-none" 
+      <div
+        className="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-blue-400/15 blur-3xl pointer-events-none"
       />
-      <div 
-        className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none" 
+      <div
+        className="absolute -bottom-24 -left-24 w-96 h-96 rounded-full bg-indigo-400/10 blur-3xl pointer-events-none"
       />
 
       {/* Subtle light dotted texture */}
-      <div 
-        className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-25 pointer-events-none" 
+      <div
+        className="absolute inset-0 bg-[radial-gradient(#CBD5E1_1px,transparent_1px)] [background-size:24px_24px] opacity-25 pointer-events-none"
       />
 
       {/* Hero Content Grid (2 Columns: Left 45%, Right 55%) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center relative z-10">
-        
+
         {/* Left Section (45% -> lg:col-span-5) */}
         <div className="lg:col-span-5 space-y-6 flex flex-col justify-center">
-          
+
           {/* Top Pill Badge */}
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#EEF5FF] border border-blue-100/80 text-[#2563EB] text-xs font-semibold shadow-2xs select-none w-fit transition-transform hover:scale-[1.02]">
             <BookOpen className="w-3.5 h-3.5 text-[#2563EB]" />
@@ -152,7 +152,7 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
             <h1 className="text-[36px] sm:text-[44px] lg:text-[52px] font-extrabold text-[#0F172A] tracking-[-1px] leading-[1.1] font-sans">
               Knowledge Repository
             </h1>
-            
+
             {/* Description */}
             <p className="text-[16px] sm:text-[18px] font-medium text-[#475569] leading-relaxed max-w-[520px]">
               Browse notes, guides, documents, and valuable resources organized to support your Graduate Trainee journey.
@@ -161,7 +161,7 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
 
           {/* Featured Videos Card */}
           <div className="bg-white rounded-[22px] border border-slate-200/80 shadow-[0_10px_30px_rgba(15,23,42,0.06)] p-5 space-y-4 transition-all duration-300 hover:shadow-[0_14px_36px_rgba(15,23,42,0.1)] hover:scale-[1.01]">
-            
+
             {/* Card Title */}
             <h3 className="text-xs font-bold text-[#0F172A] tracking-wider uppercase font-mono">
               Featured Videos
@@ -178,11 +178,10 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
                     onClick={() => {
                       setActiveVideoId(vid.id);
                     }}
-                    className={`h-[52px] rounded-[16px] font-bold text-xs flex items-center justify-center gap-2 px-4 transition-all duration-250 select-none cursor-pointer ${
-                      isActive
+                    className={`h-[52px] rounded-[16px] font-bold text-xs flex items-center justify-center gap-2 px-4 transition-all duration-250 select-none cursor-pointer ${isActive
                         ? 'bg-gradient-to-r from-[#2563EB] to-[#3B82F6] text-white shadow-[0_10px_24px_rgba(37,99,235,0.25)] border-transparent -translate-y-0.5'
                         : 'bg-white border border-slate-200 text-[#0F172A] hover:bg-blue-50/60 hover:border-blue-200 hover:-translate-y-0.5'
-                    }`}
+                      }`}
                   >
                     <Play className={`w-4 h-4 ${isActive ? 'text-white fill-white' : 'text-[#2563EB]'}`} />
                     <span>{vid.title}</span>
@@ -229,9 +228,9 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
 
         {/* Right Section (55% -> lg:col-span-7) */}
         <div className="lg:col-span-7 flex items-center justify-center">
-          
+
           {/* Featured Video Player Container */}
-          <div 
+          <div
             onClick={(e) => handleTogglePlay(e)}
             className="relative w-full aspect-video rounded-[24px] overflow-hidden border border-slate-200/80 shadow-2xl shadow-blue-900/15 group cursor-pointer transition-all duration-300 hover:scale-[1.01] bg-slate-950"
           >
@@ -275,14 +274,13 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
             )}
 
             {/* Bottom Controls (Modern Glass Effect Overlay) */}
-            <div 
+            <div
               onClick={(e) => e.stopPropagation()}
-              className={`absolute bottom-0 inset-x-0 z-20 backdrop-blur-md bg-slate-900/70 border-t border-white/10 p-3.5 px-5 flex items-center justify-between gap-3 text-white transition-opacity duration-300 ${
-                isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
-              }`}
+              className={`absolute bottom-0 inset-x-0 z-20 backdrop-blur-md bg-slate-900/70 border-t border-white/10 p-3.5 px-5 flex items-center justify-between gap-3 text-white transition-opacity duration-300 ${isPlaying ? 'opacity-0 group-hover:opacity-100' : 'opacity-100'
+                }`}
             >
               {/* Play / Pause Toggle */}
-              <button 
+              <button
                 onClick={(e) => handleTogglePlay(e)}
                 className="text-white/80 hover:text-white transition-colors cursor-pointer"
               >
@@ -294,7 +292,7 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
               </button>
 
               {/* Progress Bar */}
-              <div 
+              <div
                 onClick={(e) => {
                   e.stopPropagation();
                   if (videoRef.current && videoRef.current.duration) {
@@ -305,7 +303,7 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
                 }}
                 className="h-1.5 flex-1 bg-white/20 hover:bg-white/30 rounded-full overflow-hidden cursor-pointer relative transition-all"
               >
-                <div 
+                <div
                   className="h-full bg-gradient-to-r from-[#2563EB] to-[#3B82F6] rounded-full relative transition-all"
                   style={{
                     width: duration > 0 ? `${(currentTime / duration) * 100}%` : '0%'
@@ -320,7 +318,7 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
 
               {/* Control Actions */}
               <div className="flex items-center gap-3 text-white/80">
-                <button 
+                <button
                   onClick={(e) => {
                     e.stopPropagation();
                     if (videoRef.current) {
