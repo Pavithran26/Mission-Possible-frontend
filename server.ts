@@ -6,13 +6,9 @@ import {
   mockSessions,
   mockStudyMaterials,
   mockQuizzes,
-  mockAnnouncements,
-  mockNotifications,
   mockCurrentUser,
   mockPersonalNotes,
-  mockDiscussions,
-  mockBadges,
-  mockCertificates
+  mockDiscussions
 } from "./src/data/mockData";
 import { Session, StudyMaterial, Quiz, PersonalNote, DiscussionPost } from "./src/types";
 
@@ -22,7 +18,6 @@ let studyMaterials: StudyMaterial[] = [...mockStudyMaterials];
 let quizzes: Quiz[] = [...mockQuizzes];
 let personalNotes: PersonalNote[] = [...mockPersonalNotes];
 let discussions: DiscussionPost[] = [...mockDiscussions];
-let notifications = [...mockNotifications];
 let currentUser = { ...mockCurrentUser };
 
 // Initialize Gemini Client
@@ -52,6 +47,211 @@ async function startServer() {
   // --- API ROUTES ---
   app.get("/api/health", (req, res) => {
     res.json({ status: "ok", timestamp: new Date().toISOString() });
+  });
+
+  // Auth Routes
+  const registeredUsers: Record<string, { password: string; role: 'GT' | 'Admin'; firstName: string; lastName: string; avatar: string; batch: string }> = {
+    'sibibharathi.thangaraj@valuemomentum.com': {
+      password: '$NMFeE1998x',
+      role: 'GT',
+      firstName: 'Sibibharathi',
+      lastName: 'Thangaraj',
+      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      batch: 'GT-2026-Batch-01'
+    },
+    'pavithran.sivanandham@valuemomentum.com': {
+      password: '$NMFeE1998x',
+      role: 'GT',
+      firstName: 'Pavithran',
+      lastName: 'Sivanandham',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      batch: 'GT-2026-Batch-01'
+    },
+    'anukraha.magdalene@valuemomentum.com': {
+      password: '$NMFeE1998x',
+      role: 'Admin',
+      firstName: 'Anukraha',
+      lastName: 'Magdalene',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+      batch: 'L&D Administration'
+    }
+  };
+
+  const otpStore: Record<string, { otp: string; expiry: number; attempts: number; used: boolean }> = {};
+  const resetTokenStore: Record<string, { token: string; expiry: number; used: boolean }> = {};
+
+  app.post("/api/auth/login", (req, res) => {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const password = req.body.password;
+
+    const user = registeredUsers[email];
+    if (!user || user.password !== password) {
+      return res.status(400).json({ success: false, message: "Invalid email address or password." });
+    }
+
+    currentUser = {
+      id: `usr-${Date.now()}`,
+      name: `${user.firstName} ${user.lastName}`,
+      email: email,
+      role: user.role,
+      batch: user.batch,
+      avatar: user.avatar,
+      xp: user.role === 'Admin' ? 5000 : 2850,
+      level: user.role === 'Admin' ? 10 : 5,
+      streakDays: 14,
+      lastActiveDate: new Date().toISOString().split('T')[0],
+      dailyGoalMinutes: 45,
+      todayMinutesSpent: 38
+    };
+
+    res.json({
+      success: true,
+      message: "Login successful.",
+      data: {
+        token: `jwt-${Date.now()}`,
+        userId: currentUser.id,
+        email: email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        role: user.role
+      }
+    });
+  });
+
+  app.post("/api/auth/forgot-password", (req, res) => {
+    const email = (req.body.email || "").trim().toLowerCase();
+    if (!email || !email.includes("@")) {
+      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
+    }
+
+    const user = registeredUsers[email];
+    if (!user) {
+      return res.status(404).json({ success: false, message: "No registered account was found with this email address." });
+    }
+
+    const otp = Math.floor(1000 + Math.random() * 9000).toString();
+    otpStore[email] = {
+      otp,
+      expiry: Date.now() + 5 * 60 * 1000,
+      attempts: 0,
+      used: false
+    };
+
+    delete resetTokenStore[email];
+    console.log(`[AUTH LOG] OTP for ${email}: ${otp} (expires in 5 minutes)`);
+
+    res.json({
+      success: true,
+      message: "OTP has been sent to your registered email address."
+    });
+  });
+
+  app.post("/api/auth/verify-otp", (req, res) => {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const otp = (req.body.otp || "").trim();
+
+    if (!email || !otp || otp.length !== 4) {
+      return res.status(400).json({ success: false, message: "A valid 4-digit OTP is required." });
+    }
+
+    const record = otpStore[email];
+    if (!record || record.used) {
+      return res.status(400).json({ success: false, message: "No active OTP session found. Please request a new OTP." });
+    }
+
+    if (Date.now() > record.expiry) {
+      delete otpStore[email];
+      return res.status(400).json({ success: false, message: "The OTP has expired (5 minute limit). Please request a new code." });
+    }
+
+    if (record.attempts >= 5) {
+      delete otpStore[email];
+      return res.status(400).json({ success: false, message: "Too many incorrect attempts. Please request a new OTP." });
+    }
+
+    record.attempts++;
+
+    if (record.otp !== otp) {
+      const remaining = 5 - record.attempts;
+      return res.status(400).json({ success: false, message: `Invalid OTP code. ${remaining} attempt(s) remaining.` });
+    }
+
+    record.used = true;
+    delete otpStore[email];
+
+    const resetToken = `rst-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
+    resetTokenStore[email] = {
+      token: resetToken,
+      expiry: Date.now() + 10 * 60 * 1000,
+      used: false
+    };
+
+    res.json({
+      success: true,
+      message: "OTP verified successfully.",
+      data: {
+        email,
+        resetToken
+      }
+    });
+  });
+
+  app.post("/api/auth/reset-password", (req, res) => {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const { resetToken, newPassword } = req.body;
+
+    if (!email || !resetToken || !newPassword) {
+      return res.status(400).json({ success: false, message: "Email, reset authorization token, and new password are required." });
+    }
+
+    const tokenRecord = resetTokenStore[email];
+    if (!tokenRecord || tokenRecord.used || tokenRecord.token !== resetToken) {
+      return res.status(403).json({ success: false, message: "Password reset authorization has expired or is invalid." });
+    }
+
+    if (Date.now() > tokenRecord.expiry) {
+      delete resetTokenStore[email];
+      return res.status(403).json({ success: false, message: "Password reset session has expired. Please restart the verification flow." });
+    }
+
+    const user = registeredUsers[email];
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User account not found." });
+    }
+
+    if (newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
+    }
+
+    user.password = newPassword;
+    tokenRecord.used = true;
+    delete resetTokenStore[email];
+
+    res.json({
+      success: true,
+      message: "Password has been reset successfully. Please log in with your new password."
+    });
+  });
+
+  app.post("/api/auth/change-password", (req, res) => {
+    const email = (req.body.email || "").trim().toLowerCase();
+    const { currentPassword, newPassword } = req.body;
+
+    const user = registeredUsers[email];
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found." });
+    }
+
+    if (user.password !== currentPassword) {
+      return res.status(400).json({ success: false, message: "Current password is incorrect." });
+    }
+
+    if (!newPassword || newPassword.length < 8) {
+      return res.status(400).json({ success: false, message: "New password must be at least 8 characters long." });
+    }
+
+    user.password = newPassword;
+    res.json({ success: true, message: "Password updated successfully in your profile." });
   });
 
   // User Profile
@@ -122,12 +322,6 @@ async function startServer() {
     res.json({ success: true, message: "Session deleted" });
   });
 
-  app.post("/api/sessions/:id/bookmark", (req, res) => {
-    const session = sessions.find(s => s.id === req.params.id);
-    if (!session) return res.status(404).json({ error: "Session not found" });
-    session.isBookmarked = !session.isBookmarked;
-    res.json({ id: session.id, isBookmarked: session.isBookmarked });
-  });
 
   // Study Materials
   app.get("/api/materials", (req, res) => {
@@ -298,19 +492,7 @@ async function startServer() {
     res.json(post);
   });
 
-  // Announcements & Notifications
-  app.get("/api/announcements", (req, res) => {
-    res.json(mockAnnouncements);
-  });
 
-  app.get("/api/notifications", (req, res) => {
-    res.json(notifications);
-  });
-
-  app.post("/api/notifications/read-all", (req, res) => {
-    notifications = notifications.map(n => ({ ...n, read: true }));
-    res.json(notifications);
-  });
 
   // Global Analytics
   app.get("/api/analytics", (req, res) => {

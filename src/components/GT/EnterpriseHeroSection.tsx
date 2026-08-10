@@ -6,7 +6,6 @@ import {
   Clock,
   User as UserIcon,
   Volume2,
-  Settings,
   Maximize2,
   Sparkles,
   X
@@ -391,4 +390,3 @@ export const EnterpriseHeroSection: React.FC<EnterpriseHeroSectionProps> = ({
     </div>
   );
 };
-

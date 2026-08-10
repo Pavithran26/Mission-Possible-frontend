@@ -1,15 +1,10 @@
 import {
   Session,
   User,
-  Badge,
-  Announcement,
-  AppNotification,
   CodePlaygroundExercise,
-  KnowledgeGraphNode,
   InspectMetadata,
   PersonalNote,
   DiscussionPost,
-  Certificate,
   SessionTrackerRecord
 } from '../types';
 
@@ -30,119 +25,6 @@ export const mockCurrentUser: User = {
 
 export const mockUser = mockCurrentUser;
 
-export const mockBadges: Badge[] = [
-  {
-    id: 'b-1',
-    title: '.NET Champion',
-    description: 'Scored over 90% in C# & ASP.NET Core quizzes',
-    icon: 'Award',
-    earnedDate: '2026-07-20',
-    category: '.NET',
-    isEarned: true
-  },
-  {
-    id: 'b-2',
-    title: 'SQL Master',
-    description: 'Completed Database Modelling & Complex Joins',
-    icon: 'Database',
-    earnedDate: '2026-07-25',
-    category: 'SQL',
-    isEarned: true
-  },
-  {
-    id: 'b-3',
-    title: 'API Explorer',
-    description: 'Designed 5 RESTful endpoints & passed security checks',
-    icon: 'Server',
-    earnedDate: '2026-07-29',
-    category: 'Backend',
-    isEarned: true
-  },
-  {
-    id: 'b-4',
-    title: 'Frontend Expert',
-    description: 'Mastered React Hooks, Tailwind CSS & State Sync',
-    icon: 'Layout',
-    earnedDate: '2026-07-30',
-    category: 'Frontend',
-    isEarned: true
-  },
-  {
-    id: 'b-5',
-    title: 'Insurance Specialist',
-    description: 'Passed Corporate Insurance Underwriting & Claims Module',
-    icon: 'ShieldCheck',
-    earnedDate: undefined,
-    category: 'Domain',
-    isEarned: false
-  },
-  {
-    id: 'b-6',
-    title: 'Azure Cloud Hero',
-    description: 'Deployed multi-container app on Azure App Services',
-    icon: 'Cloud',
-    earnedDate: undefined,
-    category: 'Cloud',
-    isEarned: false
-  }
-];
-
-export const mockAnnouncements: Announcement[] = [
-  {
-    id: 'ann-1',
-    title: 'Batch 2026 Mid-Term Hackathon Announced!',
-    content: 'Get ready for the 48-hour Full Stack Insurance portal challenge starting next Monday. Form teams of 3 GTs.',
-    date: '2026-08-01',
-    author: 'Chief Learning Officer - Enterprise L&D',
-    important: true
-  },
-  {
-    id: 'ann-2',
-    title: 'New Azure & Microservices Deep Dive Materials Added',
-    content: 'Admin team updated Azure DevOps deployment pipelines and API Gateway patterns in Module 8.',
-    date: '2026-07-29',
-    author: 'Admin L&D Team',
-    important: false
-  },
-  {
-    id: 'ann-3',
-    title: 'Weekly Mentor Office Hours with Principal Architects',
-    content: 'Join every Thursday at 4 PM IST for live Q&A on System Design & Clean Architecture.',
-    date: '2026-07-25',
-    author: 'Senior Mentor Team',
-    important: false
-  }
-];
-
-export const mockNotifications: AppNotification[] = [
-  {
-    id: 'notif-1',
-    title: 'New Quiz Assigned',
-    message: 'ASP.NET Core Dependency Injection & Middleware Quiz is now live.',
-    timestamp: '10 mins ago',
-    type: 'quiz',
-    read: false,
-    linkSessionId: 'session-dotnet'
-  },
-  {
-    id: 'notif-2',
-    title: 'Study Material Updated',
-    message: 'Version 2.1 of Insurance Domain Fundamentals PPT uploaded by L&D.',
-    timestamp: '1 hour ago',
-    type: 'material',
-    read: false,
-    linkSessionId: 'session-insurance'
-  },
-  {
-    id: 'notif-3',
-    title: 'Roadmap Milestone Unlocked',
-    message: 'Congratulations! You unlocked "Microservices Architecture & Event Sourcing".',
-    timestamp: 'Yesterday',
-    type: 'roadmap',
-    read: true,
-    linkSessionId: 'session-microservices'
-  }
-];
 
 export const mockSessions: Session[] = [
   {
@@ -155,7 +37,6 @@ export const mockSessions: Session[] = [
     durationHours: 32,
     difficulty: 'Intermediate',
     progressPercent: 80,
-    isBookmarked: true,
     lastAccessed: 'Today, 09:15 AM',
     isPublished: true,
     rating: 4.9,
@@ -330,7 +211,6 @@ export const mockSessions: Session[] = [
     durationHours: 18,
     difficulty: 'Beginner',
     progressPercent: 65,
-    isBookmarked: true,
     lastAccessed: 'Yesterday, 04:30 PM',
     isPublished: true,
     rating: 4.8,
@@ -513,7 +393,6 @@ export const mockSessions: Session[] = [
     durationHours: 24,
     difficulty: 'Intermediate',
     progressPercent: 55,
-    isBookmarked: true,
     lastAccessed: '2 days ago',
     isPublished: true,
     rating: 4.85,
@@ -697,7 +576,6 @@ export const mockSessions: Session[] = [
     durationHours: 20,
     difficulty: 'Beginner',
     progressPercent: 40,
-    isBookmarked: false,
     lastAccessed: 'Just now',
     isPublished: true,
     rating: 4.9,
@@ -793,7 +671,6 @@ export const mockSessions: Session[] = [
     durationHours: 12,
     difficulty: 'Beginner',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.8,
@@ -874,7 +751,6 @@ export const mockSessions: Session[] = [
     durationHours: 18,
     difficulty: 'Beginner',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.8,
@@ -973,7 +849,6 @@ export const mockSessions: Session[] = [
     durationHours: 25,
     difficulty: 'Intermediate',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.9,
@@ -1035,7 +910,6 @@ export const mockSessions: Session[] = [
     durationHours: 24,
     difficulty: 'Advanced',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 5.0,
@@ -1097,7 +971,6 @@ export const mockSessions: Session[] = [
     durationHours: 16,
     difficulty: 'Beginner',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.8,
@@ -2139,64 +2012,7 @@ getStudentData(101).then(res => console.log(JSON.stringify(res)));`,
   }
 ];
 
-export const mockKnowledgeGraphNodes: KnowledgeGraphNode[] = [
-  {
-    id: 'n-dotnet-core',
-    label: '.NET 8 Core Runtime',
-    category: '.NET with C#',
-    description: 'Foundation runtime engine, CLR, garbage collection, and cross-platform architecture.',
-    prerequisites: []
-  },
-  {
-    id: 'n-csharp-oop',
-    label: 'C# OOP & SOLID',
-    category: '.NET with C#',
-    description: 'Object-oriented programming, interfaces, abstraction, and SOLID design rules.',
-    prerequisites: ['n-dotnet-core']
-  },
-  {
-    id: 'n-aspnet-api',
-    label: 'ASP.NET Core REST API',
-    category: 'API Development',
-    description: 'Web API controllers, routing, dependency injection, and middleware pipeline.',
-    prerequisites: ['n-csharp-oop']
-  },
-  {
-    id: 'n-ef-core',
-    label: 'Entity Framework Core',
-    category: 'SQL',
-    description: 'ORM code-first data mapping, LINQ query provider, DbContext, and migrations.',
-    prerequisites: ['n-csharp-oop', 'n-sql-basics']
-  },
-  {
-    id: 'n-sql-basics',
-    label: 'SQL & Database Design',
-    category: 'SQL',
-    description: 'Relational 3NF normalization, DDL/DML, constraints, indexing, and joins.',
-    prerequisites: []
-  },
-  {
-    id: 'n-react-ts',
-    label: 'React & TypeScript',
-    category: 'Frontend',
-    description: 'Component architecture, Hooks, strict type interfaces, and state management.',
-    prerequisites: []
-  },
-  {
-    id: 'n-microservices',
-    label: 'Microservices & Gateway',
-    category: 'Microservices',
-    description: 'Event-driven messaging, Ocelot API Gateway, and distributed transaction outbox.',
-    prerequisites: ['n-aspnet-api', 'n-ef-core']
-  },
-  {
-    id: 'n-azure-devops',
-    label: 'Azure Cloud & CI/CD',
-    category: 'Azure',
-    description: 'App Services, Azure Pipelines, Docker containers, and Key Vault integration.',
-    prerequisites: ['n-aspnet-api', 'n-react-ts']
-  }
-];
+
 
 export const mockDiscussions: DiscussionPost[] = [
   {
@@ -2243,16 +2059,7 @@ export const mockPersonalNotes: PersonalNote[] = [
   }
 ];
 
-export const mockCertificates: Certificate[] = [
-  {
-    id: 'cert-101',
-    certificateId: 'CERT-GT-2026-DOTNET-8821',
-    studentName: 'Alex Vance',
-    trackName: '.NET with C# Enterprise Architecture',
-    issuedDate: 'July 30, 2026',
-    qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=VERIFIED-CERT-8821'
-  }
-];
+
 
 export const mockSessionTrackerRecords: SessionTrackerRecord[] = [
   {

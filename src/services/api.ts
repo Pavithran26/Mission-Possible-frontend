@@ -1,4 +1,4 @@
-import { Session, StudyMaterial, Quiz, PersonalNote, DiscussionPost, User, AppNotification } from '../types';
+import { Session, StudyMaterial, Quiz, PersonalNote, DiscussionPost, User } from '../types';
 
 export const fetchCurrentUser = async (): Promise<User> => {
   try {
@@ -42,14 +42,6 @@ export const fetchSessionById = async (id: string): Promise<Session & { studyMat
   }
 };
 
-export const toggleBookmarkApi = async (sessionId: string): Promise<{ isBookmarked: boolean }> => {
-  try {
-    const res = await fetch(`/api/sessions/${sessionId}/bookmark`, { method: 'POST' });
-    return await res.json();
-  } catch (err) {
-    return { isBookmarked: true };
-  }
-};
 
 export const createSessionApi = async (sessionData: Partial<Session>): Promise<Session> => {
   const res = await fetch('/api/sessions', {
@@ -190,50 +182,265 @@ export const logActivityApi = async (action: string, details?: string) => {
   }
 };
 
-export const loginApi = async (email: string, password?: string, role?: string) => {
-  try {
-    const res = await fetch('/api/login', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password, role })
-    });
-    if (!res.ok) throw new Error('Login failed');
-    return await res.json();
-  } catch (err) {
-    return {
-      success: true,
-      data: {
-        token: 'mock-jwt-token',
-        firstName: 'Sarah',
-        lastName: 'Jenkins',
-        email,
-        role: role || 'GT'
-      }
-    };
+export interface AuthUserDto {
+  token: string;
+  userId?: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  role: 'GT' | 'Admin';
+  avatar?: string;
+  batch?: string;
+}
+
+// Registered accounts with password hash / credentials
+export const LOCAL_AUTH_USERS: Record<string, { password: string; role: 'GT' | 'Admin'; firstName: string; lastName: string; avatar: string; batch: string }> = {
+  'sibibharathi.thangaraj@valuemomentum.com': {
+    password: '$NMFeE1998x',
+    role: 'GT',
+    firstName: 'Sibibharathi',
+    lastName: 'Thangaraj',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    batch: 'GT-2026-Batch-01'
+  },
+  'pavithran.sivanandham@valuemomentum.com': {
+    password: '$NMFeE1998x',
+    role: 'GT',
+    firstName: 'Pavithran',
+    lastName: 'Sivanandham',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    batch: 'GT-2026-Batch-01'
+  },
+  'anukraha.magdalene@valuemomentum.com': {
+    password: '$NMFeE1998x',
+    role: 'Admin',
+    firstName: 'Anukraha',
+    lastName: 'Magdalene',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    batch: 'L&D Administration'
   }
 };
 
-export const registerApi = async (firstName: string, lastName: string, email: string, password?: string, role?: string) => {
+export const loginApi = async (email: string, password?: string): Promise<{ success: boolean; data?: AuthUserDto; message?: string }> => {
+  const cleanEmail = email.trim().toLowerCase();
   try {
-    const res = await fetch('/api/register', {
+    const res = await fetch('http://localhost:5000/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ firstName, lastName, email, password, role })
+      body: JSON.stringify({ email: cleanEmail, password })
     });
-    if (!res.ok) throw new Error('Registration failed');
-    return await res.json();
-  } catch (err) {
-    return {
-      success: true,
-      data: {
-        token: 'mock-jwt-token',
-        firstName,
-        lastName,
-        email,
-        role: role || 'GT'
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success && data.data) {
+        const localMeta = LOCAL_AUTH_USERS[cleanEmail];
+        return {
+          success: true,
+          data: {
+            token: data.data.token,
+            userId: data.data.userId,
+            email: data.data.email,
+            firstName: data.data.firstName,
+            lastName: data.data.lastName,
+            role: data.data.role === 'Admin' ? 'Admin' : 'GT',
+            avatar: localMeta?.avatar || (data.data.role === 'Admin' ? 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'),
+            batch: localMeta?.batch || (data.data.role === 'Admin' ? 'L&D Administration' : 'GT-2026-Batch-01')
+          }
+        };
       }
+    }
+  } catch (err) {
+    // API not reachable, fallback to local
+  }
+
+  // Fallback to local authentication with RBAC and password verification
+  const user = LOCAL_AUTH_USERS[cleanEmail];
+  if (!user) {
+    return {
+      success: false,
+      message: 'No account found with this email address. Please check your credentials.'
     };
   }
+
+  if (password !== user.password) {
+    return {
+      success: false,
+      message: 'Invalid password. Please enter the correct password.'
+    };
+  }
+
+  return {
+    success: true,
+    data: {
+      token: `jwt-auth-token-${Date.now()}`,
+      userId: `user-${cleanEmail}`,
+      email: cleanEmail,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+      avatar: user.avatar,
+      batch: user.batch
+    }
+  };
+};
+
+export const forgotPasswordApi = async (email: string): Promise<{ success: boolean; message?: string }> => {
+  const cleanEmail = email.trim().toLowerCase();
+
+  // Try local Express mock server first (primary)
+  try {
+    const res = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success) {
+      return { success: true, message: data.message || 'OTP has been sent to your registered email address.' };
+    }
+    return { success: false, message: data.message || 'Failed to send OTP.' };
+  } catch {
+    // Express server not reachable, try .NET backend
+  }
+
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/forgot-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success) {
+      return { success: true, message: data.message };
+    }
+    return { success: false, message: data.message || data.errors?.[0] || 'Failed to send OTP.' };
+  } catch {
+    // .NET backend not reachable either
+    const user = LOCAL_AUTH_USERS[cleanEmail];
+    if (!user) {
+      return { success: false, message: 'No registered account found with this email address.' };
+    }
+    return { success: true, message: 'OTP has been sent to your registered email address.' };
+  }
+};
+
+export const verifyOtpApi = async (email: string, otp: string): Promise<{ success: boolean; resetToken?: string; message?: string }> => {
+  const cleanEmail = email.trim().toLowerCase();
+
+  // Try local Express mock server first
+  try {
+    const res = await fetch('/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, otp: otp.trim() })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success) {
+      return { success: true, resetToken: data.data?.resetToken, message: data.message };
+    }
+    return { success: false, message: data.message || 'Invalid OTP code.' };
+  } catch {
+    // Express server not reachable, try .NET backend
+  }
+
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/verify-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, otp: otp.trim() })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success) {
+      return { success: true, resetToken: data.data?.resetToken, message: data.message };
+    }
+    return { success: false, message: data.message || data.errors?.[0] || 'Invalid OTP code.' };
+  } catch {
+    return { success: false, message: 'Verification failed. Please ensure the backend is reachable.' };
+  }
+};
+
+export const resetPasswordApi = async (email: string, resetToken: string, newPassword: string): Promise<{ success: boolean; message?: string }> => {
+  const cleanEmail = email.trim().toLowerCase();
+
+  // Try local Express mock server first
+  try {
+    const res = await fetch('/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, resetToken, newPassword })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success) {
+      if (LOCAL_AUTH_USERS[cleanEmail]) {
+        LOCAL_AUTH_USERS[cleanEmail].password = newPassword;
+      }
+      return { success: true, message: data.message };
+    }
+    return { success: false, message: data.message || 'Failed to reset password.' };
+  } catch {
+    // Express server not reachable, try .NET backend
+  }
+
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/reset-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, resetToken, newPassword })
+    });
+    const data = await res.json().catch(() => ({}));
+    if (res.ok && data.success) {
+      if (LOCAL_AUTH_USERS[cleanEmail]) {
+        LOCAL_AUTH_USERS[cleanEmail].password = newPassword;
+      }
+      return { success: true, message: data.message };
+    }
+    return { success: false, message: data.message || data.errors?.[0] || 'Failed to reset password.' };
+  } catch {
+    if (LOCAL_AUTH_USERS[cleanEmail]) {
+      LOCAL_AUTH_USERS[cleanEmail].password = newPassword;
+      return { success: true, message: 'Password has been reset successfully.' };
+    }
+    return { success: false, message: 'Failed to reset password.' };
+  }
+};
+
+export const changePasswordApi = async (email: string, currentPassword: string, newPassword: string): Promise<{ success: boolean; message?: string }> => {
+  const cleanEmail = email.trim().toLowerCase();
+  try {
+    const res = await fetch('http://localhost:5000/api/auth/change-password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: cleanEmail, currentPassword, newPassword })
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data.success) {
+        if (LOCAL_AUTH_USERS[cleanEmail]) {
+          LOCAL_AUTH_USERS[cleanEmail].password = newPassword;
+        }
+        return { success: true, message: 'Password changed successfully.' };
+      } else {
+        return { success: false, message: data.errors?.[0] || data.message || 'Failed to change password.' };
+      }
+    }
+  } catch (err) {
+    // API not reachable, fallback to local
+  }
+
+  const user = LOCAL_AUTH_USERS[cleanEmail];
+  if (!user) {
+    return { success: false, message: 'Account not found.' };
+  }
+
+  if (user.password !== currentPassword) {
+    return { success: false, message: 'Current password does not match.' };
+  }
+
+  if (newPassword.length < 8) {
+    return { success: false, message: 'New password must be at least 8 characters long.' };
+  }
+
+  user.password = newPassword;
+  return { success: true, message: 'Password changed successfully in your profile.' };
 };
 
 

@@ -7,14 +7,12 @@ import {
 
 interface LandingPageProps {
   onOpenLogin: (role?: 'GT' | 'Admin') => void;
-  onOpenSignUp: () => void;
   onExplorePlatform?: () => void;
   onOpenUserGuide?: () => void;
 }
 
 export const LandingPage: React.FC<LandingPageProps> = ({
   onOpenLogin,
-  onOpenSignUp,
   onOpenUserGuide
 }) => {
   return (
@@ -86,17 +84,10 @@ export const LandingPage: React.FC<LandingPageProps> = ({
             <div className="pt-2 flex flex-wrap items-center justify-center gap-4">
               <button
                 onClick={() => onOpenLogin('GT')}
-                className="px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all flex items-center gap-2"
+                className="px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/30 hover:shadow-blue-600/40 hover:-translate-y-0.5 transition-all flex items-center gap-2 cursor-pointer"
               >
                 <span>Login to Platform</span>
                 <ArrowRight className="w-4 h-4" />
-              </button>
-
-              <button
-                onClick={onOpenSignUp}
-                className="px-8 py-4 rounded-2xl bg-white hover:bg-slate-50 text-slate-800 font-bold text-sm border border-slate-300 shadow-md hover:border-slate-400 hover:-translate-y-0.5 transition-all flex items-center gap-2"
-              >
-                <span>Sign Up</span>
               </button>
             </div>
 
