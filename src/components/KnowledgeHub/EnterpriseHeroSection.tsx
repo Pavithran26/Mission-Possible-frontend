@@ -32,7 +32,7 @@ const videos: VideoData[] = [
     badgeTag: 'Leadership Insights',
     heading: 'About this video',
     description: 'Discover the lessons, experiences, and leadership perspectives that shaped our graduate trainee journey.',
-    duration: '19:37 min',
+    duration: '05:23 min',
     presenter: 'Leadership Team',
     thumbnailUrl: 'https://images.unsplash.com/photo-1573164713714-d95e436ab8d6?w=1200&auto=format&fit=crop&q=80',
     sampleVideoUrl: '/videos/leadership.mp4'
