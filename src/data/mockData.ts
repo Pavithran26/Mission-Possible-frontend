@@ -302,7 +302,89 @@ export const mockSessions: Session[] = [
           { id: 'st-54', title: 'Capstone Project Implementation', durationMinutes: 90, status: 'Locked' }
         ]
       }
-    ]
+    ],
+    quizzes: [
+      {
+        id: 'quiz-dotnet-1',
+        sessionId: 'session-dotnet',
+        topicId: 'dotnet-t4',
+        title: 'C# Async/Await & Concurrency Assessment',
+        description: 'Assess your understanding of async programming, exception handling, and task-based concurrency in C#.',
+        passingScorePercent: 80,
+        timeLimitMinutes: 18,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'What happens when you call an async method without the await keyword in C#?',
+            options: [
+              'The code throws a runtime InvalidOperationException.',
+              'The method executes asynchronously in the background, and execution continues immediately without waiting.',
+              'The compiler prevents compilation with a fatal syntax error.',
+              'The method automatically runs synchronously on the main thread.'
+            ],
+            correctAnswer: 'The method executes asynchronously in the background, and execution continues immediately without waiting.',
+            explanation: 'Omitting await returns a Task immediately and allows execution to continue without waiting for completion.'
+          },
+          {
+            id: 'q2',
+            type: 'Multiple Select' as const,
+            prompt: 'Which of the following are valid service lifetimes in ASP.NET Core Dependency Injection? (Select all that apply)',
+            options: ['Transient', 'Scoped', 'Singleton', 'ThreadStatic'],
+            correctAnswer: ['Transient', 'Scoped', 'Singleton'],
+            explanation: 'ASP.NET Core DI supports Transient, Scoped, and Singleton lifetimes.'
+          },
+          {
+            id: 'q3',
+            type: 'Fill in Blank' as const,
+            prompt: 'Fill in the missing C# keyword used to ensure an IDisposable object is disposed automatically when leaving its scope: ______',
+            options: ['using', 'lock', 'checked'],
+            correctAnswer: 'using',
+            explanation: 'The using statement ensures Dispose is called for IDisposable objects when leaving scope.'
+          },
+          {
+            id: 'q4',
+            type: 'Code Output' as const,
+            prompt: 'What is the output of the following C# snippet?\nint x = 5;\nFunc<int, int> func = val => val * 2;\nx = 10;\nConsole.WriteLine(func(x));',
+            options: ['10', '20', '5', '0'],
+            correctAnswer: '20',
+            explanation: 'The delegate multiplies the current x value (10) by 2, producing 20.'
+          },
+          {
+            id: 'q5',
+            type: 'True / False' as const,
+            prompt: 'In Entity Framework Core, IQueryable queries execute immediately on the database as soon as the LINQ statement is declared.',
+            options: ['True', 'False'],
+            correctAnswer: 'False',
+            explanation: 'IQueryable uses deferred execution and only queries the database when the results are enumerated or materialized.'
+          },
+          {
+            id: 'q6',
+            type: 'MCQ' as const,
+            prompt: 'Which C# construct is preferable when multiple implementations share the same base behavior but need different constructors and state?',
+            options: ['abstract class', 'interface', 'record', 'struct'],
+            correctAnswer: 'abstract class',
+            explanation: 'Abstract classes allow shared implementation and different constructors while interfaces cannot contain instance state or constructors.'
+          },
+          {
+            id: 'q7',
+            type: 'MCQ' as const,
+            prompt: 'What does the await keyword do in C# async methods?',
+            options: ['Blocks the current thread until completion', 'Schedules continuation and returns control to the caller', 'Converts the method into a synchronous method', 'Disposes the async Task object'],
+            correctAnswer: 'Schedules continuation and returns control to the caller',
+            explanation: 'Await pauses execution of the async method until the awaited task completes and schedules the continuation without blocking the thread.'
+          },
+          {
+            id: 'q8',
+            type: 'Multiple Select' as const,
+            prompt: 'Which of these are SOLID principles? (Select all that apply)',
+            options: ['Single Responsibility', 'Open/Closed', 'Liskov Substitution', 'Mutable State'],
+            correctAnswer: ['Single Responsibility', 'Open/Closed', 'Liskov Substitution'],
+            explanation: 'SOLID includes Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.'
+          }
+        ]
+      }
+    ],
   },
   {
     id: 'session-insurance',
@@ -469,7 +551,84 @@ export const mockSessions: Session[] = [
           { id: 'ist-54', title: 'End-to-End Insurance Ecosystem Review', durationMinutes: 45, status: 'Locked' }
         ]
       }
-    ]
+    ],
+    quizzes: [
+      {
+        id: 'quiz-insurance-1',
+        sessionId: 'session-insurance',
+        topicId: 'ins-t4',
+        title: 'Insurance Underwriting & Claims Fundamentals Quiz',
+        description: 'Verify your knowledge of underwriting principles, insurance products, and claims lifecycle management.',
+        passingScorePercent: 75,
+        timeLimitMinutes: 15,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'Which principle requires both insurer and insured to disclose all material facts?',
+            options: ['Indemnity', 'Utmost Good Faith', 'Subrogation', 'Insurable Interest'],
+            correctAnswer: 'Utmost Good Faith',
+            explanation: 'Utmost Good Faith requires full disclosure of material facts by both parties.'
+          },
+          {
+            id: 'q2',
+            type: 'True / False' as const,
+            prompt: 'The principle of indemnity aims to return the insured to the same financial position as before the loss.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'Indemnity restores the insured to the pre-loss financial position, not to make a profit.'
+          },
+          {
+            id: 'q3',
+            type: 'Fill in Blank' as const,
+            prompt: 'FNOL stands for First Notice of ______.',
+            options: ['Loss', 'Liability', 'Location'],
+            correctAnswer: 'Loss',
+            explanation: 'First Notice of Loss (FNOL) is the initial report of a claim event.'
+          },
+          {
+            id: 'q4',
+            type: 'Multiple Select' as const,
+            prompt: 'Which products are typical insurance categories? (Select all that apply)',
+            options: ['Life', 'Health', 'Property', 'Software'],
+            correctAnswer: ['Life', 'Health', 'Property'],
+            explanation: 'Life, Health, and Property are core insurance categories; Software is not an insurance product category.'
+          },
+          {
+            id: 'q5',
+            type: 'MCQ' as const,
+            prompt: 'What is the primary purpose of underwriting?',
+            options: ['To generate marketing leads', 'To assess risk and determine premium pricing', 'To process claim payments', 'To develop new product features'],
+            correctAnswer: 'To assess risk and determine premium pricing',
+            explanation: 'Underwriting evaluates risk and sets appropriate rates to ensure profitability and compliance.'
+          },
+          {
+            id: 'q6',
+            type: 'MCQ' as const,
+            prompt: 'Which of the following is an element of the insurance policy lifecycle?',
+            options: ['Code deployment', 'Claim settlement', 'Database normalization', 'Network topology'],
+            correctAnswer: 'Claim settlement',
+            explanation: 'Claim settlement is a key step in the insurance policy lifecycle.'
+          },
+          {
+            id: 'q7',
+            type: 'True / False' as const,
+            prompt: 'A combined ratio below 100% indicates an underwriting profit.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'A combined ratio under 100% means premiums exceed claims and expenses.'
+          },
+          {
+            id: 'q8',
+            type: 'MCQ' as const,
+            prompt: 'Insurable interest means the insured must have a ______ in the subject matter.',
+            options: ['financial interest', 'technical skill', 'social connection', 'contractor agreement'],
+            correctAnswer: 'financial interest',
+            explanation: 'Insurable interest requires a financial stake in the insured item or person.'
+          }
+        ]
+      }
+    ],
   },
   {
     id: 'session-sql',
@@ -636,7 +795,84 @@ export const mockSessions: Session[] = [
       { id: 'sqlst-54', title: 'End-to-End PostgreSQL Project', durationMinutes: 60, status: 'Locked' }
     ]
   }
-]
+],
+    quizzes: [
+      {
+        id: 'quiz-sql-1',
+        sessionId: 'session-sql',
+        topicId: 'sql-t4',
+        title: 'SQL Querying & Data Management Assessment',
+        description: 'Test your knowledge of SQL query syntax, joins, normalization, and transaction behavior.',
+        passingScorePercent: 80,
+        timeLimitMinutes: 20,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'Which JOIN returns rows only when there is a match in both tables?',
+            options: ['LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL OUTER JOIN'],
+            correctAnswer: 'INNER JOIN',
+            explanation: 'INNER JOIN returns only matching rows from both tables.'
+          },
+          {
+            id: 'q2',
+            type: 'Fill in Blank' as const,
+            prompt: 'The SQL clause used to group rows and compute aggregates is ______.',
+            options: ['GROUP BY', 'ORDER BY', 'WHERE'],
+            correctAnswer: 'GROUP BY',
+            explanation: 'GROUP BY groups rows to compute aggregates such as SUM and COUNT.'
+          },
+          {
+            id: 'q3',
+            type: 'Multiple Select' as const,
+            prompt: 'Which SQL functions are considered window functions? (Select all that apply)',
+            options: ['ROW_NUMBER()', 'SUM()', 'DENSE_RANK()', 'AVG()'],
+            correctAnswer: ['ROW_NUMBER()', 'DENSE_RANK()'],
+            explanation: 'ROW_NUMBER and DENSE_RANK are window functions; SUM and AVG are aggregate functions unless used with OVER().'   
+          },
+          {
+            id: 'q4',
+            type: 'True / False' as const,
+            prompt: 'A database index always improves the performance of every SQL query.',
+            options: ['True', 'False'],
+            correctAnswer: 'False',
+            explanation: 'Indexes can slow down writes and do not benefit all query patterns.'
+          },
+          {
+            id: 'q5',
+            type: 'Code Output' as const,
+            prompt: `What result does this SQL return?\nSELECT COUNT(*) FROM Orders WHERE OrderDate >= '2026-01-01';`,
+            options: ['The number of orders since Jan 1, 2026', 'The sum of all order totals', 'A list of orders', 'The latest order date'],
+            correctAnswer: 'The number of orders since Jan 1, 2026',
+            explanation: 'COUNT(*) returns the count of rows that match the WHERE clause.'
+          },
+          {
+            id: 'q6',
+            type: 'MCQ' as const,
+            prompt: 'Which normalization form removes transitive dependencies?',
+            options: ['1NF', '2NF', '3NF', 'BCNF'],
+            correctAnswer: '3NF',
+            explanation: 'Third Normal Form removes transitive dependencies in a relational schema.'
+          },
+          {
+            id: 'q7',
+            type: 'MCQ' as const,
+            prompt: 'Which SQL command modifies the structure of an existing table?',
+            options: ['INSERT', 'ALTER TABLE', 'DROP TABLE', 'SELECT'],
+            correctAnswer: 'ALTER TABLE',
+            explanation: 'ALTER TABLE changes a table definition, such as adding or dropping columns.'
+          },
+          {
+            id: 'q8',
+            type: 'Multiple Select' as const,
+            prompt: 'Which of these are transaction isolation levels in SQL? (Select all that apply)',
+            options: ['READ COMMITTED', 'SERIALIZABLE', 'READ UNCOMMITTED', 'AUTO COMMIT'],
+            correctAnswer: ['READ COMMITTED', 'SERIALIZABLE', 'READ UNCOMMITTED'],
+            explanation: 'AUTO COMMIT is a transaction mode, not an isolation level.'
+          }
+        ]
+      }
+    ]
   },
   {
     id: 'session-c2c',
@@ -716,6 +952,83 @@ export const mockSessions: Session[] = [
           { id: 'c2cst-5', title: 'Continuous Learning and Development', durationMinutes: 40, status: 'Unlocked' }
          ]
       },
+    ],
+    quizzes: [
+      {
+        id: 'quiz-c2c-1',
+        sessionId: 'session-c2c',
+        topicId: 'c2c-t2',
+        title: 'Campus to Corporate Professional Skills Quiz',
+        description: 'Evaluate your understanding of workplace communication, etiquette, productivity, and presentation skills.',
+        passingScorePercent: 75,
+        timeLimitMinutes: 15,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'Which behavior is most important for professional workplace communication?',
+            options: ['Using technical jargon constantly', 'Listening actively and asking clarifying questions', 'Interrupting to make your point', 'Relying only on email for all communication'],
+            correctAnswer: 'Listening actively and asking clarifying questions',
+            explanation: 'Active listening helps build trust and ensures understanding in professional interactions.'
+          },
+          {
+            id: 'q2',
+            type: 'Fill in Blank' as const,
+            prompt: 'The Pomodoro Technique typically uses repeated work intervals of ______ minutes.',
+            options: ['25', '45', '60'],
+            correctAnswer: '25',
+            explanation: 'The Pomodoro Technique uses 25-minute focused work intervals followed by short breaks.'
+          },
+          {
+            id: 'q3',
+            type: 'True / False' as const,
+            prompt: 'Business etiquette includes punctuality, professional language, and respectful behavior.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'Punctuality, professional language, and respect are core elements of business etiquette.'
+          },
+          {
+            id: 'q4',
+            type: 'MCQ' as const,
+            prompt: 'Which quadrant of the Eisenhower Matrix contains tasks that are important but not urgent?',
+            options: ['Do First', 'Schedule', 'Delegate', 'Eliminate'],
+            correctAnswer: 'Schedule',
+            explanation: 'Important but not urgent tasks should be scheduled for later.'
+          },
+          {
+            id: 'q5',
+            type: 'Multiple Select' as const,
+            prompt: 'Which skills contribute to strong teamwork? (Select all that apply)',
+            options: ['Accountability', 'Open communication', 'Individual competition', 'Collaborative problem solving'],
+            correctAnswer: ['Accountability', 'Open communication', 'Collaborative problem solving'],
+            explanation: 'Teamwork depends on accountability, communication, and collaboration.'
+          },
+          {
+            id: 'q6',
+            type: 'MCQ' as const,
+            prompt: 'Vocal variety in presentations refers to changes in which elements?',
+            options: ['Power, pitch, pace, and pause', 'Content length only', 'Cost and budget', 'Headset type'],
+            correctAnswer: 'Power, pitch, pace, and pause',
+            explanation: 'Effective presentation delivery uses variation in power, pitch, pace, and pauses.'
+          },
+          {
+            id: 'q7',
+            type: 'True / False' as const,
+            prompt: 'Professional communication should always avoid asking questions to appear confident.',
+            options: ['True', 'False'],
+            correctAnswer: 'False',
+            explanation: 'Asking questions is a sign of engagement and helps clarify expectations.'
+          },
+          {
+            id: 'q8',
+            type: 'MCQ' as const,
+            prompt: 'What is the best approach when resolving a workplace conflict?',
+            options: ['Ignore the issue', 'Discuss openly and seek a solution together', 'Blame others publicly', 'Delay indefinitely'],
+            correctAnswer: 'Discuss openly and seek a solution together',
+            explanation: 'Open discussion and collaboration are the healthiest ways to resolve conflict.'
+          }
+        ]
+      }
     ]
   },
   {
@@ -781,6 +1094,83 @@ export const mockSessions: Session[] = [
           { id: 'dmst-5', title: 'Using Data Models as a Foundation for Software and Analytics', durationMinutes: 45, status: 'Completed' }
         ]
       },
+    ],
+    quizzes: [
+      {
+        id: 'quiz-data-modeling-1',
+        sessionId: 'session-data-modeling-fundamentals',
+        topicId: 'dm-t2',
+        title: 'Data Modeling & Entity Relationship Assessment',
+        description: 'Validate your knowledge of data modeling concepts, entity relationships, normalization, and system design alignment.',
+        passingScorePercent: 75,
+        timeLimitMinutes: 18,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'In data modeling, which cardinality defines one record in a table relating to many records in another table?',
+            options: ['One-to-One', 'One-to-Many', 'Many-to-Many', 'Zero-to-One'],
+            correctAnswer: 'One-to-Many',
+            explanation: 'One-to-many cardinality means one parent record relates to many child records.'
+          },
+          {
+            id: 'q2',
+            type: 'True / False' as const,
+            prompt: 'An entity in a data model typically represents a real-world object or concept.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'Entities represent objects, concepts, or things with distinct existence in the domain.'
+          },
+          {
+            id: 'q3',
+            type: 'Fill in Blank' as const,
+            prompt: 'A primary key must uniquely identify each ______ in a table.',
+            options: ['row', 'column', 'schema'],
+            correctAnswer: 'row',
+            explanation: 'A primary key uniquely identifies each row in a table.'
+          },
+          {
+            id: 'q4',
+            type: 'MCQ' as const,
+            prompt: 'Which normalization form requires that no non-key attribute depends on another non-key attribute?',
+            options: ['1NF', '2NF', '3NF', 'BCNF'],
+            correctAnswer: '3NF',
+            explanation: 'Third Normal Form removes transitive dependencies where non-key attributes depend on other non-key attributes.'
+          },
+          {
+            id: 'q5',
+            type: 'Multiple Select' as const,
+            prompt: 'Which are common relationship types in data modeling? (Select all that apply)',
+            options: ['One-to-One', 'One-to-Many', 'Many-to-Many', 'Single-to-Multi'],
+            correctAnswer: ['One-to-One', 'One-to-Many', 'Many-to-Many'],
+            explanation: 'Common relationships include one-to-one, one-to-many, and many-to-many.'
+          },
+          {
+            id: 'q6',
+            type: 'MCQ' as const,
+            prompt: 'A logical data model is primarily concerned with which of the following?',
+            options: ['Cloud provider configuration', 'Database indexing strategy', 'Entities, attributes, and relationships', 'UI component layout'],
+            correctAnswer: 'Entities, attributes, and relationships',
+            explanation: 'Logical models describe data elements and relationships independent of physical implementation.'
+          },
+          {
+            id: 'q7',
+            type: 'True / False' as const,
+            prompt: 'ER diagrams show entities, relationships, and cardinality constraints in a data model.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'ER diagrams visualize entities, relationships, and cardinality in a data model.'
+          },
+          {
+            id: 'q8',
+            type: 'MCQ' as const,
+            prompt: 'Which model type typically contains technical storage details and physical tables?',
+            options: ['Conceptual model', 'Logical model', 'Physical model', 'Business model'],
+            correctAnswer: 'Physical model',
+            explanation: 'Physical models map logical design to actual database tables and storage details.'
+          }
+        ]
+      }
     ]
   },
   {
@@ -947,6 +1337,83 @@ export const mockSessions: Session[] = [
           { id: 'webst-6', title: 'Front-End Problem-Solving and UI Practices', durationMinutes: 90, status: 'Completed' },
         ]
       },
+    ],
+    quizzes: [
+      {
+        id: 'quiz-html-css-js-1',
+        sessionId: 'session-html-css-js',
+        topicId: 'web-t3',
+        title: 'HTML, CSS & JavaScript Web Fundamentals Quiz',
+        description: 'Measure your knowledge of semantic HTML, CSS layout, DOM interaction, and JavaScript behavior.',
+        passingScorePercent: 80,
+        timeLimitMinutes: 20,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'Which HTML element is best for defining the main navigation of a webpage?',
+            options: ['<section>', '<nav>', '<header>', '<div>'],
+            correctAnswer: '<nav>',
+            explanation: 'The <nav> element semantically represents page navigation links.'
+          },
+          {
+            id: 'q2',
+            type: 'Fill in Blank' as const,
+            prompt: 'A CSS class selector begins with the ______ symbol.',
+            options: ['.', '#', '$'],
+            correctAnswer: '.',
+            explanation: 'CSS class selectors start with a dot (.) followed by the class name.'
+          },
+          {
+            id: 'q3',
+            type: 'Multiple Select' as const,
+            prompt: 'Which items are part of the JavaScript event loop? (Select all that apply)',
+            options: ['Call Stack', 'Microtask Queue', 'Render Tree', 'WebSocket API'],
+            correctAnswer: ['Call Stack', 'Microtask Queue'],
+            explanation: 'The event loop manages the call stack and microtask queue; render tree and WebSocket API are separate browser subsystems.'
+          },
+          {
+            id: 'q4',
+            type: 'True / False' as const,
+            prompt: 'A const variable in JavaScript can be reassigned to a new value.',
+            options: ['True', 'False'],
+            correctAnswer: 'False',
+            explanation: 'const variables cannot be reassigned after initialization.'
+          },
+          {
+            id: 'q5',
+            type: 'Code Output' as const,
+            prompt: 'What does this JavaScript snippet log?\nconst items = [1, 2, 3];\nconst doubled = items.map(n => n * 2);\nconsole.log(doubled[1]);',
+            options: ['1', '2', '4', '6'],
+            correctAnswer: '4',
+            explanation: 'The second item in the doubled array is 4.'
+          },
+          {
+            id: 'q6',
+            type: 'MCQ' as const,
+            prompt: 'What does DOM stand for?',
+            options: ['Document Object Model', 'Dynamic Object Method', 'Design Oriented Markup', 'Data Output Manager'],
+            correctAnswer: 'Document Object Model',
+            explanation: 'DOM stands for Document Object Model.'
+          },
+          {
+            id: 'q7',
+            type: 'MCQ' as const,
+            prompt: 'Responsive web design typically uses which CSS techniques?',
+            options: ['Media queries and flexbox', 'Fixed pixel widths only', 'Inline JavaScript alerts', 'Database normalization'],
+            correctAnswer: 'Media queries and flexbox',
+            explanation: 'Responsive design relies on media queries and flexible layouts like flexbox.'
+          },
+          {
+            id: 'q8',
+            type: 'True / False' as const,
+            prompt: 'The "use strict" directive enables strict mode in JavaScript.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: '"use strict" enables stricter parsing and error handling in JavaScript.'
+          }
+        ]
+      }
     ]
   },
   {
@@ -1040,7 +1507,84 @@ export const mockSessions: Session[] = [
           { id: 'mdpst-4', title: 'Analytics and Reporting Solutions', durationMinutes: 90, status: 'Completed' },
         ]
       }
-    ]
+    ],
+    quizzes: [
+      {
+        id: 'quiz-modern-data-platforms-1',
+        sessionId: 'session-modern-data-platforms',
+        topicId: 'mdp-t1',
+        title: 'Advanced Data Platforms & Cloud Data Architecture Quiz',
+        description: 'Assess your knowledge of cloud data platforms, lakehouse principles, governance, and analytics workflows.',
+        passingScorePercent: 80,
+        timeLimitMinutes: 20,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'What is the core idea of a lakehouse architecture?',
+            options: ['Separate data lake and data warehouse', 'Combine data lake storage with warehouse-style governance', 'Use only relational databases', 'Replace BI with AI'],
+            correctAnswer: 'Combine data lake storage with warehouse-style governance',
+            explanation: 'Lakehouse architecture blends data lake storage with data warehouse management and governance.'
+          },
+          {
+            id: 'q2',
+            type: 'True / False' as const,
+            prompt: 'ETL stands for Extract, Transform, and Load.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'ETL is Extract, Transform, Load.'
+          },
+          {
+            id: 'q3',
+            type: 'Multiple Select' as const,
+            prompt: 'Which components are common in modern data platform architectures? (Select all that apply)',
+            options: ['Data Lake', 'Metadata Catalog', 'Orchestration Engine', 'FTP Server'],
+            correctAnswer: ['Data Lake', 'Metadata Catalog', 'Orchestration Engine'],
+            explanation: 'Modern platforms often include data lakes, metadata catalogs, and orchestration engines; FTP is a transport mechanism, not a platform component.'
+          },
+          {
+            id: 'q4',
+            type: 'Fill in Blank' as const,
+            prompt: 'Databricks is a managed service built around Apache ______.',
+            options: ['Spark', 'Hadoop', 'Kafka'],
+            correctAnswer: 'Spark',
+            explanation: 'Databricks is built on Apache Spark for analytics and data engineering.'
+          },
+          {
+            id: 'q5',
+            type: 'MCQ' as const,
+            prompt: 'Data governance primarily focuses on which of the following?',
+            options: ['Visualizing dashboards', 'Securing and standardizing enterprise data', 'Writing SQL queries', 'Designing mobile apps'],
+            correctAnswer: 'Securing and standardizing enterprise data',
+            explanation: 'Data governance ensures data quality, security, and standards across the organization.'
+          },
+          {
+            id: 'q6',
+            type: 'True / False' as const,
+            prompt: 'A data mesh architecture centralizes all data into one monolithic storage.',
+            options: ['True', 'False'],
+            correctAnswer: 'False',
+            explanation: 'Data mesh distributes ownership and treats data as a product across domains.'
+          },
+          {
+            id: 'q7',
+            type: 'MCQ' as const,
+            prompt: 'Which Azure offering is focused on integrated analytics and data engineering?',
+            options: ['Azure App Service', 'Microsoft Fabric', 'Azure Blob Storage', 'Azure DevOps'],
+            correctAnswer: 'Microsoft Fabric',
+            explanation: 'Microsoft Fabric is an integrated platform for analytics and data engineering.'
+          },
+          {
+            id: 'q8',
+            type: 'Multiple Select' as const,
+            prompt: 'Which workloads are typical for modern data platforms? (Select all that apply)',
+            options: ['BI dashboards', 'Data science experiments', 'Gaming server hosting', 'Machine learning model training'],
+            correctAnswer: ['BI dashboards', 'Data science experiments', 'Machine learning model training'],
+            explanation: 'Modern data platforms support business intelligence, data science, and machine learning workloads.'
+          }
+        ]
+      }
+    ],
   },
   {
     id: 'session-software-testing',
@@ -1133,6 +1677,83 @@ export const mockSessions: Session[] = [
           { id: 'stst-3', title: 'Getting Started with Playwright', durationMinutes: 45, status: 'Completed' },
           { id: 'stst-4', title: 'Building Automated Tests with Playwright', durationMinutes: 45, status: 'Completed' }
   
+        ]
+      }
+    ],
+    quizzes: [
+      {
+        id: 'quiz-testing-1',
+        sessionId: 'session-software-testing',
+        topicId: 'st-t2',
+        title: 'Software Testing Fundamentals Quiz',
+        description: 'Review key testing principles, test planning, automation, and defect lifecycle concepts.',
+        passingScorePercent: 75,
+        timeLimitMinutes: 18,
+        questions: [
+          {
+            id: 'q1',
+            type: 'MCQ' as const,
+            prompt: 'Which test type validates a single unit or function of code?',
+            options: ['Integration testing', 'System testing', 'Unit testing', 'Acceptance testing'],
+            correctAnswer: 'Unit testing',
+            explanation: 'Unit testing validates individual units or components in isolation.'
+          },
+          {
+            id: 'q2',
+            type: 'True / False' as const,
+            prompt: 'Regression testing ensures recent changes do not break existing functionality.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'Regression testing checks that new code changes do not introduce defects in existing behavior.'
+          },
+          {
+            id: 'q3',
+            type: 'Multiple Select' as const,
+            prompt: 'Which of these are testing levels? (Select all that apply)',
+            options: ['Unit', 'Integration', 'System', 'Deployment'],
+            correctAnswer: ['Unit', 'Integration', 'System'],
+            explanation: 'Testing levels include unit, integration, and system testing.'
+          },
+          {
+            id: 'q4',
+            type: 'Fill in Blank' as const,
+            prompt: 'The defect lifecycle ends when the bug status is set to ______.',
+            options: ['Closed', 'Open', 'Assigned'],
+            correctAnswer: 'Closed',
+            explanation: 'The defect lifecycle finishes when the issue is closed after verification.'
+          },
+          {
+            id: 'q5',
+            type: 'MCQ' as const,
+            prompt: 'Which tool is commonly used for end-to-end web UI automation in modern testing?',
+            options: ['Playwright', 'Photoshop', 'Excel', 'Postman'],
+            correctAnswer: 'Playwright',
+            explanation: 'Playwright is a browser automation tool used for web UI testing.'
+          },
+          {
+            id: 'q6',
+            type: 'True / False' as const,
+            prompt: 'Smoke testing verifies core application functionality after a new build.',
+            options: ['True', 'False'],
+            correctAnswer: 'True',
+            explanation: 'Smoke tests check basic functionality before deeper testing is performed.'
+          },
+          {
+            id: 'q7',
+            type: 'MCQ' as const,
+            prompt: 'Boundary value analysis focuses on test inputs around ______.',
+            options: ['edge cases and limits', 'only valid data', 'UI colors', 'network speed'],
+            correctAnswer: 'edge cases and limits',
+            explanation: 'Boundary value analysis tests the edge cases around input limits.'
+          },
+          {
+            id: 'q8',
+            type: 'Multiple Select' as const,
+            prompt: 'Which test design techniques are commonly used? (Select all that apply)',
+            options: ['Equivalence partitioning', 'Boundary value analysis', 'Decision tables', 'Waterfall planning'],
+            correctAnswer: ['Equivalence partitioning', 'Boundary value analysis', 'Decision tables'],
+            explanation: 'Equivalence partitioning, boundary value analysis, and decision tables are common test design techniques.'
+          }
         ]
       }
     ]
@@ -1539,6 +2160,606 @@ Console.WriteLine(func(x));`,
         options: ['True', 'False'],
         correctAnswer: 'False',
         explanation: 'IQueryable uses deferred execution. The query is only sent to the database when enumerated or materialized (e.g. .ToListAsync(), .FirstOrDefaultAsync()).'
+      }
+    ]
+  },
+  {
+    id: 'quiz-insurance-1',
+    sessionId: 'session-insurance',
+    topicId: 'ins-t4',
+    title: 'Insurance Underwriting & Claims Fundamentals Quiz',
+    description: 'Verify your knowledge of underwriting principles, insurance products, and claims lifecycle management.',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'Which principle requires both insurer and insured to disclose all material facts?',
+        options: ['Indemnity', 'Utmost Good Faith', 'Subrogation', 'Insurable Interest'],
+        correctAnswer: 'Utmost Good Faith',
+        explanation: 'Utmost Good Faith requires full disclosure of material facts by both parties.'
+      },
+      {
+        id: 'q2',
+        type: 'True / False' as const,
+        prompt: 'The principle of indemnity aims to return the insured to the same financial position as before the loss.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'Indemnity restores the insured to the pre-loss financial position, not to make a profit.'
+      },
+      {
+        id: 'q3',
+        type: 'Fill in Blank' as const,
+        prompt: 'FNOL stands for First Notice of ______.',
+        options: ['Loss', 'Liability', 'Location'],
+        correctAnswer: 'Loss',
+        explanation: 'First Notice of Loss (FNOL) is the initial report of a claim event.'
+      },
+      {
+        id: 'q4',
+        type: 'Multiple Select' as const,
+        prompt: 'Which products are typical insurance categories? (Select all that apply)',
+        options: ['Life', 'Health', 'Property', 'Software'],
+        correctAnswer: ['Life', 'Health', 'Property'],
+        explanation: 'Life, Health, and Property are core insurance categories; Software is not an insurance product category.'
+      },
+      {
+        id: 'q5',
+        type: 'MCQ' as const,
+        prompt: 'What is the primary purpose of underwriting?',
+        options: ['To generate marketing leads', 'To assess risk and determine premium pricing', 'To process claim payments', 'To develop new product features'],
+        correctAnswer: 'To assess risk and determine premium pricing',
+        explanation: 'Underwriting evaluates risk and sets appropriate rates to ensure profitability and compliance.'
+      },
+      {
+        id: 'q6',
+        type: 'MCQ' as const,
+        prompt: 'Which of the following is an element of the insurance policy lifecycle?',
+        options: ['Code deployment', 'Claim settlement', 'Database normalization', 'Network topology'],
+        correctAnswer: 'Claim settlement',
+        explanation: 'Claim settlement is a key step in the insurance policy lifecycle.'
+      },
+      {
+        id: 'q7',
+        type: 'True / False' as const,
+        prompt: 'A combined ratio below 100% indicates an underwriting profit.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'A combined ratio under 100% means premiums exceed claims and expenses.'
+      },
+      {
+        id: 'q8',
+        type: 'MCQ' as const,
+        prompt: 'Insurable interest means the insured must have a ______ in the subject matter.',
+        options: ['financial interest', 'technical skill', 'social connection', 'contractor agreement'],
+        correctAnswer: 'financial interest',
+        explanation: 'Insurable interest requires a financial stake in the insured item or person.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-sql-1',
+    sessionId: 'session-sql',
+    topicId: 'sql-t4',
+    title: 'SQL Querying & Data Management Assessment',
+    description: 'Test your knowledge of SQL query syntax, joins, normalization, and transaction behavior.',
+    passingScorePercent: 80,
+    timeLimitMinutes: 20,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'Which JOIN returns rows only when there is a match in both tables?',
+        options: ['LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL OUTER JOIN'],
+        correctAnswer: 'INNER JOIN',
+        explanation: 'INNER JOIN returns only matching rows from both tables.'
+      },
+      {
+        id: 'q2',
+        type: 'Fill in Blank' as const,
+        prompt: 'The SQL clause used to group rows and compute aggregates is ______.',
+        options: ['GROUP BY', 'ORDER BY', 'WHERE'],
+        correctAnswer: 'GROUP BY',
+        explanation: 'GROUP BY groups rows to compute aggregates such as SUM and COUNT.'
+      },
+      {
+        id: 'q3',
+        type: 'Multiple Select' as const,
+        prompt: 'Which SQL functions are considered window functions? (Select all that apply)',
+        options: ['ROW_NUMBER()', 'SUM()', 'DENSE_RANK()', 'AVG()'],
+        correctAnswer: ['ROW_NUMBER()', 'DENSE_RANK()'],
+        explanation: 'ROW_NUMBER and DENSE_RANK are window functions; SUM and AVG are aggregate functions unless used with OVER().'   
+      },
+      {
+        id: 'q4',
+        type: 'True / False' as const,
+        prompt: 'A database index always improves the performance of every SQL query.',
+        options: ['True', 'False'],
+        correctAnswer: 'False',
+        explanation: 'Indexes can slow down writes and do not benefit all query patterns.'
+      },
+      {
+        id: 'q5',
+        type: 'Code Output' as const,
+        prompt: `What result does this SQL return?\nSELECT COUNT(*) FROM Orders WHERE OrderDate >= '2026-01-01';`,
+        options: ['The number of orders since Jan 1, 2026', 'The sum of all order totals', 'A list of orders', 'The latest order date'],
+        correctAnswer: 'The number of orders since Jan 1, 2026',
+        explanation: 'COUNT(*) returns the count of rows that match the WHERE clause.'
+      },
+      {
+        id: 'q6',
+        type: 'MCQ' as const,
+        prompt: 'Which normalization form removes transitive dependencies?',
+        options: ['1NF', '2NF', '3NF', 'BCNF'],
+        correctAnswer: '3NF',
+        explanation: 'Third Normal Form removes transitive dependencies in a relational schema.'
+      },
+      {
+        id: 'q7',
+        type: 'MCQ' as const,
+        prompt: 'Which SQL command modifies the structure of an existing table?',
+        options: ['INSERT', 'ALTER TABLE', 'DROP TABLE', 'SELECT'],
+        correctAnswer: 'ALTER TABLE',
+        explanation: 'ALTER TABLE changes a table definition, such as adding or dropping columns.'
+      },
+      {
+        id: 'q8',
+        type: 'Multiple Select' as const,
+        prompt: 'Which of these are transaction isolation levels in SQL? (Select all that apply)',
+        options: ['READ COMMITTED', 'SERIALIZABLE', 'READ UNCOMMITTED', 'AUTO COMMIT'],
+        correctAnswer: ['READ COMMITTED', 'SERIALIZABLE', 'READ UNCOMMITTED'],
+        explanation: 'AUTO COMMIT is a transaction mode, not an isolation level.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-c2c-1',
+    sessionId: 'session-c2c',
+    topicId: 'c2c-t2',
+    title: 'Campus to Corporate Professional Skills Quiz',
+    description: 'Evaluate your understanding of workplace communication, etiquette, productivity, and presentation skills.',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'Which behavior is most important for professional workplace communication?',
+        options: ['Using technical jargon constantly', 'Listening actively and asking clarifying questions', 'Interrupting to make your point', 'Relying only on email for all communication'],
+        correctAnswer: 'Listening actively and asking clarifying questions',
+        explanation: 'Active listening helps build trust and ensures understanding in professional interactions.'
+      },
+      {
+        id: 'q2',
+        type: 'Fill in Blank' as const,
+        prompt: 'The Pomodoro Technique typically uses repeated work intervals of ______ minutes.',
+        options: ['25', '45', '60'],
+        correctAnswer: '25',
+        explanation: 'The Pomodoro Technique uses 25-minute focused work intervals followed by short breaks.'
+      },
+      {
+        id: 'q3',
+        type: 'True / False' as const,
+        prompt: 'Business etiquette includes punctuality, professional language, and respectful behavior.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'Punctuality, professional language, and respect are core elements of business etiquette.'
+      },
+      {
+        id: 'q4',
+        type: 'MCQ' as const,
+        prompt: 'Which quadrant of the Eisenhower Matrix contains tasks that are important but not urgent?',
+        options: ['Do First', 'Schedule', 'Delegate', 'Eliminate'],
+        correctAnswer: 'Schedule',
+        explanation: 'Important but not urgent tasks should be scheduled for later.'
+      },
+      {
+        id: 'q5',
+        type: 'Multiple Select' as const,
+        prompt: 'Which skills contribute to strong teamwork? (Select all that apply)',
+        options: ['Accountability', 'Open communication', 'Individual competition', 'Collaborative problem solving'],
+        correctAnswer: ['Accountability', 'Open communication', 'Collaborative problem solving'],
+        explanation: 'Teamwork depends on accountability, communication, and collaboration.'
+      },
+      {
+        id: 'q6',
+        type: 'MCQ' as const,
+        prompt: 'Vocal variety in presentations refers to changes in which elements?',
+        options: ['Power, pitch, pace, and pause', 'Content length only', 'Cost and budget', 'Headset type'],
+        correctAnswer: 'Power, pitch, pace, and pause',
+        explanation: 'Effective presentation delivery uses variation in power, pitch, pace, and pauses.'
+      },
+      {
+        id: 'q7',
+        type: 'True / False' as const,
+        prompt: 'Professional communication should always avoid asking questions to appear confident.',
+        options: ['True', 'False'],
+        correctAnswer: 'False',
+        explanation: 'Asking questions is a sign of engagement and helps clarify expectations.'
+      },
+      {
+        id: 'q8',
+        type: 'MCQ' as const,
+        prompt: 'What is the best approach when resolving a workplace conflict?',
+        options: ['Ignore the issue', 'Discuss openly and seek a solution together', 'Blame others publicly', 'Delay indefinitely'],
+        correctAnswer: 'Discuss openly and seek a solution together',
+        explanation: 'Open discussion and collaboration are the healthiest ways to resolve conflict.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-data-modeling-1',
+    sessionId: 'session-data-modeling-fundamentals',
+    topicId: 'dm-t2',
+    title: 'Data Modeling & Entity Relationship Assessment',
+    description: 'Validate your knowledge of data modeling concepts, entity relationships, normalization, and system design alignment.',
+    passingScorePercent: 75,
+    timeLimitMinutes: 18,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'In data modeling, which cardinality defines one record in a table relating to many records in another table?',
+        options: ['One-to-One', 'One-to-Many', 'Many-to-Many', 'Zero-to-One'],
+        correctAnswer: 'One-to-Many',
+        explanation: 'One-to-many cardinality means one parent record relates to many child records.'
+      },
+      {
+        id: 'q2',
+        type: 'True / False' as const,
+        prompt: 'An entity in a data model typically represents a real-world object or concept.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'Entities represent objects, concepts, or things with distinct existence in the domain.'
+      },
+      {
+        id: 'q3',
+        type: 'Fill in Blank' as const,
+        prompt: 'A primary key must uniquely identify each ______ in a table.',
+        options: ['row', 'column', 'schema'],
+        correctAnswer: 'row',
+        explanation: 'A primary key uniquely identifies each row in a table.'
+      },
+      {
+        id: 'q4',
+        type: 'MCQ' as const,
+        prompt: 'Which normalization form requires that no non-key attribute depends on another non-key attribute?',
+        options: ['1NF', '2NF', '3NF', 'BCNF'],
+        correctAnswer: '3NF',
+        explanation: 'Third Normal Form removes transitive dependencies where non-key attributes depend on other non-key attributes.'
+      },
+      {
+        id: 'q5',
+        type: 'Multiple Select' as const,
+        prompt: 'Which are common relationship types in data modeling? (Select all that apply)',
+        options: ['One-to-One', 'One-to-Many', 'Many-to-Many', 'Single-to-Multi'],
+        correctAnswer: ['One-to-One', 'One-to-Many', 'Many-to-Many'],
+        explanation: 'Common relationships include one-to-one, one-to-many, and many-to-many.'
+      },
+      {
+        id: 'q6',
+        type: 'MCQ' as const,
+        prompt: 'A logical data model is primarily concerned with which of the following?',
+        options: ['Cloud provider configuration', 'Database indexing strategy', 'Entities, attributes, and relationships', 'UI component layout'],
+        correctAnswer: 'Entities, attributes, and relationships',
+        explanation: 'Logical models describe data elements and relationships independent of physical implementation.'
+      },
+      {
+        id: 'q7',
+        type: 'True / False' as const,
+        prompt: 'ER diagrams show entities, relationships, and cardinality constraints in a data model.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'ER diagrams visualize entities, relationships, and cardinality in a data model.'
+      },
+      {
+        id: 'q8',
+        type: 'MCQ' as const,
+        prompt: 'Which model type typically contains technical storage details and physical tables?',
+        options: ['Conceptual model', 'Logical model', 'Physical model', 'Business model'],
+        correctAnswer: 'Physical model',
+        explanation: 'Physical models map logical design to actual database tables and storage details.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-data-fundamentals-1',
+    sessionId: 'session-data-fundamentals',
+    topicId: 'df-t2',
+    title: 'Data Fundamentals & Analytics Foundations Quiz',
+    description: 'Check your understanding of data quality, architecture, analytics tools, and modern data ecosystems.',
+    passingScorePercent: 75,
+    timeLimitMinutes: 18,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'Which architecture pattern describes bronze, silver, and gold data layers?',
+        options: ['Lambda Architecture', 'Medallion Architecture', 'Star Schema', 'Data Mesh'],
+        correctAnswer: 'Medallion Architecture',
+        explanation: 'Medallion Architecture uses bronze, silver, and gold layers for data refinement.'
+      },
+      {
+        id: 'q2',
+        type: 'Fill in Blank' as const,
+        prompt: 'Data quality includes accuracy, completeness, consistency, and ______.',
+        options: ['reliability', 'performance', 'latency'],
+        correctAnswer: 'reliability',
+        explanation: 'Quality dimensions include accuracy, completeness, consistency, and reliability.'
+      },
+      {
+        id: 'q3',
+        type: 'True / False' as const,
+        prompt: 'Data governance is responsible for policies, ownership, and data stewardship.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'Data governance defines policies, accountability, and stewardship for enterprise data.'
+      },
+      {
+        id: 'q4',
+        type: 'Multiple Select' as const,
+        prompt: 'Which tools are commonly used for data analytics and reporting? (Select all that apply)',
+        options: ['Power BI', 'Excel', 'Photoshop', 'Tableau'],
+        correctAnswer: ['Power BI', 'Excel', 'Tableau'],
+        explanation: 'Power BI, Excel, and Tableau are analytics and reporting tools.'
+      },
+      {
+        id: 'q5',
+        type: 'MCQ' as const,
+        prompt: 'What is the first stage of the data lifecycle?',
+        options: ['Collection', 'Storage', 'Analysis', 'Visualization'],
+        correctAnswer: 'Collection',
+        explanation: 'Data lifecycle begins with data collection or ingestion.'
+      },
+      {
+        id: 'q6',
+        type: 'MCQ' as const,
+        prompt: 'ETL stands for Extract, Transform, and ______.',
+        options: ['Load', 'Link', 'Locate', 'Launch'],
+        correctAnswer: 'Load',
+        explanation: 'ETL stands for Extract, Transform, Load.'
+      },
+      {
+        id: 'q7',
+        type: 'True / False' as const,
+        prompt: 'Data redundancy always improves data quality.',
+        options: ['True', 'False'],
+        correctAnswer: 'False',
+        explanation: 'Redundancy can lead to inconsistency and lower data quality when not managed.'
+      },
+      {
+        id: 'q8',
+        type: 'MCQ' as const,
+        prompt: 'Which architecture is used for large-scale, cloud-native analytical systems?',
+        options: ['Monolithic', 'Lakehouse', 'MVC', 'Peer-to-Peer'],
+        correctAnswer: 'Lakehouse',
+        explanation: 'Lakehouse architecture combines data lake flexibility with data warehouse performance.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-html-css-js-1',
+    sessionId: 'session-html-css-js',
+    topicId: 'web-t3',
+    title: 'HTML, CSS & JavaScript Web Fundamentals Quiz',
+    description: 'Measure your knowledge of semantic HTML, CSS layout, DOM interaction, and JavaScript behavior.',
+    passingScorePercent: 80,
+    timeLimitMinutes: 20,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'Which HTML element is best for defining the main navigation of a webpage?',
+        options: ['<section>', '<nav>', '<header>', '<div>'],
+        correctAnswer: '<nav>',
+        explanation: 'The <nav> element semantically represents page navigation links.'
+      },
+      {
+        id: 'q2',
+        type: 'Fill in Blank' as const,
+        prompt: 'A CSS class selector begins with the ______ symbol.',
+        options: ['.', '#', '$'],
+        correctAnswer: '.',
+        explanation: 'CSS class selectors start with a dot (.) followed by the class name.'
+      },
+      {
+        id: 'q3',
+        type: 'Multiple Select' as const,
+        prompt: 'Which items are part of the JavaScript event loop? (Select all that apply)',
+        options: ['Call Stack', 'Microtask Queue', 'Render Tree', 'WebSocket API'],
+        correctAnswer: ['Call Stack', 'Microtask Queue'],
+        explanation: 'The event loop manages the call stack and microtask queue; render tree and WebSocket API are separate browser subsystems.'
+      },
+      {
+        id: 'q4',
+        type: 'True / False' as const,
+        prompt: 'A const variable in JavaScript can be reassigned to a new value.',
+        options: ['True', 'False'],
+        correctAnswer: 'False',
+        explanation: 'const variables cannot be reassigned after initialization.'
+      },
+      {
+        id: 'q5',
+        type: 'Code Output' as const,
+        prompt: 'What does this JavaScript snippet log?\nconst items = [1, 2, 3];\nconst doubled = items.map(n => n * 2);\nconsole.log(doubled[1]);',
+        options: ['1', '2', '4', '6'],
+        correctAnswer: '4',
+        explanation: 'The second item in the doubled array is 4.'
+      },
+      {
+        id: 'q6',
+        type: 'MCQ' as const,
+        prompt: 'What does DOM stand for?',
+        options: ['Document Object Model', 'Dynamic Object Method', 'Design Oriented Markup', 'Data Output Manager'],
+        correctAnswer: 'Document Object Model',
+        explanation: 'DOM stands for Document Object Model.'
+      },
+      {
+        id: 'q7',
+        type: 'MCQ' as const,
+        prompt: 'Responsive web design typically uses which CSS techniques?',
+        options: ['Media queries and flexbox', 'Fixed pixel widths only', 'Inline JavaScript alerts', 'Database normalization'],
+        correctAnswer: 'Media queries and flexbox',
+        explanation: 'Responsive design relies on media queries and flexible layouts like flexbox.'
+      },
+      {
+        id: 'q8',
+        type: 'True / False' as const,
+        prompt: 'The "use strict" directive enables strict mode in JavaScript.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: '"use strict" enables stricter parsing and error handling in JavaScript.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-modern-data-platforms-1',
+    sessionId: 'session-modern-data-platforms',
+    topicId: 'mdp-t1',
+    title: 'Advanced Data Platforms & Cloud Data Architecture Quiz',
+    description: 'Assess your knowledge of cloud data platforms, lakehouse principles, governance, and analytics workflows.',
+    passingScorePercent: 80,
+    timeLimitMinutes: 20,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'What is the core idea of a lakehouse architecture?',
+        options: ['Separate data lake and data warehouse', 'Combine data lake storage with warehouse-style governance', 'Use only relational databases', 'Replace BI with AI'],
+        correctAnswer: 'Combine data lake storage with warehouse-style governance',
+        explanation: 'Lakehouse architecture blends data lake storage with data warehouse management and governance.'
+      },
+      {
+        id: 'q2',
+        type: 'True / False' as const,
+        prompt: 'ETL stands for Extract, Transform, and Load.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'ETL is Extract, Transform, Load.'
+      },
+      {
+        id: 'q3',
+        type: 'Multiple Select' as const,
+        prompt: 'Which components are common in modern data platform architectures? (Select all that apply)',
+        options: ['Data Lake', 'Metadata Catalog', 'Orchestration Engine', 'FTP Server'],
+        correctAnswer: ['Data Lake', 'Metadata Catalog', 'Orchestration Engine'],
+        explanation: 'Modern platforms often include data lakes, metadata catalogs, and orchestration engines; FTP is a transport mechanism, not a platform component.'
+      },
+      {
+        id: 'q4',
+        type: 'Fill in Blank' as const,
+        prompt: 'Databricks is a managed service built around Apache ______.',
+        options: ['Spark', 'Hadoop', 'Kafka'],
+        correctAnswer: 'Spark',
+        explanation: 'Databricks is built on Apache Spark for analytics and data engineering.'
+      },
+      {
+        id: 'q5',
+        type: 'MCQ' as const,
+        prompt: 'Data governance primarily focuses on which of the following?',
+        options: ['Visualizing dashboards', 'Securing and standardizing enterprise data', 'Writing SQL queries', 'Designing mobile apps'],
+        correctAnswer: 'Securing and standardizing enterprise data',
+        explanation: 'Data governance ensures data quality, security, and standards across the organization.'
+      },
+      {
+        id: 'q6',
+        type: 'True / False' as const,
+        prompt: 'A data mesh architecture centralizes all data into one monolithic storage.',
+        options: ['True', 'False'],
+        correctAnswer: 'False',
+        explanation: 'Data mesh distributes ownership and treats data as a product across domains.'
+      },
+      {
+        id: 'q7',
+        type: 'MCQ' as const,
+        prompt: 'Which Azure offering is focused on integrated analytics and data engineering?',
+        options: ['Azure App Service', 'Microsoft Fabric', 'Azure Blob Storage', 'Azure DevOps'],
+        correctAnswer: 'Microsoft Fabric',
+        explanation: 'Microsoft Fabric is an integrated platform for analytics and data engineering.'
+      },
+      {
+        id: 'q8',
+        type: 'Multiple Select' as const,
+        prompt: 'Which workloads are typical for modern data platforms? (Select all that apply)',
+        options: ['BI dashboards', 'Data science experiments', 'Gaming server hosting', 'Machine learning model training'],
+        correctAnswer: ['BI dashboards', 'Data science experiments', 'Machine learning model training'],
+        explanation: 'Modern data platforms support business intelligence, data science, and machine learning workloads.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-testing-1',
+    sessionId: 'session-software-testing',
+    topicId: 'st-t2',
+    title: 'Software Testing Fundamentals Quiz',
+    description: 'Review key testing principles, test planning, automation, and defect lifecycle concepts.',
+    passingScorePercent: 75,
+    timeLimitMinutes: 18,
+    questions: [
+      {
+        id: 'q1',
+        type: 'MCQ' as const,
+        prompt: 'Which test type validates a single unit or function of code?',
+        options: ['Integration testing', 'System testing', 'Unit testing', 'Acceptance testing'],
+        correctAnswer: 'Unit testing',
+        explanation: 'Unit testing validates individual units or components in isolation.'
+      },
+      {
+        id: 'q2',
+        type: 'True / False' as const,
+        prompt: 'Regression testing ensures recent changes do not break existing functionality.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'Regression testing checks that new code changes do not introduce defects in existing behavior.'
+      },
+      {
+        id: 'q3',
+        type: 'Multiple Select' as const,
+        prompt: 'Which of these are testing levels? (Select all that apply)',
+        options: ['Unit', 'Integration', 'System', 'Deployment'],
+        correctAnswer: ['Unit', 'Integration', 'System'],
+        explanation: 'Testing levels include unit, integration, and system testing.'
+      },
+      {
+        id: 'q4',
+        type: 'Fill in Blank' as const,
+        prompt: 'The defect lifecycle ends when the bug status is set to ______.',
+        options: ['Closed', 'Open', 'Assigned'],
+        correctAnswer: 'Closed',
+        explanation: 'The defect lifecycle finishes when the issue is closed after verification.'
+      },
+      {
+        id: 'q5',
+        type: 'MCQ' as const,
+        prompt: 'Which tool is commonly used for end-to-end web UI automation in modern testing?',
+        options: ['Playwright', 'Photoshop', 'Excel', 'Postman'],
+        correctAnswer: 'Playwright',
+        explanation: 'Playwright is a browser automation tool used for web UI testing.'
+      },
+      {
+        id: 'q6',
+        type: 'True / False' as const,
+        prompt: 'Smoke testing verifies core application functionality after a new build.',
+        options: ['True', 'False'],
+        correctAnswer: 'True',
+        explanation: 'Smoke tests check basic functionality before deeper testing is performed.'
+      },
+      {
+        id: 'q7',
+        type: 'MCQ' as const,
+        prompt: 'Boundary value analysis focuses on test inputs around ______.',
+        options: ['edge cases and limits', 'only valid data', 'UI colors', 'network speed'],
+        correctAnswer: 'edge cases and limits',
+        explanation: 'Boundary value analysis tests the edge cases around input limits.'
+      },
+      {
+        id: 'q8',
+        type: 'Multiple Select' as const,
+        prompt: 'Which test design techniques are commonly used? (Select all that apply)',
+        options: ['Equivalence partitioning', 'Boundary value analysis', 'Decision tables', 'Waterfall planning'],
+        correctAnswer: ['Equivalence partitioning', 'Boundary value analysis', 'Decision tables'],
+        explanation: 'Equivalence partitioning, boundary value analysis, and decision tables are common test design techniques.'
       }
     ]
   }
