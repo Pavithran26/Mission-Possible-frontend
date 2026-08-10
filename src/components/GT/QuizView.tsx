@@ -140,6 +140,19 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
     onBack();
   };
 
+  const handleRetryQuiz = () => {
+    setAnswers({});
+    setCurrentQuestionIndex(0);
+    setSubmitted(false);
+    setResult(null);
+    setShowReviewPage(false);
+    try {
+      sessionStorage.removeItem(storageKey);
+    } catch (err) {
+      console.error('Failed to clear quiz retry state:', err);
+    }
+  };
+
   const handleCancelLeave = () => {
     setConfirmingLeave(false);
   };
@@ -152,6 +165,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
             quiz={quiz}
             answers={answers}
             onBack={() => setShowReviewPage(false)}
+            onRetry={handleRetryQuiz}
             onGoToCourse={onBack}
             scorePercent={result.scorePercent}
             passed={result.passed}

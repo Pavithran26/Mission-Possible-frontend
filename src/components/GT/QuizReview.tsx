@@ -6,6 +6,7 @@ interface QuizReviewProps {
   quiz: Quiz;
   answers: Record<string, any>;
   onBack: () => void;
+  onRetry: () => void;
   onGoToCourse?: () => void;
   scorePercent: number;
   passed: boolean;
@@ -83,6 +84,12 @@ export const QuizReview: React.FC<QuizReviewProps> = ({ quiz, answers, onBack, o
             <BookOpen className="w-4 h-4" /> Back to Course
           </button>
         )}
+        <button
+          onClick={onRetry}
+          className="inline-flex items-center gap-2 text-xs text-white bg-emerald-600 hover:bg-emerald-500 px-3 py-2 rounded-full transition"
+        >
+          <RefreshCw className="w-4 h-4" /> Retry Quiz
+        </button>
       </div>
 
       <div className="bg-gradient-to-br from-blue-600/10 via-white to-slate-100 dark:from-blue-600/20 dark:via-slate-900 dark:to-slate-950 border border-slate-200 dark:border-slate-700 rounded-3xl p-6 shadow-xl">
