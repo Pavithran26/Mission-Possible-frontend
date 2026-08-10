@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { ShieldCheck, Lock, Mail, Key, ArrowRight, AlertCircle, CheckCircle2, Sparkles } from 'lucide-react';
+import { ShieldCheck, Lock, Mail, Key, ArrowRight, AlertCircle } from 'lucide-react';
+import { loginApi } from '../../services/api';
 
 interface AdminAuthGateProps {
-  onLoginSuccess: () => void;
+  onLoginSuccess: (userData?: { name: string; email: string }) => void;
   onCancel?: () => void;
 }
 
@@ -12,7 +13,7 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -23,26 +24,29 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
 
     setIsLoading(true);
 
-    // Simple validation rule: accept admin credentials or demo credentials
-    setTimeout(() => {
-      const cleanEmail = email.trim().toLowerCase();
-      if (
-        (cleanEmail.includes('admin') || cleanEmail.includes('@')) && 
-        password.length >= 4
-      ) {
-        setIsLoading(false);
-        onLoginSuccess();
-      } else {
-        setIsLoading(false);
-        setError('Invalid credentials. Hint: use admin@enterprise.com / admin123');
-      }
-    }, 600);
-  };
+    try {
+      const res = await loginApi(email.trim(), password);
+      setIsLoading(false);
 
-  const handleFastFillDemo = () => {
-    setEmail('admin@enterprise.com');
-    setPassword('admin123');
-    setError('');
+      if (!res.success || !res.data) {
+        setError(res.message || 'Invalid credentials. Please verify your email and password.');
+        return;
+      }
+
+      // Strict RBAC Enforcement
+      if (res.data.role !== 'Admin') {
+        setError('Access Denied (RBAC): Your account has Associate/Student privileges and cannot access the L&D Admin Console. Please use the Companion portal.');
+        return;
+      }
+
+      onLoginSuccess({
+        name: `${res.data.firstName} ${res.data.lastName}`,
+        email: res.data.email
+      });
+    } catch (err: any) {
+      setIsLoading(false);
+      setError(err.message || 'Authentication error. Please try again.');
+    }
   };
 
   return (
@@ -56,28 +60,13 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
           </div>
           <div>
             <span className="text-[10px] font-mono font-bold uppercase tracking-widest text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
-              Restricted Access
+              Restricted RBAC Access
             </span>
             <h2 className="text-2xl font-extrabold text-white mt-2">Admin Portal Login</h2>
             <p className="text-slate-400 text-xs mt-1">
               Authentication required to access L&D management console and curriculum builder.
             </p>
           </div>
-        </div>
-
-        {/* Demo Fast-Fill Button */}
-        <div className="bg-slate-950 p-3.5 rounded-2xl border border-slate-800/80 flex items-center justify-between text-xs">
-          <div className="space-y-0.5">
-            <span className="font-bold text-slate-300 block">Default Admin Credentials</span>
-            <span className="text-[10px] text-slate-500 font-mono">admin@enterprise.com • admin123</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleFastFillDemo}
-            className="bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 border border-emerald-500/30 font-semibold text-[11px] px-3 py-1.5 rounded-xl transition-colors flex items-center gap-1"
-          >
-            <Sparkles className="w-3.5 h-3.5" /> Fast Fill
-          </button>
         </div>
 
         {/* Login Form */}
@@ -98,7 +87,7 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="e.g. admin@enterprise.com"
+              placeholder="e.g. Anukraha.Magdalene@valuemomentum.com"
               className="w-full bg-slate-950 border border-slate-800 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"
               required
             />
@@ -121,7 +110,7 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] disabled:opacity-50 mt-2"
+            className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs py-3 rounded-2xl shadow-lg shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all hover:scale-[1.02] disabled:opacity-50 mt-2 cursor-pointer"
           >
             {isLoading ? (
               <span>Authenticating...</span>
@@ -139,7 +128,7 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
           <div className="text-center pt-2">
             <button
               onClick={onCancel}
-              className="text-xs text-slate-500 hover:text-slate-300 font-mono transition-colors"
+              className="text-xs text-slate-500 hover:text-slate-300 font-mono transition-colors cursor-pointer"
             >
               ← Return to Open GT Student Portal
             </button>
@@ -147,7 +136,7 @@ export const AdminAuthGate: React.FC<AdminAuthGateProps> = ({ onLoginSuccess, on
         )}
 
         <div className="pt-2 text-center text-[10px] text-slate-600 font-mono border-t border-slate-800/80">
-          Enterprise Security Enforcement • GT Portal Unrestricted
+          Role-Based Access Control (RBAC) Enforced
         </div>
 
       </div>
