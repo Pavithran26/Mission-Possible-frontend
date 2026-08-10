@@ -60,6 +60,642 @@ interface SessionDetailViewProps {
   onStateChange?: (tab: string, topicId?: string) => void;
 }
 
+const providedMaterialMocks: Record<string, CustomMaterialItem[]> = {
+  'session-dotnet': [
+    {
+      id: 'prov-dotnet-1',
+      title: 'Enterprise .NET Architecture Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official curriculum guide covering .NET 8 architecture, clean code, and enterprise service design.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Santhosh',
+      tags: ['Official', '.NET', 'Architecture'],
+      fileSizeOrDuration: '46 Pages'
+    },
+    {
+      id: 'prov-dotnet-2',
+      title: 'ASP.NET Core Web API Best Practices Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Trainer slide deck on building resilient APIs, dependency injection, middleware, and swagger integration.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Santhosh',
+      tags: ['API', 'Best Practices'],
+      fileSizeOrDuration: '25 Slides'
+    },
+    {
+      id: 'prov-dotnet-3',
+      title: 'C# Performance Tuning & Async Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Detailed notes on async programming, garbage collection, and high-performance CLR patterns.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Lead L&D Architect',
+      tags: ['Performance', 'C#'],
+      fileSizeOrDuration: '30 Pages'
+    }
+  ],
+  'session-insurance': [
+    {
+      id: 'prov-ins-1',
+      title: 'Insurance Domain Fundamentals Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official training manual for life, P&C, underwriting, claims, and regulatory compliance.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Harish',
+      tags: ['Insurance', 'Official'],
+      fileSizeOrDuration: '40 Pages'
+    },
+    {
+      id: 'prov-ins-2',
+      title: 'Underwriting & Risk Assessment Slide Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session material explaining pricing, rating tables, and risk classification workflows.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Harish',
+      tags: ['Underwriting', 'Risk'],
+      fileSizeOrDuration: '22 Slides'
+    },
+    {
+      id: 'prov-ins-3',
+      title: 'Claims Workflow Process Document',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Reference notes for end-to-end claims processing including FNOL, investigation, and settlement.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Claims Team',
+      tags: ['Claims', 'Process'],
+      fileSizeOrDuration: '28 Pages'
+    }
+  ],
+  'session-sql': [
+    {
+      id: 'prov-sql-1',
+      title: 'SQL & Relational Database Engineering Manual',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official database guide with normalization, indexing, query optimization, and transaction design.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Janani',
+      tags: ['SQL', 'Database'],
+      fileSizeOrDuration: '48 Pages'
+    },
+    {
+      id: 'prov-sql-2',
+      title: 'Advanced Querying & Window Functions Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session slides on CTEs, window functions, and query performance trade-offs.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Janani',
+      tags: ['Query', 'Window Functions'],
+      fileSizeOrDuration: '27 Slides'
+    },
+    {
+      id: 'prov-sql-3',
+      title: 'PostgreSQL Performance Tuning Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Notes on explain plans, B-Tree indexes, constraints, and locking strategy.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'DBA Lead',
+      tags: ['Performance', 'PostgreSQL'],
+      fileSizeOrDuration: '24 Pages'
+    }
+  ],
+  'session-c2c': [
+    {
+      id: 'prov-c2c-1',
+      title: 'Campus to Corporate Workplace Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official transition guide for professionalism, communication, and workplace behavior.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Mayford',
+      tags: ['Career', 'Soft Skills'],
+      fileSizeOrDuration: '34 Pages'
+    },
+    {
+      id: 'prov-c2c-2',
+      title: 'Effective Communication Workshop Slides',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Essential slides on active listening, presentation skills, and stakeholder communication.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Mayford',
+      tags: ['Communication', 'Workshop'],
+      fileSizeOrDuration: '20 Slides'
+    },
+    {
+      id: 'prov-c2c-3',
+      title: 'Time Management & Productivity Checklist',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Printable checklist for daily planning, priorities, and the Eisenhower decision matrix.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'GT Productivity Team',
+      tags: ['Productivity', 'Planning'],
+      fileSizeOrDuration: '15 Pages'
+    }
+  ],
+  'session-data-modeling-fundamentals': [
+    {
+      id: 'prov-dm-1',
+      title: 'Data Modeling Fundamentals Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official notes on entity relationships, cardinality, normalization, and conceptual modeling.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Gabriel',
+      tags: ['Data Modeling', 'ERD'],
+      fileSizeOrDuration: '38 Pages'
+    },
+    {
+      id: 'prov-dm-2',
+      title: 'ERD Patterns & Relationship Cards Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Slide deck covering one-to-one, one-to-many, and many-to-many modeling patterns.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Gabriel',
+      tags: ['ERD', 'Models'],
+      fileSizeOrDuration: '24 Slides'
+    },
+    {
+      id: 'prov-dm-3',
+      title: 'Normalization & Schema Design Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Practical reference for applying 1NF-3NF and avoiding update anomalies.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Data Team',
+      tags: ['Normalization', 'Schema'],
+      fileSizeOrDuration: '26 Pages'
+    }
+  ],
+  'session-data-fundamentals': [
+    {
+      id: 'prov-df-1',
+      title: 'Data Fundamentals & Quality Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official guide that explains data quality, governance, and foundational analytics concepts.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Parthiban',
+      tags: ['Data Quality', 'Governance'],
+      fileSizeOrDuration: '36 Pages'
+    },
+    {
+      id: 'prov-df-2',
+      title: 'Medallion Architecture & Azure Data Flow Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session slides on bronze/silver/gold data layering and modern analytics pipelines.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Parthiban',
+      tags: ['Medallion', 'Azure'],
+      fileSizeOrDuration: '28 Slides'
+    },
+    {
+      id: 'prov-df-3',
+      title: 'Analytics Reporting Starter Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Reference notes for building dashboards and business reports.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'BI Team',
+      tags: ['Analytics', 'Reporting'],
+      fileSizeOrDuration: '22 Pages'
+    }
+  ],
+  'session-html-css-js': [
+    {
+      id: 'prov-web-1',
+      title: 'HTML, CSS & JavaScript Foundations Manual',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official web fundamentals handbook for markup, styling, and scripting best practices.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Sre',
+      tags: ['Web', 'Frontend'],
+      fileSizeOrDuration: '42 Pages'
+    },
+    {
+      id: 'prov-web-2',
+      title: 'Responsive Design & Layout Patterns Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Slides covering responsive grids, flexbox, and modern CSS layout strategies.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Sre',
+      tags: ['Responsive', 'CSS'],
+      fileSizeOrDuration: '30 Slides'
+    },
+    {
+      id: 'prov-web-3',
+      title: 'JavaScript DOM & Event Handling Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Session notes on DOM manipulation, event listeners, and async browser operations.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Frontend Team',
+      tags: ['JavaScript', 'DOM'],
+      fileSizeOrDuration: '25 Pages'
+    }
+  ],
+  'session-modern-data-platforms': [
+    {
+      id: 'prov-mdp-1',
+      title: 'Modern Data Platforms Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official enterprise guide for lakehouse architecture, governance, and analytics.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Anitha',
+      tags: ['Data Engineering', 'Lakehouse'],
+      fileSizeOrDuration: '48 Pages'
+    },
+    {
+      id: 'prov-mdp-2',
+      title: 'Azure Fabric & Databricks Pipeline Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Slides on ETL orchestration, Fabric workspaces, and Databricks data pipelines.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Anitha',
+      tags: ['Azure', 'Databricks'],
+      fileSizeOrDuration: '29 Slides'
+    },
+    {
+      id: 'prov-mdp-3',
+      title: 'Data Modeling & Governance Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Authoritative notes on metadata, cataloging, and governance controls for modern data platforms.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Data Ops Team',
+      tags: ['Governance', 'Metadata'],
+      fileSizeOrDuration: '26 Pages'
+    }
+  ],
+  'session-software-testing': [
+    {
+      id: 'prov-st-1',
+      title: 'Software Testing Fundamentals Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official guide for testing methodologies, planning, and quality assurance fundamentals.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Swathi',
+      tags: ['Testing', 'QA'],
+      fileSizeOrDuration: '40 Pages'
+    },
+    {
+      id: 'prov-st-2',
+      title: 'Test Design Techniques & Execution Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session slides for equivalence partitioning, boundary analysis, and test execution best practices.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Swathi',
+      tags: ['Test Design', 'Execution'],
+      fileSizeOrDuration: '27 Slides'
+    },
+    {
+      id: 'prov-st-3',
+      title: 'Defect Management Workflow Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Process notes on defect triage, tracking, and closure workflows in software QA.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'QA Team',
+      tags: ['Defect', 'Workflow'],
+      fileSizeOrDuration: '24 Pages'
+    }
+  ]
+};
+
+const additionalMaterialMocks: Record<string, CustomMaterialItem[]> = {
+  'session-dotnet': [
+    {
+      id: 'add-dotnet-1',
+      title: 'Advanced .NET Microservices Reference Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental reference covering microservices patterns, event-driven architecture, and resilient APIs.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Community Engineering',
+      tags: ['Microservices', 'Reference'],
+      fileSizeOrDuration: '22 Pages'
+    },
+    {
+      id: 'add-dotnet-2',
+      title: 'Performance Engineering Video Case Study',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video covering .NET performance profiling and async scaling strategies.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Video', 'Performance'],
+      fileSizeOrDuration: '35 mins'
+    },
+    {
+      id: 'add-dotnet-3',
+      title: 'Tech Interview Practice Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Supplementary study notes focused on common .NET interview questions and architecture review topics.',
+      updatedAt: '1 week ago',
+      sourceOrAuthor: 'Mentor Team',
+      tags: ['Interview', 'Notes'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-insurance': [
+    {
+      id: 'add-ins-1',
+      title: 'Insurance Industry Analytics & Case Study',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Additional reading on claims analytics, fraud detection, and policy profitability models.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Insurance Research Group',
+      tags: ['Analytics', 'Case Study'],
+      fileSizeOrDuration: '20 Pages'
+    },
+    {
+      id: 'add-ins-2',
+      title: 'Regulatory Compliance Video Discussion',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video session on IRDAI and Solvency II compliance for insurance systems.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Compliance', 'Video'],
+      fileSizeOrDuration: '40 mins'
+    },
+    {
+      id: 'add-ins-3',
+      title: 'Peer Discussion Notes on Claims Processing',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Shared peer notes summarizing real-world claims processing exceptions and workflow challenges.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Peer Cohort',
+      tags: ['Discussion', 'Notes'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-sql': [
+    {
+      id: 'add-sql-1',
+      title: 'Database Design & Normalization Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplementary article on schema design, normalization tradeoffs, and query simplification.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'SQL Experts',
+      tags: ['Design', 'Normalization'],
+      fileSizeOrDuration: '18 Pages'
+    },
+    {
+      id: 'add-sql-2',
+      title: 'Query Optimization Video Case Study',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video explaining query tuning, index selection, and execution plan analysis.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Optimization', 'Video'],
+      fileSizeOrDuration: '38 mins'
+    },
+    {
+      id: 'add-sql-3',
+      title: 'SQL Cheat Sheet & Quick Reference',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Quick reference notes for SQL syntax, joins, aggregate functions, and window functions.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'DBA Team',
+      tags: ['Cheat Sheet', 'Reference'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-c2c': [
+    {
+      id: 'add-c2c-1',
+      title: 'Corporate Communication Case Study',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplementary case study on client interaction, stakeholder communication, and professionalism. ',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Corporate Training',
+      tags: ['Communication', 'Case Study'],
+      fileSizeOrDuration: '18 Pages'
+    },
+    {
+      id: 'add-c2c-2',
+      title: 'Behavioral Interview Prep Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video on behavioral interview questions, storytelling, and confidence building.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Interview', 'Video'],
+      fileSizeOrDuration: '33 mins'
+    },
+    {
+      id: 'add-c2c-3',
+      title: 'Professional Email Writing & Etiquette Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional guide for writing professional emails, status updates, and meeting follow-ups.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'HR Team',
+      tags: ['Email', 'Etiquette'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-data-modeling-fundamentals': [
+    {
+      id: 'add-dm-1',
+      title: 'Dimensional Modeling Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental article comparing normalized vs dimensional models and star/snowflake schemas.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Data Architecture Group',
+      tags: ['Dimensional', 'Article'],
+      fileSizeOrDuration: '20 Pages'
+    },
+    {
+      id: 'add-dm-2',
+      title: 'Data Warehouse Reference Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video covering data warehouse architecture and data modeling best practices.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Warehouse', 'Video'],
+      fileSizeOrDuration: '36 mins'
+    },
+    {
+      id: 'add-dm-3',
+      title: 'Data Governance & Vocabulary Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional notes on data governance, business glossary, and metadata management.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Governance Team',
+      tags: ['Governance', 'Metadata'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-data-fundamentals': [
+    {
+      id: 'add-df-1',
+      title: 'Power BI & Analytics Best Practices',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental guide for building effective dashboards, KPI metrics, and executive reports.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'BI Team',
+      tags: ['Analytics', 'Power BI'],
+      fileSizeOrDuration: '22 Pages'
+    },
+    {
+      id: 'add-df-2',
+      title: 'Modern Data Platform Video Overview',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video on modern data architectures, cloud integration, and analytics ecosystems.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Data Platform', 'Video'],
+      fileSizeOrDuration: '34 mins'
+    },
+    {
+      id: 'add-df-3',
+      title: 'Data Source Mapping & Quality Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Auxiliary notes for source mapping, data lineage, and quality checks.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Data Management',
+      tags: ['Lineage', 'Quality'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-html-css-js': [
+    {
+      id: 'add-web-1',
+      title: 'Frontend Accessibility & UX Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Additional guide on accessibility practices and UX-friendly web interfaces.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'UX Team',
+      tags: ['Accessibility', 'UX'],
+      fileSizeOrDuration: '20 Pages'
+    },
+    {
+      id: 'add-web-2',
+      title: 'JavaScript Performance Optimization Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video on browser performance, event delegation, and asynchronous resource loading.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Performance', 'Video'],
+      fileSizeOrDuration: '38 mins'
+    },
+    {
+      id: 'add-web-3',
+      title: 'CSS Grid & Flexbox Quick Reference',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Practical reference sheet for modern layout patterns and responsive styling utilities.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Frontend Team',
+      tags: ['CSS', 'Layouts'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-modern-data-platforms': [
+    {
+      id: 'add-mdp-1',
+      title: 'DataOps & Automation Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental article on data operations, orchestration, and pipeline automation.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'DataOps Group',
+      tags: ['DataOps', 'Automation'],
+      fileSizeOrDuration: '22 Pages'
+    },
+    {
+      id: 'add-mdp-2',
+      title: 'AI-Driven Analytics Video Overview',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video focusing on AI, analytics, and strategic data platform decision-making.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['AI', 'Analytics'],
+      fileSizeOrDuration: '40 mins'
+    },
+    {
+      id: 'add-mdp-3',
+      title: 'Cloud Governance & Catalog Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional notes on governance, cataloging, and data stewardship practices.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Governance Team',
+      tags: ['Governance', 'Catalog'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-software-testing': [
+    {
+      id: 'add-st-1',
+      title: 'QA Automation & Tooling Reference',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental reference on automation frameworks, test environment setup, and reporting.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'QA Automation Team',
+      tags: ['Automation', 'QA'],
+      fileSizeOrDuration: '24 Pages'
+    },
+    {
+      id: 'add-st-2',
+      title: 'Performance Testing Best Practices Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video on load testing, performance metrics, and user experience validation.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Performance', 'Video'],
+      fileSizeOrDuration: '36 mins'
+    },
+    {
+      id: 'add-st-3',
+      title: 'Bug Triage & Defect Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional notes for defect severity classification, triage workflows, and root-cause analysis.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'QA Team',
+      tags: ['Bug Triage', 'Defects'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ]
+};
+
 export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   session,
   onBack,
@@ -104,48 +740,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   const [additionalSearch, setAdditionalSearch] = useState('');
   const [additionalFilterType, setAdditionalFilterType] = useState<string>('All');
 
+  const defaultProvidedMaterials = providedMaterialMocks[session.id] || [];
+
   // Provided Materials List
   const [providedMaterialsList, setProvidedMaterialsList] = useState<CustomMaterialItem[]>([
-    {
-      id: 'prov-1',
-      title: 'Official Enterprise Curriculum Handbook & Architecture Guide',
-      type: 'Doc (PDF/Word)',
-      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      description: 'Standard organization-issued reference guide covering design patterns and code standards.',
-      updatedAt: 'Today',
-      tags: ['Curriculum', 'Official'],
-      fileSizeOrDuration: '2.4 MB (42 Pages)'
-    },
-    {
-      id: 'prov-2',
-      title: 'Technical Deep Dive Slide Deck',
-      type: 'PowerPoint (PPT)',
-      url: '#',
-      description: 'Official trainer presentation deck used during the live interactive lecture.',
-      updatedAt: 'Yesterday',
-      tags: ['Presentation', 'Trainer Deck'],
-      fileSizeOrDuration: '14.8 MB (28 Slides)'
-    },
-    {
-      id: 'prov-3',
-      title: 'Live Workshop & Hands-on Demo Recording',
-      type: 'Video File (MP4)',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-      description: 'Full recording of the live trainer demonstration and step-by-step lab walkthrough.',
-      updatedAt: '3 days ago',
-      tags: ['Recording', 'Video'],
-      fileSizeOrDuration: '45 mins'
-    },
-    {
-      id: 'prov-notes-1',
-      title: `${session.name} - Quick Trainer Reference Sheet`,
-      type: 'Notes / Guide' as CustomMaterialItem['type'],
-      url: '#',
-      description: 'Concise reference notes and cheat sheet provided directly by the trainer for quick review.',
-      updatedAt: '4 days ago',
-      tags: ['Notes', 'CheatSheet'],
-      fileSizeOrDuration: 'Markdown Notes'
-    },
+    ...defaultProvidedMaterials,
     ...(session.studyMaterials || []).map((sm, idx) => ({
       id: `prov-sm-${idx}`,
       title: sm.title,
@@ -180,53 +779,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
     }))
   ]);
 
+  const defaultAdditionalMaterials = additionalMaterialMocks[session.id] || [];
+
   // Additional Materials List
   const [additionalMaterialsList, setAdditionalMaterialsList] = useState<CustomMaterialItem[]>([
-    {
-      id: 'add-1',
-      title: 'Community Architecture Benchmark Study & Article',
-      type: 'Doc (PDF/Word)',
-      url: '#',
-      description: 'Referenced case study analyzing real-world production performance benchmarks.',
-      sourceOrAuthor: 'GT Trainee Research Group',
-      updatedAt: '2 days ago',
-      tags: ['Reference', 'Case Study'],
-      fileSizeOrDuration: '1.2 MB'
-    },
-    {
-      id: 'add-2',
-      title: 'Industry Framework Comparisons & Best Practices Deck',
-      type: 'PowerPoint (PPT)',
-      url: '#',
-      description: 'Supplementary slide deck created by senior GT mentors comparing alternative frameworks.',
-      sourceOrAuthor: 'Senior Mentor Team',
-      updatedAt: '3 days ago',
-      tags: ['Slides', 'Mentors'],
-      fileSizeOrDuration: '8.5 MB'
-    },
-    {
-      id: 'add-3',
-      title: 'External Tech Talk: Deep Dive into Microservice Communication',
-      type: 'Video Link',
-      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      description: 'Recommended external YouTube tech conference talk referenced during discussions.',
-      sourceOrAuthor: 'External YouTube Resource',
-      updatedAt: '5 days ago',
-      tags: ['Video Link', 'External'],
-      fileSizeOrDuration: '32 mins'
-    },
-    {
-      id: 'add-4',
-      title: 'GT Batch Peer Discussion & Collaborative Revision Notes',
-      type: 'Notes / Guide',
-      url: '#',
-      description: 'Shared notes compile during peer study sessions containing code snippets and Q&A.',
-      sourceOrAuthor: 'Alex Vance & Peer Cohort',
-      updatedAt: 'Yesterday',
-      tags: ['Notes', 'Collaborative'],
-      fileSizeOrDuration: 'Text Document'
-    }
-    ,
+    ...defaultAdditionalMaterials,
     ...(session.additionalMaterials || []).map((am, idx) => ({
       id: `add-am-${idx}`,
       title: am.title,
