@@ -704,7 +704,7 @@ export const mockSessions: Session[] = [
       },
       {
         id: 'c2c-t4',
-        title: 'Productivity, Communication & Growth',
+        title: 'Productivity Techniques',
         order: 4,
         status: 'Locked',
         description: 'Productivity techniques, vocal variety, growth mindset, and continuous learning.',
@@ -890,26 +890,63 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'web-t1',
-        title: 'Web Development Foundations',
+        title: 'HTML & WebPage Structure',
         order: 1,
         status: 'Completed',
-        description: 'Learning HTML page structures and CSS styling fundamentals.',
+        description: 'structure web pages using HTML, work with elements and forms, and create semantic and accessible web content.',
         subtopics: [
-          { id: 'webst-1', title: 'HTML Structure & Semantic Tags', durationMinutes: 60, status: 'Completed' },
-          { id: 'webst-2', title: 'CSS Layouts & Responsive Design', durationMinutes: 75, status: 'Completed' }
+          { id: 'webst-1', title: 'Understanding HTML Document Structure', durationMinutes: 60, status: 'Completed' },
+          { id: 'webst-2', title: 'Working with HTML Elements and Tags', durationMinutes: 75, status: 'Completed' },
+          { id: 'webst-3', title: 'HTML Forms', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-4', title: 'Semantic HTML', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-5', title: 'Creating Well-Structured Web Pages', durationMinutes: 75, status: 'Completed' }
         ]
       },
       {
         id: 'web-t2',
-        title: 'JavaScript Essentials',
+        title: 'CSS Styling & Responsive Design',
         order: 2,
         status: 'Completed',
-        description: 'Core JavaScript programming concepts and browser interactivity.',
+        description: 'styling web pages, select and position elements,flexible layouts, and build responsive interfaces using modern CSS techniques.',
         subtopics: [
-          { id: 'webst-3', title: 'Functions, Loops & DOM Manipulation', durationMinutes: 90, status: 'Completed' },
-          { id: 'webst-4', title: 'Event Loop, Closures & Async Programming', durationMinutes: 90, status: 'Completed' }
+          { id: 'webst-1', title: 'Understanding CSS Fundamentals', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-2', title: 'Types of CSS', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-3', title: 'Working with CSS Selectors', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-4', title: 'Understanding the CSS Box Model', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-5', title: 'Building Layouts with Flexbox and Grid', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-6', title: 'Creating Responsive Web Layouts', durationMinutes: 90, status: 'Completed' },
         ]
-      }
+      },
+      {
+        id: 'web-t3',
+        title: 'JavaScript Fundamentals',
+        order: 3,
+        status: 'Completed',
+        description: 'JavaScript fundamentals, variables, data types, program control, functions, and advanced concepts that govern JavaScript execution.',
+        subtopics: [
+          { id: 'webst-1', title: 'Understanding JavaScript Fundamentals', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-2', title: 'Working with Variables and Data Types', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-3', title: 'Operators and Conditional Statements', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-4', title: 'Loops and Functions', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-5', title: 'Advanced JavaScript Concepts', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-6', title: 'Understanding Asynchronous JavaScript Concepts', durationMinutes: 90, status: 'Completed' },
+        ]
+      },
+      {
+        id: 'web-t4',
+        title: 'Dynamic Web Interfaces',
+        order: 4,
+        status: 'Completed',
+        description: 'Dynamic web interfaces using events, DOM manipulation, form validation, front-end integration, debugging, and problem-solving techniques.',
+        subtopics: [
+          { id: 'webst-1', title: 'Handling Events and User Interactions', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-2', title: 'Manipulating the DOM', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-3', title: 'Implementing Form Validation', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-4', title: 'Integrating HTML, CSS, and JavaScript', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-5', title: 'Building and Debugging Web Applications', durationMinutes: 90, status: 'Completed' },
+          { id: 'webst-6', title: 'Front-End Problem-Solving and UI Practices', durationMinutes: 90, status: 'Completed' },
+        ]
+      },
     ]
   },
   {
@@ -936,24 +973,71 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'mdp-t1',
-        title: 'Enterprise Data Architecture',
+        title: 'Advanced Data Modeling & Platform Foundations',
         order: 1,
         status: 'Completed',
-        description: 'Understanding modern data platforms and advanced modeling concepts.',
+        description: 'Advanced data models, modern data platforms, cloud environments, and the technologies that support enterprise data ecosystems.',
         subtopics: [
-          { id: 'mdpst-1', title: 'Conceptual, Logical & Physical Models', durationMinutes: 60, status: 'Completed' },
-          { id: 'mdpst-2', title: 'Data Lakes, Warehouses & Lakehouses', durationMinutes: 75, status: 'Completed' }
+          { id: 'mdpst-1', title: 'Designing Conceptual, Logical, and Physical Data Models', durationMinutes: 60, status: 'Completed' },
+          { id: 'mdpst-2', title: 'Legacy and Modern Data Platforms', durationMinutes: 75, status: 'Completed' },
+          { id: 'mdpst-3', title: 'Cloud Data Platforms', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-4', title: 'Data Sources and Storage', durationMinutes: 75, status: 'Completed' },
+          { id: 'mdpst-5', title: 'Designing Modern Data Platform Architectures', durationMinutes: 90, status: 'Completed' }
         ]
       },
       {
         id: 'mdp-t2',
-        title: 'Modern Data Ecosystem',
+        title: 'Data Engineering & Processing',
         order: 2,
         status: 'Completed',
-        description: 'Learning ETL, analytics, governance, and cloud technologies.',
+        description: 'Learn how data is extracted, transformed, processed, and prepared using modern engineering tools and programming techniques.',
         subtopics: [
-          { id: 'mdpst-3', title: 'Azure Data Factory, Fabric & Databricks', durationMinutes: 90, status: 'Completed' },
-          { id: 'mdpst-4', title: 'Data Governance, AI & Visualization', durationMinutes: 90, status: 'Completed' }
+          { id: 'mdpst-1', title: 'ETL and ELT Workflows', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-2', title: 'Data Engineering Scripting', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-3', title: 'Transforming Data with Pandas', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-4', title: 'Processing Data with PySpark', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-5', title: 'Working with Jupyter Notebooks', durationMinutes: 90, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'mdp-t3',
+        title: 'Modern Data Architecture & Platforms',
+        order: 3,
+        status: 'Completed',
+        description: 'Modern data architectures, storage technologies, and leading platforms used to build scalable data solutions.',
+        subtopics: [
+          { id: 'mdpst-1', title: 'Implementing Medallion Architecture', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-2', title: 'Understanding Data Lakes, Warehouses, and Lakehouses', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-3', title: 'Working with Apache Parquet', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-4', title: 'Exploring Azure Data Factory', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-5', title: 'Working with Microsoft Fabric and Databricks', durationMinutes: 90, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'mdp-t4',
+        title: 'Data Pipelines & Integration',
+        order: 4,
+        status: 'Completed',
+        description: 'Build and manage end-to-end data pipelines while integrating data sources, transformations, platforms, and analytics systems.',
+        subtopics: [
+          { id: 'mdpst-1', title: 'Building End-to-End Data Pipelines', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-2', title: 'Managing Inbound and Outbound Data', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-3', title: 'Performing Lookup and Data Enrichment Operations', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-4', title: 'Data Quality and Anomaly Detection', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-5', title: 'Integrating Data with Power BI', durationMinutes: 90, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'mdp-t5',
+        title: 'Data Governance, Management & Analytics',
+        order: 5,
+        status: 'Completed',
+        description: 'Data governance, security, master data management, prioritization, and analytics practices to deliver trusted business data.',
+        subtopics: [
+          { id: 'mdpst-1', title: 'Master Data Management', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-2', title: 'Data Governance and Security', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-3', title: 'Data Platform Requirements', durationMinutes: 90, status: 'Completed' },
+          { id: 'mdpst-4', title: 'Analytics and Reporting Solutions', durationMinutes: 90, status: 'Completed' },
         ]
       }
     ]
@@ -983,37 +1067,72 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'st-t1',
-        title: 'Introduction to Software Testing',
+        title: 'Software Testing Foundations',
         order: 1,
         status: 'Completed',
-        description: 'Understanding software quality, the need for testing, and various testing methodologies used in modern software projects.',
+        description: 'Understand software development and testing lifecycles, quality concepts, testing principles, and verification and validation practices.',
         subtopics: [
-          { id: 'stst-1', title: 'Why Testing is Necessary', durationMinutes: 45, status: 'Completed' },
-          { id: 'stst-2', title: 'Types of Testing (Functional & Non-Functional)', durationMinutes: 60, status: 'Completed' }
+          { id: 'stst-1', title: 'Understanding the Software Development Life Cycle', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-2', title: 'Understanding the Software Testing Life Cycle', durationMinutes: 60, status: 'Completed' },
+          { id: 'stst-3', title: 'Applying Verification and Validation Techniques', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-4', title: 'Quality Assurance and Quality Control', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-5', title: 'Fundamental Testing Principles', durationMinutes: 45, status: 'Completed' }
         ]
       },
       {
         id: 'st-t2',
-        title: 'Test Design & Execution',
+        title: 'Testing Levels',
         order: 2,
         status: 'Completed',
-        description: 'Learning how to create effective test scenarios and test cases using industry-standard test design techniques.',
+        description: 'Different levels of Testingand types of testing and develop effective test scenarios, test cases, test data, and traceability techniques.',
         subtopics: [
-          { id: 'stst-3', title: 'Test Scenario Identification', durationMinutes: 45, status: 'Completed' },
-          { id: 'stst-4', title: 'Test Case Design Techniques', durationMinutes: 60, status: 'Completed' },
-          { id: 'stst-5', title: 'Equivalence Partitioning', durationMinutes: 45, status: 'Completed' },
-          { id: 'stst-6', title: 'Boundary Value Analysis', durationMinutes: 45, status: 'Completed' }
+          { id: 'stst-1', title: 'Unit and Integration Testing', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-2', title: 'System and User Acceptance Testing', durationMinutes: 60, status: 'Completed' },
+          { id: 'stst-3', title: 'Regression, Smoke, and Sanity Testing', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-4', title: 'Designing Test Scenarios and Test Cases', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-5', title: 'Test Data and Requirement Traceability', durationMinutes: 45, status: 'Completed' }
         ]
       },
       {
         id: 'st-t3',
-        title: 'Defect Management',
+        title: 'Test Design & Execution',
         order: 3,
         status: 'Completed',
-        description: 'Understanding bug tracking, reporting, and the defect life cycle followed in software development projects.',
+        description: 'Effective test conditions, cases, and data while applying systematic techniques to validate software behavior.',
         subtopics: [
-          { id: 'stst-7', title: 'Defect Identification & Reporting', durationMinutes: 45, status: 'Completed' },
-          { id: 'stst-8', title: 'Defect Life Cycle & Status Workflow', durationMinutes: 60, status: 'Completed' }
+          { id: 'stst-1', title: 'Conducting Smoke and Sanity Testing', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-2', title: 'Designing Test Scenarios and Test Cases', durationMinutes: 60, status: 'Completed' },
+          { id: 'stst-3', title: 'Preparing Effective Test Data', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-4', title: 'Maintaining Requirement Traceability', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-5', title: 'Applying Equivalence Partitioning and Boundary Value Analysis ', durationMinutes: 45, status: 'Completed' }
+        ]
+      },
+      {
+         id: 'st-t4',
+        title: 'Defect Management & Agile Testing',
+        order: 4,
+        status: 'Completed',
+        description: 'Identify, track, and resolve defects while applying exploratory and Agile testing practices throughout software development.',
+        subtopics: [
+          { id: 'stst-1', title: 'Software Defect Lifecycle', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-2', title: 'Prioritizing Defects by Severity and Priority', durationMinutes: 60, status: 'Completed' },
+          { id: 'stst-3', title: 'Applying Agile and Scrum Testing Practices', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-4', title: 'Testing User Stories and Sprint Deliverables', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-5', title: 'Exploratory Testing ', durationMinutes: 45, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'st-t5',
+        title: 'Test Automation with Playwright',
+        order: 5,
+        status: 'Completed',
+        description: 'Understand automation testing fundamentals and use Playwright to automate and execute reliable software tests.',
+        subtopics: [
+          { id: 'stst-1', title: 'Understanding Test Automation Fundamentals', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-2', title: 'Understanding Automation Test Frameworks', durationMinutes: 60, status: 'Completed' },
+          { id: 'stst-3', title: 'Getting Started with Playwright', durationMinutes: 45, status: 'Completed' },
+          { id: 'stst-4', title: 'Building Automated Tests with Playwright', durationMinutes: 45, status: 'Completed' }
+  
         ]
       }
     ]
