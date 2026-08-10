@@ -662,25 +662,60 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'c2c-t1',
-        title: 'Corporate Foundation & Professional Mindset',
+        title: 'Communication Fundamentals',
         order: 1,
         status: 'Completed',
-        description: 'Understanding the transition from college to corporate life, workplace culture, professionalism, accountability, ownership, and business etiquette.',
+        description: 'Communication, listening, questioning and effective use of words.',
         subtopics: [
-          { id: 'c2cst-1', title: 'Business Communication Essentials', durationMinutes: 30, status: 'Completed' },
-          { id: 'c2cst-2', title: 'Workplace Ethics & Governance', durationMinutes: 30, status: 'Completed' }
+          { id: 'c2cst-1', title: 'Listening Skills', durationMinutes: 30, status: 'Completed' },
+          { id: 'c2cst-2', title: 'Types of Questioning', durationMinutes: 30, status: 'Completed' },
+          { id: 'c2cst-3', title: 'The Power of Words', durationMinutes: 30, status: 'Completed' },
+          { id: 'c2cst-4', title: 'Communication Skills', durationMinutes: 30, status: 'Completed' },
+
         ]
       },
       {
         id: 'c2c-t2',
-        title: 'Communication Excellence',
+        title: 'Professionalism & Workplace Ethics',
         order: 2,
         status: 'In Progress',
-        description: 'Building effective verbal, written, and interpersonal communication skills using professional communication techniques and best practices.',
+        description: 'Accountability, teamwork, etiquette, professionalism, and workplace relationships.',
         subtopics: [
-          { id: 'c2cst-3', title: 'Scrum Ceremonies & Daily Standups', durationMinutes: 40, status: 'In Progress' }
+          { id: 'c2cst-1', title: 'Accountability and Ownership', durationMinutes: 40, status: 'In Progress' },
+          { id: 'c2cst-2', title: 'Teamwork and Collaboration', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-3', title: 'Business Etiquette', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-4', title: 'Punctuality and Professionalism', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-5', title: 'Workplace Collaboration and Relationship Building', durationMinutes: 40, status: 'Unlocked' }
         ]
-      }
+      },
+      {
+        id: 'c2c-t3',
+        title: 'Self-Development & Productivity',
+        order: 3,
+        status: 'Locked',
+        description: 'Goal setting, self-awareness, reflection, time management, and productivity.',
+         subtopics: [
+          { id: 'c2cst-1', title: 'Goal Setting and Self-Improvement', durationMinutes: 40, status: 'In Progress' },
+          { id: 'c2cst-2', title: 'Journaling and Self-Awareness', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-3', title: 'Daily Self-Assessment Through Video Recording', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-4', title: 'Time Management', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-5', title: 'Productivity and Prioritization', durationMinutes: 40, status: 'Unlocked' }
+         ]
+      },
+      {
+        id: 'c2c-t4',
+        title: 'Productivity, Communication & Growth',
+        order: 4,
+        status: 'Locked',
+        description: 'Productivity techniques, vocal variety, growth mindset, and continuous learning.',
+         subtopics: [
+          { id: 'c2cst-1', title: 'Pomodoro Technique', durationMinutes: 40, status: 'In Progress' },
+          { id: 'c2cst-2', title: 'Eisenhower Matrix', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-3', title: '4 Ps of Vocal Variety', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-4', title: 'Personal and Professional Growth Mindset', durationMinutes: 40, status: 'Unlocked' },
+          { id: 'c2cst-5', title: 'Continuous Learning and Development', durationMinutes: 40, status: 'Unlocked' }
+         ]
+      },
     ]
   },
   {
@@ -707,26 +742,45 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'dm-t1',
-        title: 'Data Modeling Foundations',
+        title: 'Data Modelling Fundamentals',
         order: 1,
         status: 'Completed',
-        description: 'Introduction to data modeling concepts, entities, attributes, relationships, and database structures.',
+        description: 'Introduction to Data Modelling, Entities & Attributes, Relationships, Cardinality, Keys & Identifiers',
         subtopics: [
-          { id: 'dmst-1', title: 'Entities, Attributes & Relationships', durationMinutes: 45, status: 'Completed' },
-          { id: 'dmst-2', title: 'Cardinality & Keys', durationMinutes: 45, status: 'Completed' }
+          { id: 'dmst-1', title: 'Introduction to Data Modelling', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-2', title: 'Entities and Attributes', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-3', title: 'Relationships in Data Models', durationMinutes: 60, status: 'Completed' },
+          { id: 'dmst-4', title: 'Cardinality and Keys', durationMinutes: 45, status: 'Completed' }
         ]
       },
       {
         id: 'dm-t2',
-        title: 'Normalization & SDLC',
+        title: 'Database Design & System Architecture',
         order: 2,
         status: 'Completed',
-        description: 'Understanding normalization techniques and project lifecycle fundamentals.',
+        description: 'Transform business requirements into structured, reliable, scalable, and maintainable system designs.',
         subtopics: [
-          { id: 'dmst-3', title: 'Normalization Principles', durationMinutes: 60, status: 'Completed' },
-          { id: 'dmst-4', title: 'Software Development Life Cycle', durationMinutes: 45, status: 'Completed' }
+          { id: 'dmst-1', title: 'Business Requirements to System Design', durationMinutes: 60, status: 'Completed' },
+          { id: 'dmst-2', title: 'Maintaining Data Integrity and Consistency', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-3', title: 'Organizing Data Through Normalization', durationMinutes: 60, status: 'Completed' },
+          { id: 'dmst-4', title: 'Applying Effective Database Design Practices', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-5', title: 'Designing Scalable and Maintainable Systems', durationMinutes: 45, status: 'Completed' }
         ]
-      }
+      },
+      {
+        id: 'dm-t3',
+        title: 'Software Development & Business Alignment',
+        order: 3,
+        status: 'Completed',
+        description: 'Understand how data modelling connects business, development, and analytics.',
+        subtopics: [
+          { id: 'dmst-1', title: ' Understanding the Software Development Life Cycle', durationMinutes: 60, status: 'Completed' },
+          { id: 'dmst-2', title: 'Understanding Software Project Roles', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-3', title: 'Collaborating Across Software Delivery Teams', durationMinutes: 60, status: 'Completed' },
+          { id: 'dmst-4', title: 'Connecting Business Needs with Technical Solutions', durationMinutes: 45, status: 'Completed' },
+          { id: 'dmst-5', title: 'Using Data Models as a Foundation for Software and Analytics', durationMinutes: 45, status: 'Completed' }
+        ]
+      },
     ]
   },
   {
@@ -753,28 +807,65 @@ export const mockSessions: Session[] = [
     topics: [
       {
         id: 'df-t1',
-        title: 'Data Foundations',
+        title: 'Data Fundamentals & Management',
         order: 1,
         status: 'Completed',
-        description: 'Understanding data generation, collection, aggregation, and quality management.',
+        description: 'Understanding Data, Role of Data, Data Aggregation, Data Quality, Data Redundancy, Data Lifecycle',
         subtopics: [
-          { id: 'dfst-1', title: 'Data Lifecycle & Quality', durationMinutes: 60, status: 'Completed' },
-          { id: 'dfst-2', title: 'Data Redundancy & Governance', durationMinutes: 45, status: 'Completed' }
+          { id: 'dfst-1', title: 'Understanding Data and Information', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-2', title: 'Role of Data in Modern Organizations', durationMinutes: 45, status: 'Completed' },
+          { id: 'dfst-3', title: 'Combining Data for Meaningful Analysis', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-4', title: 'Data Quality and Reliability', durationMinutes: 45, status: 'Completed' },
+          { id: 'dfst-5', title: 'Managing Data Redundancy', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-6', title: 'Data Lifecycle', durationMinutes: 45, status: 'Completed' }
+
         ]
       },
       {
         id: 'df-t2',
-        title: 'Analytics & Reporting',
+        title: 'Data Architecture, Cloud & Analytics Tools',
         order: 2,
         status: 'Completed',
-        description: 'Introduction to reporting tools, dashboards, and business intelligence techniques.',
+        description: 'Modern data architecture, cloud platforms, and analytics tools for effective data management, visualization, and decision-making.',
         subtopics: [
-          { id: 'dfst-3', title: 'Power BI & Azure Fundamentals', durationMinutes: 60, status: 'Completed' },
-          { id: 'dfst-4', title: 'Excel Analytics & Dashboard Creation', durationMinutes: 75, status: 'Completed' }
+          { id: 'dfst-1', title: 'The Medallion Architecture', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-2', title: 'Microsoft Azure Fundamentals', durationMinutes: 75, status: 'Completed' },
+          { id: 'dfst-3', title: 'Understanding Cloud-Based Data Platforms', durationMinutes: 90, status: 'Completed' },
+          { id: 'dfst-4', title: 'Data Visualizations and Reports Using Power BI', durationMinutes: 75, status: 'Completed' },
+          { id: 'dfst-5', title: 'Analyzing Data with Microsoft Excel', durationMinutes: 90, status: 'Completed' }
         ]
-      }
+      },
+      {
+        id: 'df-t3',
+        title: 'Database Design & Data Management',
+        order: 3,
+        status: 'Completed',
+        description: 'Database design, data modeling, normalization, scalability, and best practices for effective data management.',
+        subtopics: [
+          { id: 'dfst-1', title: 'Database Design Principles', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-2', title: 'Structuring Databases for Scalability', durationMinutes: 75, status: 'Completed' },
+          { id: 'dfst-3', title: 'Organizing Data Through Normalization', durationMinutes: 90, status: 'Completed' },
+          { id: 'dfst-4', title: 'Modeling Relationships Between Data Entities', durationMinutes: 75, status: 'Completed' },
+          { id: 'dfst-5', title: 'Data Management Best Practices', durationMinutes: 90, status: 'Completed' }
+        ]
+      },
+      {
+        id: 'df-t4',
+        title: 'Analytics, Business Insights & Modern Data Ecosystem',
+        order: 4,
+        status: 'Completed',
+        description: 'Transforming data into business insights, drive data-driven decisions,the modern data ecosystem.',
+        subtopics: [
+          { id: 'dfst-1', title: 'Turning Data into Business Insights', durationMinutes: 60, status: 'Completed' },
+          { id: 'dfst-2', title: 'Understanding the Modern Data Ecosystem', durationMinutes: 75, status: 'Completed' },
+          { id: 'dfst-3', title: 'Data-Driven Business Decisions', durationMinutes: 90, status: 'Completed' },
+          { id: 'dfst-4', title: 'Understanding the Strategic Value of Data', durationMinutes: 75, status: 'Completed' },
+          { id: 'dfst-5', title: 'Connecting Data, Technology, and Analytics End-to-End', durationMinutes: 90, status: 'Completed' }
+        ]
+      },
     ]
   },
+
   {
     id: 'session-html-css-js',
     name: 'HTML, CSS & JavaScript',
