@@ -31,6 +31,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(true);
+  const [hasNoCredentials, setHasNoCredentials] = useState(false);
 
   // OTP & Reset Password Fields
   const [recoveryEmail, setRecoveryEmail] = useState('');
@@ -59,6 +60,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
       setResetToken('');
       setNewPassword('');
       setConfirmPassword('');
+      setHasNoCredentials(false);
     }
   }, [isOpen, initialRole]);
 
@@ -107,7 +109,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
   const fullOtp = otpDigits.join('');
 
   // Submit button disabled states
-  const isLoginDisabled = isLoading || !email.trim() || !password.trim();
+  const isGuestAccess = selectedRole === 'GT' && hasNoCredentials;
+  const isLoginDisabled = isLoading || (!isGuestAccess && (!email.trim() || !password.trim()));
   const isSendOtpDisabled = isLoading || !recoveryEmail.trim() || !recoveryEmail.includes('@');
   const isVerifyOtpDisabled = isLoading || fullOtp.length !== 4;
   const isResetDisabled = isLoading || !isPasswordValid || !isPasswordMatch;
@@ -128,6 +131,22 @@ export const AuthModal: React.FC<AuthModalProps> = ({
     setErrorMsg('');
     setSuccessMsg('');
 
+    if (isGuestAccess) {
+      if (selectedRole !== 'GT') {
+        setErrorMsg('Guest access is only available for Associates.');
+        return;
+      }
+
+      localStorage.setItem('token', 'guest-associate-token');
+      onAuthSuccess('GT', {
+        name: 'Guest Associate',
+        email: 'guest@valuemomentum.com',
+        isGuest: true
+      });
+      addToast('success', 'You have entered the portal as a guest associate.');
+      return;
+    }
+
     if (!email.trim() || !password.trim()) {
       setErrorMsg('Please enter both email address and password.');
       return;
@@ -144,9 +163,13 @@ export const AuthModal: React.FC<AuthModalProps> = ({
         return;
       }
 
-      // Strict RBAC Check
+      // Strict RBAC between card selection and authenticated account role
       if (selectedRole === 'Admin' && res.data.role !== 'Admin') {
-        setErrorMsg('Access Denied (RBAC): Your account is registered as an Associate and cannot access the L&D Admin console.');
+        setErrorMsg('Access Denied: This login card is for L&D users only. Please use the Associate card for employee accounts.');
+        return;
+      }
+      if (selectedRole === 'GT' && res.data.role !== 'GT') {
+        setErrorMsg('Access Denied: This login card is for Associates only. Please use the L&D card for admin accounts.');
         return;
       }
 
@@ -479,8 +502,9 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   placeholder={selectedRole === 'Admin' ? 'admin.email@valuemomentum.com' : 'employee.email@valuemomentum.com'}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-white/90 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm"
-                  required
+                  disabled={isGuestAccess}
+                  className="w-full pl-9 pr-3 py-2.5 bg-white/90 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm disabled:bg-slate-100 disabled:text-slate-500"
+                  required={!isGuestAccess}
                 />
               </div>
             </div>
@@ -497,11 +521,30 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                   placeholder="••••••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2.5 bg-white/90 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm"
-                  required
+                  disabled={isGuestAccess}
+                  className="w-full pl-9 pr-3 py-2.5 bg-white/90 border border-slate-300 rounded-xl text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-sm disabled:bg-slate-100 disabled:text-slate-500"
+                  required={!isGuestAccess}
                 />
               </div>
             </div>
+
+            {selectedRole === 'GT' && (
+              <label className="flex items-center gap-2 cursor-pointer select-none text-xs text-slate-600 font-medium">
+                <input
+                  type="checkbox"
+                  checked={hasNoCredentials}
+                  onChange={(e) => setHasNoCredentials(e.target.checked)}
+                  className="rounded border-slate-300 bg-white text-blue-600 focus:ring-0 cursor-pointer"
+                />
+                <span>I don't have credentials</span>
+              </label>
+            )}
+
+            {isGuestAccess && (
+              <div className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-[11px] text-blue-700">
+                You can continue into the Associate portal as a guest user.
+              </div>
+            )}
 
             {/* Remember Me & Forgot Password Link */}
             <div className="flex items-center justify-between text-xs text-slate-600 font-medium pt-0.5">
@@ -544,7 +587,7 @@ export const AuthModal: React.FC<AuthModalProps> = ({
                 <span>Authenticating...</span>
               ) : (
                 <>
-                  <span>{selectedRole === 'Admin' ? 'Login as L&D Admin' : 'Login as Associate'}</span>
+                  <span>{isGuestAccess ? 'Continue as Guest' : (selectedRole === 'Admin' ? 'Login as L&D Admin' : 'Login as Associate')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}

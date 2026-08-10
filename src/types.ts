@@ -121,6 +121,13 @@ export interface StudyMaterial {
   type: MaterialType;
   url: string;
   urlType?: string;
+  materialCategory?: 'Provided' | 'Additional' | string;
+  materialType?: 'Provided' | 'Additional' | string;
+  fileName?: string;
+  fileType?: string;
+  fileSize?: string;
+  course?: string;
+  module?: string;
   description: string;
   durationOrPages?: string;
   currentVersion: number;

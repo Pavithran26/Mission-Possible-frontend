@@ -42,6 +42,18 @@ export const fetchSessionById = async (id: string): Promise<Session & { studyMat
   }
 };
 
+export const fetchStudyMaterialsApi = async (sessionId?: string): Promise<StudyMaterial[]> => {
+  try {
+    const url = sessionId ? `/api/materials?sessionId=${encodeURIComponent(sessionId)}` : '/api/materials';
+    const res = await fetch(url);
+    if (!res.ok) throw new Error('Failed to fetch study materials');
+    const data = await res.json();
+    return Array.isArray(data) ? data : [];
+  } catch (err) {
+    console.warn('Falling back to local session material data', err);
+    return [];
+  }
+};
 
 export const createSessionApi = async (sessionData: Partial<Session>): Promise<Session> => {
   const res = await fetch('/api/sessions', {

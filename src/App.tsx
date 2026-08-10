@@ -148,13 +148,19 @@ export function App() {
 
   // Detail Selection State
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-    initialHashState.portal === 'GT' && 'selectedSessionId' in initialHashState ? initialHashState.selectedSessionId : null
+    initialHashState.portal === 'GT' && 'selectedSessionId' in initialHashState
+      ? (initialHashState.selectedSessionId ?? null)
+      : null
   );
   const [sessionDetailTab, setSessionDetailTab] = useState<string>(
-    initialHashState.portal === 'GT' && 'sessionTab' in initialHashState ? initialHashState.sessionTab : 'roadmap'
+    initialHashState.portal === 'GT' && 'sessionTab' in initialHashState
+      ? (initialHashState.sessionTab ?? 'roadmap')
+      : 'roadmap'
   );
   const [sessionDetailTopicId, setSessionDetailTopicId] = useState<string>(
-    initialHashState.portal === 'GT' && 'sessionTopicId' in initialHashState ? initialHashState.sessionTopicId : ''
+    initialHashState.portal === 'GT' && 'sessionTopicId' in initialHashState
+      ? (initialHashState.sessionTopicId ?? '')
+      : ''
   );
   const [activeAdminSession, setActiveAdminSession] = useState<Session | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
@@ -190,14 +196,15 @@ export function App() {
     setIsChangePasswordOpen(true);
   };
 
-  const handleAuthSuccess = (role: 'GT' | 'Admin', userData?: { name: string; email: string }) => {
+  const handleAuthSuccess = (role: 'GT' | 'Admin', userData?: { name: string; email: string; isGuest?: boolean }) => {
     setIsAuthenticated(true);
     if (userData) {
       setCurrentUser(prev => ({
         ...prev,
         name: userData.name,
         email: userData.email,
-        role: role
+        role: role,
+        isGuest: userData.isGuest ?? prev.isGuest
       }));
     }
     setActivePortal(role);
@@ -266,7 +273,7 @@ export function App() {
       setActivePortal(state.portal);
       if (state.portal === 'GT') {
         if ('gtViewMode' in state) setGtViewMode(state.gtViewMode);
-        setSelectedSessionId('selectedSessionId' in state ? state.selectedSessionId : null);
+        setSelectedSessionId('selectedSessionId' in state ? (state.selectedSessionId ?? null) : null);
         if ('sessionTab' in state && state.sessionTab) setSessionDetailTab(state.sessionTab);
         if ('sessionTopicId' in state && state.sessionTopicId !== undefined) setSessionDetailTopicId(state.sessionTopicId);
         

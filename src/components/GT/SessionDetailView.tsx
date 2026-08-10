@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Session, StudyMaterial, Quiz, PersonalNote, DiscussionPost } from '../../types';
 import { InteractiveRoadmap } from './InteractiveRoadmap';
-import { summarizeMaterialAiApi } from '../../services/api';
-import { mockUser } from '../../data/mockData';
+import { fetchStudyMaterialsApi, summarizeMaterialAiApi } from '../../services/api';
 import {
   ArrowLeft,
   BookOpen,
@@ -42,6 +41,9 @@ interface CustomMaterialItem {
   type: 'Doc (PDF/Word)' | 'PowerPoint (PPT)' | 'Video Link' | 'Video File (MP4)' | 'Notes / Guide' | 'Spreadsheet';
   url: string;
   category?: 'Provided' | 'Additional';
+  fileName?: string;
+  fileType?: string;
+  fileSize?: string;
   topicId?: string;
   topicTitle?: string;
   author?: string;
@@ -698,6 +700,98 @@ const additionalMaterialMocks: Record<string, CustomMaterialItem[]> = {
   ]
 };
 
+const getMaterialDisplayType = (material: Partial<StudyMaterial> & { type?: string; urlType?: string }): CustomMaterialItem['type'] => {
+  const normalizedType = (material.type || '').toLowerCase();
+  const normalizedUrlType = (material.urlType || '').toLowerCase();
+
+  if (normalizedType.includes('powerpoint') || normalizedType.includes('ppt')) {
+    return 'PowerPoint (PPT)';
+  }
+  if (normalizedType.includes('video') || normalizedType.includes('youtube') || normalizedUrlType === 'video') {
+    return normalizedType.includes('youtube') ? 'Video Link' : 'Video File (MP4)';
+  }
+  if (normalizedType.includes('excel') || normalizedType.includes('spreadsheet')) {
+    return 'Spreadsheet';
+  }
+  if (normalizedType.includes('word') || normalizedType === 'pdf' || normalizedType.includes('pdf')) {
+    return 'Doc (PDF/Word)';
+  }
+  if (normalizedType.includes('note') || normalizedType.includes('markdown')) {
+    return 'Notes / Guide';
+  }
+  return 'Notes / Guide';
+};
+
+const getMaterialCategory = (material: Partial<StudyMaterial> & { materialCategory?: string; materialType?: string; category?: string }) => {
+  const categoryValue = (material.materialType || material.materialCategory || material.category || 'Provided').toString().toLowerCase();
+  return categoryValue === 'additional' ? 'Additional' : 'Provided';
+};
+
+const buildMaterialItemsFromSession = (sessionData: Session & { studyMaterials?: StudyMaterial[]; providedMaterials?: StudyMaterial[]; additionalMaterials?: StudyMaterial[]; assignments?: any[] }) => {
+  const studyMaterials = [...(sessionData.studyMaterials || [])];
+  const providedItems = [
+    ...(sessionData.providedMaterials || []).map((material, idx) => ({
+      id: `prov-session-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '#',
+      description: material.description || 'Official study material provided for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Official'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    })),
+    ...studyMaterials.filter(material => getMaterialCategory(material) === 'Provided').map((material, idx) => ({
+      id: `prov-study-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '#',
+      description: material.description || 'Official study material provided for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Official'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    })),
+    ...(sessionData.assignments || []).filter((assignment: any) => assignment?.attachmentUrl).map((assignment: any, idx: number) => ({
+      id: `prov-assign-${idx}`,
+      title: `${assignment.title} (Assignment Attachment)`,
+      type: 'Doc (PDF/Word)' as CustomMaterialItem['type'],
+      url: assignment.attachmentUrl || '#',
+      description: assignment.instructions || 'Assignment attachment file',
+      updatedAt: assignment.dueDate || 'Assignment',
+      tags: ['Assignment'],
+      fileSizeOrDuration: 'Attached File'
+    }))
+  ];
+
+  const additionalItems = [
+    ...(sessionData.additionalMaterials || []).map((material, idx) => ({
+      id: `add-session-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '#',
+      description: material.description || 'Supplementary reference material for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Reference'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    })),
+    ...studyMaterials.filter(material => getMaterialCategory(material) === 'Additional').map((material, idx) => ({
+      id: `add-study-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '#',
+      description: material.description || 'Supplementary reference material for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Reference'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    }))
+  ];
+
+  return { provided: providedItems, additional: additionalItems };
+};
+
 export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   session,
   onBack,
@@ -741,61 +835,65 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   const [additionalSearch, setAdditionalSearch] = useState('');
   const [additionalFilterType, setAdditionalFilterType] = useState<string>('All');
 
-  const defaultProvidedMaterials = providedMaterialMocks[session.id] || [];
+  const [isMaterialsLoading, setIsMaterialsLoading] = useState(true);
 
   // Provided Materials List
-  const [providedMaterialsList, setProvidedMaterialsList] = useState<CustomMaterialItem[]>([
-    ...defaultProvidedMaterials,
-    ...(session.studyMaterials || []).map((sm, idx) => ({
-      id: `prov-sm-${idx}`,
-      title: sm.title,
-      type: (sm.type === 'PowerPoint' ? 'PowerPoint (PPT)' : sm.type === 'Video' ? 'Video File (MP4)' : sm.type === 'PDF' || sm.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
-      url: sm.url || '#',
-      description: sm.description,
-      updatedAt: 'Official L&D',
-      tags: sm.tags || ['Official'],
-      fileSizeOrDuration: sm.durationOrPages || 'Standard'
-    })),
-    // Include any materials specifically set on the session by admins
-    ...(session.providedMaterials || []).map((pm, idx) => ({
-      id: `prov-pm-${idx}`,
-      title: pm.title,
-      type: (pm.type === 'PowerPoint' ? 'PowerPoint (PPT)' : pm.type === 'Video' ? 'Video File (MP4)' : pm.type === 'PDF' || pm.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
-      url: pm.url || '#',
-      description: pm.description,
-      updatedAt: 'Provided',
-      tags: pm.tags || ['Provided'],
-      fileSizeOrDuration: pm.durationOrPages || 'Standard'
-    })),
-    // Include any assignment attachments so uploaded docs are discoverable in materials
-    ...(session.assignments || []).filter(a => a.attachmentUrl).map((a, idx) => ({
-      id: `prov-assign-${idx}`,
-      title: `${a.title} (Assignment Attachment)`,
-      type: 'Doc (PDF/Word)' as CustomMaterialItem['type'],
-      url: a.attachmentUrl || '#',
-      description: a.instructions || 'Assignment attachment file',
-      updatedAt: a.dueDate || 'Assignment',
-      tags: ['Assignment'],
-      fileSizeOrDuration: 'Attached File'
-    }))
-  ]);
-
-  const defaultAdditionalMaterials = additionalMaterialMocks[session.id] || [];
+  const [providedMaterialsList, setProvidedMaterialsList] = useState<CustomMaterialItem[]>(() => {
+    const initialMaterials = buildMaterialItemsFromSession(session);
+    return initialMaterials.provided;
+  });
 
   // Additional Materials List
-  const [additionalMaterialsList, setAdditionalMaterialsList] = useState<CustomMaterialItem[]>([
-    ...defaultAdditionalMaterials,
-    ...(session.additionalMaterials || []).map((am, idx) => ({
-      id: `add-am-${idx}`,
-      title: am.title,
-      type: (am.type === 'PowerPoint' ? 'PowerPoint (PPT)' : am.type === 'Video' ? 'Video File (MP4)' : am.type === 'PDF' || am.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
-      url: am.url || '#',
-      description: am.description,
-      updatedAt: 'Additional',
-      tags: am.tags || ['Additional'],
-      fileSizeOrDuration: am.durationOrPages || 'Standard'
-    }))
-  ]);
+  const [additionalMaterialsList, setAdditionalMaterialsList] = useState<CustomMaterialItem[]>(() => {
+    const initialMaterials = buildMaterialItemsFromSession(session);
+    return initialMaterials.additional;
+  });
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadMaterials = async () => {
+      setIsMaterialsLoading(true);
+      try {
+        const apiMaterials = await fetchStudyMaterialsApi(session.id);
+        const mergedMaterials = [
+          ...(apiMaterials || []),
+          ...(session.studyMaterials || []),
+          ...(session.providedMaterials || []),
+          ...(session.additionalMaterials || [])
+        ];
+
+        const normalizedMaterials = buildMaterialItemsFromSession({
+          ...session,
+          studyMaterials: mergedMaterials,
+          providedMaterials: session.providedMaterials || [],
+          additionalMaterials: session.additionalMaterials || []
+        });
+
+        if (!isActive) return;
+
+        setProvidedMaterialsList(normalizedMaterials.provided);
+        setAdditionalMaterialsList(normalizedMaterials.additional);
+      } catch (error) {
+        console.error('Failed to load study materials', error);
+        if (isActive) {
+          const fallbackMaterials = buildMaterialItemsFromSession(session);
+          setProvidedMaterialsList(fallbackMaterials.provided);
+          setAdditionalMaterialsList(fallbackMaterials.additional);
+        }
+      } finally {
+        if (isActive) {
+          setIsMaterialsLoading(false);
+        }
+      }
+    };
+
+    loadMaterials();
+
+    return () => {
+      isActive = false;
+    };
+  }, [session.id, session.studyMaterials, session.providedMaterials, session.additionalMaterials]);
 
   // Modals for Uploading Materials
   const [isUploadProvidedModalOpen, setIsUploadProvidedModalOpen] = useState(false);
@@ -952,6 +1050,69 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       return post;
     }));
     setReplyInputs(prev => ({ ...prev, [postId]: '' }));
+  };
+
+  const handleOpenMaterial = (material: CustomMaterialItem) => {
+    if (material.url && material.url !== '#') {
+      window.open(material.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    const content = [material.title, material.description].filter(Boolean).join('\n\n');
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadMaterial = async (material: CustomMaterialItem) => {
+    const safeTitle = (material.fileName || material.title || 'study-material').replace(/[\\/:*?"<>|]/g, '-').toLowerCase();
+    const extension = (material.fileType || material.url?.split('.').pop() || 'bin').toString().trim();
+    const fileName = extension && !safeTitle.endsWith(`.${extension}`) ? `${safeTitle}.${extension}` : safeTitle;
+
+    if (material.url && material.url !== '#') {
+      try {
+        const response = await fetch(material.url, { credentials: 'include' });
+        if (!response.ok) throw new Error('Download failed');
+
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(blobUrl);
+        return;
+      } catch {
+        const link = document.createElement('a');
+        link.href = material.url;
+        link.download = fileName;
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        return;
+      }
+    }
+
+    const content = [material.title, material.description].filter(Boolean).join('\n\n');
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${safeTitle}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
   };
 
   // Helper function for material type icon
@@ -1201,16 +1362,24 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   <p className="text-slate-600 text-xs leading-relaxed">{mat.description}</p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 flex items-center justify-between gap-2">
                   <span className="text-[11px] text-slate-500 font-mono">Provided by L&D • {mat.updatedAt}</span>
-                  <a
-                    href={mat.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-xl border border-blue-200 flex items-center gap-2 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> Open / Download
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenMaterial(mat)}
+                      className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-3 py-2 rounded-xl border border-blue-200 flex items-center gap-2 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadMaterial(mat)}
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-600" /> Download
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1292,16 +1461,24 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 flex items-center justify-between gap-2">
                   <span className="text-[11px] text-slate-500 font-mono">Added: {mat.updatedAt}</span>
-                  <a
-                    href={mat.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-xl border border-purple-200 flex items-center gap-2 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-purple-600" /> Access Reference
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenMaterial(mat)}
+                      className="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-3 py-2 rounded-xl border border-purple-200 flex items-center gap-2 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-purple-600" /> View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadMaterial(mat)}
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-600" /> Download
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
