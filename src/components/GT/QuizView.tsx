@@ -28,12 +28,12 @@ class QuizReviewErrorBoundary extends React.Component<{
   render() {
     if (this.state.hasError) {
       return (
-        <div className="max-w-3xl mx-auto p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-lg text-center space-y-4">
+        <div className="max-w-3xl mx-auto p-6 rounded-3xl bg-white border border-slate-200 shadow-lg text-center space-y-4">
           <p className="text-sm font-semibold text-rose-600">Something went wrong while loading the quiz review.</p>
-          <p className="text-slate-600 dark:text-slate-300">Please try again or return to the course.</p>
+          <p className="text-slate-600">Please try again or return to the course.</p>
           <div className="flex flex-col sm:flex-row justify-center gap-3 pt-4">
-            <button onClick={this.props.onReset} className="px-5 py-2 rounded-xl bg-slate-900 text-white text-xs font-semibold">Retry Review</button>
-            <button onClick={this.props.onGoToCourse} className="px-5 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold">Back to Course</button>
+            <button onClick={this.props.onReset} className="px-5 py-2 rounded-xl bg-slate-100 text-slate-900 text-xs font-semibold hover:bg-slate-200">Retry Review</button>
+            <button onClick={this.props.onGoToCourse} className="px-5 py-2 rounded-xl bg-blue-600 text-white text-xs font-semibold hover:bg-blue-500">Back to Course</button>
           </div>
         </div>
       );
@@ -178,38 +178,38 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
       <div className="max-w-3xl mx-auto space-y-8 animate-fadeIn">
         <button
           onClick={handleBackAttempt}
-          className="inline-flex items-center gap-2 text-xs text-slate-400 hover:text-white bg-slate-900 px-3 py-1.5 rounded-xl border border-slate-800"
+          className="inline-flex items-center gap-2 text-xs text-slate-700 bg-slate-100 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-200"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back
         </button>
 
         {/* Quiz Score Summary Card */}
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-8 text-center space-y-6 shadow-2xl relative overflow-hidden">
-          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 text-emerald-400 text-2xl font-bold">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 text-center space-y-6 shadow-xl relative overflow-hidden">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/30 text-emerald-600 text-2xl font-bold">
             {result.scorePercent}%
           </div>
 
           <div>
-            <h2 className="text-2xl font-extrabold text-white">
+            <h2 className="text-2xl font-extrabold text-slate-900">
               {result.passed ? '🎉 Quiz Passed Successfully!' : 'Needs Revision — Keep Practicing'}
             </h2>
-            <p className="text-slate-400 text-xs mt-1">
+            <p className="text-slate-500 text-xs mt-1">
               You answered {result.correctCount} out of {result.totalQuestions} questions correctly.
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto pt-2 text-xs text-left">
-            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-              <p className="text-slate-400 uppercase tracking-[0.3em] text-[10px]">Your Score</p>
-              <p className="mt-3 text-2xl font-bold text-white">{result.correctCount} / {result.totalQuestions}</p>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <p className="text-slate-500 uppercase tracking-[0.3em] text-[10px]">Your Score</p>
+              <p className="mt-3 text-2xl font-bold text-slate-900">{result.correctCount} / {result.totalQuestions}</p>
             </div>
-            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-              <p className="text-slate-400 uppercase tracking-[0.3em] text-[10px]">Percentage</p>
-              <p className="mt-3 text-2xl font-bold text-white">{result.scorePercent}%</p>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <p className="text-slate-500 uppercase tracking-[0.3em] text-[10px]">Percentage</p>
+              <p className="mt-3 text-2xl font-bold text-slate-900">{result.scorePercent}%</p>
             </div>
-            <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800">
-              <p className="text-slate-400 uppercase tracking-[0.3em] text-[10px]">Status</p>
-              <p className={`mt-3 text-2xl font-bold ${result.passed ? 'text-emerald-400' : 'text-rose-400'}`}>{result.passed ? 'Passed' : 'Failed'}</p>
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200">
+              <p className="text-slate-500 uppercase tracking-[0.3em] text-[10px]">Status</p>
+              <p className={`mt-3 text-2xl font-bold ${result.passed ? 'text-emerald-600' : 'text-rose-600'}`}>{result.passed ? 'Passed' : 'Failed'}</p>
             </div>
           </div>
 
@@ -244,13 +244,13 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
       </div>
 
       {confirmingLeave && (
-        <div className="rounded-3xl border border-rose-200/70 dark:border-rose-500/30 bg-white dark:bg-slate-950 p-5 shadow-md">
+        <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
           <p className="text-sm font-semibold text-rose-600">Leave Quiz?</p>
-          <p className="mt-2 text-slate-600 dark:text-slate-300">Your current quiz progress will not be saved.</p>
+          <p className="mt-2 text-slate-600">Your current quiz progress will not be saved.</p>
           <div className="mt-4 flex flex-wrap gap-3">
             <button
               onClick={handleCancelLeave}
-              className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-semibold"
+              className="px-4 py-2 rounded-xl bg-slate-100 text-slate-700 text-xs font-semibold hover:bg-slate-200"
             >
               Cancel
             </button>
@@ -265,12 +265,12 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
       )}
 
       {/* Quiz Header Bar */}
-      <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl flex items-center justify-between">
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm flex items-center justify-between">
         <div>
-          <span className="text-[10px] font-mono font-bold text-blue-400 uppercase tracking-widest block">
+          <span className="text-[10px] font-mono font-bold text-blue-500 uppercase tracking-widest block">
             INTERACTIVE ASSESSMENT
           </span>
-          <h2 className="text-xl font-bold text-white">{quiz.title}</h2>
+          <h2 className="text-xl font-bold text-slate-900">{quiz.title}</h2>
         </div>
 
         {/* No timer shown per updated quiz requirements */}
@@ -278,16 +278,16 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
 
       {/* Question Card */}
       {currentQ && (
-        <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-6">
-          <div className="flex items-center justify-between text-xs text-slate-400 font-mono">
+        <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-sm space-y-6">
+          <div className="flex items-center justify-between text-xs text-slate-500 font-mono">
             <span>Question {currentQuestionIndex + 1} of {quiz.questions.length}</span>
-            <span className="bg-slate-800 text-slate-300 px-2.5 py-0.5 rounded font-semibold">{currentQ.type}</span>
+            <span className="bg-slate-100 text-slate-700 px-2.5 py-0.5 rounded font-semibold">{currentQ.type}</span>
           </div>
 
-          <h3 className="text-base font-bold text-white leading-relaxed">{currentQ.prompt}</h3>
+          <h3 className="text-base font-bold text-slate-900 leading-relaxed">{currentQ.prompt}</h3>
 
           {currentQ.codeSnippet && (
-            <pre className="bg-slate-950 p-4 rounded-2xl border border-slate-800 font-mono text-xs text-cyan-300 overflow-x-auto">
+            <pre className="bg-slate-50 p-4 rounded-2xl border border-slate-200 font-mono text-xs text-slate-800 overflow-x-auto">
               {currentQ.codeSnippet}
             </pre>
           )}
@@ -306,14 +306,14 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
                   onClick={() => handleOptionSelect(currentQ.id, opt, isMultiSelect)}
                   className={`w-full text-left p-4 rounded-2xl border text-xs font-medium transition-all flex items-center justify-between ${
                     selected
-                      ? 'bg-blue-600/20 text-white border-blue-500 shadow-lg shadow-blue-500/10'
-                      : 'bg-slate-950 text-slate-300 border-slate-800 hover:border-slate-700'
+                      ? 'bg-blue-50 text-slate-900 border-blue-200 shadow-sm'
+                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300'
                   }`}
                 >
                   <span>{opt}</span>
                   <div
                     className={`w-5 h-5 rounded-md flex items-center justify-center border ${
-                      selected ? 'bg-blue-600 border-blue-500 text-white' : 'border-slate-700'
+                      selected ? 'bg-blue-600 border-blue-500 text-white' : 'border-slate-300'
                     }`}
                   >
                     {selected && <CheckCircle2 className="w-3.5 h-3.5" />}
@@ -324,11 +324,11 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
           </div>
 
           {/* Navigation Controls */}
-          <div className="pt-6 border-t border-slate-800 flex items-center justify-between">
+          <div className="pt-6 border-t border-slate-200 flex items-center justify-between">
             <button
               onClick={() => setCurrentQuestionIndex(Math.max(0, currentQuestionIndex - 1))}
               disabled={currentQuestionIndex === 0}
-              className="bg-slate-950 hover:bg-slate-800 disabled:opacity-40 text-slate-300 text-xs px-4 py-2 rounded-xl border border-slate-800"
+              className="bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 text-xs px-4 py-2 rounded-xl border border-slate-200"
             >
               Previous
             </button>
@@ -344,7 +344,7 @@ export const QuizView: React.FC<QuizViewProps> = ({ quiz, onBack, onQuizComplete
               <button
                 onClick={handleSubmit}
                 disabled={submitting}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-emerald-600/30"
+                className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-6 py-2.5 rounded-xl shadow-lg shadow-blue-600/20"
               >
                 {submitting ? 'Evaluating...' : 'Submit Quiz'}
               </button>
