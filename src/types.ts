@@ -120,6 +120,7 @@ export interface StudyMaterial {
   title: string;
   type: MaterialType;
   url: string;
+  file?: File;
   urlType?: string;
   materialCategory?: 'Provided' | 'Additional' | string;
   materialType?: 'Provided' | 'Additional' | string;

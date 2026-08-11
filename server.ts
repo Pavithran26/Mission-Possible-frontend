@@ -40,7 +40,12 @@ const getGeminiClient = () => {
 async function startServer() {
   const app = express();
   const requestedPort = Number(process.env.PORT || 3000);
-  const PORT = requestedPort;
+  const PORT = Number.isInteger(requestedPort) && requestedPort > 0 ? requestedPort : 3000;
+
+  const listenOnPort = (port: number) => new Promise<number>((resolve, reject) => {
+    const server = app.listen(port, '0.0.0.0', () => resolve(port));
+    server.on('error', (err: any) => reject(err));
+  });
 
   app.use(express.json({ limit: '10mb' }));
 
@@ -695,9 +700,22 @@ User Query: ${message}`
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-  });
+  let activePort = PORT;
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      activePort = await listenOnPort(PORT + attempt);
+      if (attempt > 0) {
+        console.log(`Port ${PORT} was in use; started on fallback port ${activePort}.`);
+      }
+      break;
+    } catch (err: any) {
+      if (err?.code !== 'EADDRINUSE' || attempt === 4) {
+        throw err;
+      }
+    }
+  }
+
+  console.log(`Server running on http://localhost:${activePort}`);
 }
 
 startServer();

@@ -13,17 +13,17 @@ export const MaterialUploader: React.FC<MaterialUploaderProps> = ({ session, onS
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [type, setType] = useState<any>('PDF Document');
-  const [url, setUrl] = useState('');
+  const [file, setFile] = useState<File | null>(null);
   const [versionNote, setVersionNote] = useState('Initial upload');
 
   const handleAddMaterial = () => {
-    if (!title.trim()) return;
+    if (!title.trim() || !file) return;
     const initialVer: MaterialVersion = {
       version: 1.0,
       updatedAt: new Date().toISOString().split('T')[0],
       updatedBy: 'L&D Admin',
       changeLog: versionNote || 'Initial upload for GT batch',
-      contentUrl: url || 'https://example.com/material'
+      contentUrl: ''
     };
 
     const newMat: StudyMaterial = {
@@ -32,8 +32,12 @@ export const MaterialUploader: React.FC<MaterialUploaderProps> = ({ session, onS
       title,
       description,
       type: type as any,
-      url: url || 'https://example.com/material',
-      durationOrPages: type === 'PDF' ? '24 Pages' : '45 mins',
+      url: '',
+      file,
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: `${file.size} bytes`,
+      durationOrPages: `${Math.ceil(file.size / 1024)} KB`,
       currentVersion: 1.0,
       versions: [initialVer],
       tags: ['L&D']
@@ -42,7 +46,7 @@ export const MaterialUploader: React.FC<MaterialUploaderProps> = ({ session, onS
     setMaterials([...materials, newMat]);
     setTitle('');
     setDescription('');
-    setUrl('');
+    setFile(null);
     setVersionNote('Initial upload');
   };
 
@@ -81,7 +85,7 @@ export const MaterialUploader: React.FC<MaterialUploaderProps> = ({ session, onS
       <div className="bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-xl space-y-4">
         <h3 className="text-sm font-bold text-white flex items-center gap-2">
           <Upload className="w-4 h-4 text-emerald-400" />
-          <span>Upload New Study Material / Link</span>
+          <span>Upload New Study Material</span>
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
@@ -124,14 +128,17 @@ export const MaterialUploader: React.FC<MaterialUploaderProps> = ({ session, onS
           </div>
 
           <div className="space-y-1">
-            <label className="text-slate-300 font-semibold">Resource URL / Storage Link</label>
+            <label className="text-slate-300 font-semibold">Upload File *</label>
             <input
-              type="text"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://..."
-              className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-blue-500"
+              type="file"
+              onChange={(e) => {
+                if (e.target.files && e.target.files[0]) {
+                  setFile(e.target.files[0]);
+                }
+              }}
+              className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
             />
+            {file && <p className="text-slate-400 text-[11px]">Selected file: {file.name}</p>}
           </div>
 
           <div className="space-y-1">

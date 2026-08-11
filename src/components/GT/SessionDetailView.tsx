@@ -734,7 +734,10 @@ const buildMaterialItemsFromSession = (sessionData: Session & { studyMaterials?:
       id: `prov-session-${idx}`,
       title: material.title,
       type: getMaterialDisplayType(material),
-      url: material.url || '#',
+      url: material.url || '',
+      file: material.file,
+      fileName: material.fileName,
+      fileType: material.fileType,
       description: material.description || 'Official study material provided for this session.',
       updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
       sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
@@ -745,7 +748,10 @@ const buildMaterialItemsFromSession = (sessionData: Session & { studyMaterials?:
       id: `prov-study-${idx}`,
       title: material.title,
       type: getMaterialDisplayType(material),
-      url: material.url || '#',
+      url: material.url || '',
+      file: material.file,
+      fileName: material.fileName,
+      fileType: material.fileType,
       description: material.description || 'Official study material provided for this session.',
       updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
       sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
@@ -769,7 +775,10 @@ const buildMaterialItemsFromSession = (sessionData: Session & { studyMaterials?:
       id: `add-session-${idx}`,
       title: material.title,
       type: getMaterialDisplayType(material),
-      url: material.url || '#',
+      url: material.url || '',
+      file: material.file,
+      fileName: material.fileName,
+      fileType: material.fileType,
       description: material.description || 'Supplementary reference material for this session.',
       updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
       sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
@@ -902,7 +911,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   // New Material Form Fields
   const [matTitle, setMatTitle] = useState('');
   const [matType, setMatType] = useState<CustomMaterialItem['type']>('Doc (PDF/Word)');
-  const [matUrl, setMatUrl] = useState('');
+  const [matFile, setMatFile] = useState<File | null>(null);
   const [matFileName, setMatFileName] = useState('');
   const [matSource, setMatSource] = useState('');
   const [matDesc, setMatDesc] = useState('');
@@ -955,11 +964,14 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       id: `prov-new-${Date.now()}`,
       title: matTitle,
       type: matType,
-      url: matUrl.trim() || '#',
+      url: '',
+      file: matFile || undefined,
+      fileName: matFileName || matFile?.name,
+      fileType: matFile?.type,
+      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Uploaded Document',
       description: matDesc || 'Uploaded organization study material.',
       updatedAt: 'Just now',
-      tags: matTags ? matTags.split(',').map(t => t.trim()) : ['Provided', 'Official'],
-      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Link / File'
+      tags: matTags ? matTags.split(',').map(t => t.trim()) : ['Provided', 'Official']
     };
     setProvidedMaterialsList([newItem, ...providedMaterialsList]);
     setIsUploadProvidedModalOpen(false);
@@ -973,12 +985,15 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       id: `add-new-${Date.now()}`,
       title: matTitle,
       type: matType,
-      url: matUrl.trim() || '#',
+      url: '',
+      file: matFile || undefined,
+      fileName: matFileName || matFile?.name,
+      fileType: matFile?.type,
       description: matDesc || 'User uploaded additional reference material.',
       sourceOrAuthor: matSource || 'GT Trainee',
       updatedAt: 'Just now',
       tags: matTags ? matTags.split(',').map(t => t.trim()) : ['Additional', 'Reference'],
-      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Link / File'
+      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Uploaded Document'
     };
     setAdditionalMaterialsList([newItem, ...additionalMaterialsList]);
     setIsUploadAdditionalModalOpen(false);
@@ -988,7 +1003,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   const resetMatForm = () => {
     setMatTitle('');
     setMatType('Doc (PDF/Word)');
-    setMatUrl('');
+    setMatFile(null);
     setMatFileName('');
     setMatSource('');
     setMatDesc('');
@@ -1053,6 +1068,12 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   };
 
   const handleOpenMaterial = (material: CustomMaterialItem) => {
+    if (material.file) {
+      const blobUrl = URL.createObjectURL(material.file);
+      window.open(blobUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
     if (material.url && material.url !== '#') {
       window.open(material.url, '_blank', 'noopener,noreferrer');
       return;
@@ -1072,9 +1093,22 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   };
 
   const handleDownloadMaterial = async (material: CustomMaterialItem) => {
-    const safeTitle = (material.fileName || material.title || 'study-material').replace(/[\\/:*?"<>|]/g, '-').toLowerCase();
-    const extension = (material.fileType || material.url?.split('.').pop() || 'bin').toString().trim();
-    const fileName = extension && !safeTitle.endsWith(`.${extension}`) ? `${safeTitle}.${extension}` : safeTitle;
+    const baseName = (material.fileName || material.title || 'study-material').replace(/[\\/:*?"<>|]/g, '-');
+    const extension = material.fileName?.split('.').pop() || material.fileType?.split('/')?.pop() || material.url?.split('.').pop() || 'bin';
+    const downloadName = material.fileName ? material.fileName : `${baseName}.${extension}`;
+
+    if (material.file) {
+      const blobUrl = URL.createObjectURL(material.file);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      // revoke after short delay to allow browser to process
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      return;
+    }
 
     if (material.url && material.url !== '#') {
       try {
@@ -1085,16 +1119,16 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         const blobUrl = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = blobUrl;
-        link.download = fileName;
+        link.download = downloadName;
         document.body.appendChild(link);
         link.click();
         link.remove();
-        URL.revokeObjectURL(blobUrl);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
         return;
       } catch {
         const link = document.createElement('a');
         link.href = material.url;
-        link.download = fileName;
+        link.download = downloadName;
         link.rel = 'noopener';
         document.body.appendChild(link);
         link.click();
@@ -1108,11 +1142,11 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `${safeTitle}.txt`;
+    link.download = `${baseName}.txt`;
     document.body.appendChild(link);
     link.click();
     link.remove();
-    URL.revokeObjectURL(url);
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
 
   // Helper function for material type icon
@@ -1766,23 +1800,18 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File OR Paste Material Link</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File</label>
                 <div className="space-y-2">
                   <input
                     type="file"
+                    required
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         setMatFileName(e.target.files[0].name);
+                        setMatFile(e.target.files[0]);
                       }
                     }}
                     className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
-                  <input
-                    type="text"
-                    value={matUrl}
-                    onChange={(e) => setMatUrl(e.target.value)}
-                    placeholder="https://... or internal document link"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
@@ -1874,23 +1903,18 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File OR Paste Reference URL</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File</label>
                 <div className="space-y-2">
                   <input
                     type="file"
+                    required
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         setMatFileName(e.target.files[0].name);
+                        setMatFile(e.target.files[0]);
                       }
                     }}
                     className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
-                  />
-                  <input
-                    type="text"
-                    value={matUrl}
-                    onChange={(e) => setMatUrl(e.target.value)}
-                    placeholder="https://... or external reference URL"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                   />
                 </div>
               </div>
