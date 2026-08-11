@@ -1,15 +1,10 @@
 import {
   Session,
   User,
-  Badge,
-  Announcement,
-  AppNotification,
   CodePlaygroundExercise,
-  KnowledgeGraphNode,
   InspectMetadata,
   PersonalNote,
   DiscussionPost,
-  Certificate,
   SessionTrackerRecord
 } from '../types';
 
@@ -30,119 +25,6 @@ export const mockCurrentUser: User = {
 
 export const mockUser = mockCurrentUser;
 
-export const mockBadges: Badge[] = [
-  {
-    id: 'b-1',
-    title: '.NET Champion',
-    description: 'Scored over 90% in C# & ASP.NET Core quizzes',
-    icon: 'Award',
-    earnedDate: '2026-07-20',
-    category: '.NET',
-    isEarned: true
-  },
-  {
-    id: 'b-2',
-    title: 'SQL Master',
-    description: 'Completed Database Modelling & Complex Joins',
-    icon: 'Database',
-    earnedDate: '2026-07-25',
-    category: 'SQL',
-    isEarned: true
-  },
-  {
-    id: 'b-3',
-    title: 'API Explorer',
-    description: 'Designed 5 RESTful endpoints & passed security checks',
-    icon: 'Server',
-    earnedDate: '2026-07-29',
-    category: 'Backend',
-    isEarned: true
-  },
-  {
-    id: 'b-4',
-    title: 'Frontend Expert',
-    description: 'Mastered React Hooks, Tailwind CSS & State Sync',
-    icon: 'Layout',
-    earnedDate: '2026-07-30',
-    category: 'Frontend',
-    isEarned: true
-  },
-  {
-    id: 'b-5',
-    title: 'Insurance Specialist',
-    description: 'Passed Corporate Insurance Underwriting & Claims Module',
-    icon: 'ShieldCheck',
-    earnedDate: undefined,
-    category: 'Domain',
-    isEarned: false
-  },
-  {
-    id: 'b-6',
-    title: 'Azure Cloud Hero',
-    description: 'Deployed multi-container app on Azure App Services',
-    icon: 'Cloud',
-    earnedDate: undefined,
-    category: 'Cloud',
-    isEarned: false
-  }
-];
-
-export const mockAnnouncements: Announcement[] = [
-  {
-    id: 'ann-1',
-    title: 'Batch 2026 Mid-Term Hackathon Announced!',
-    content: 'Get ready for the 48-hour Full Stack Insurance portal challenge starting next Monday. Form teams of 3 GTs.',
-    date: '2026-08-01',
-    author: 'Chief Learning Officer - Enterprise L&D',
-    important: true
-  },
-  {
-    id: 'ann-2',
-    title: 'New Azure & Microservices Deep Dive Materials Added',
-    content: 'Admin team updated Azure DevOps deployment pipelines and API Gateway patterns in Module 8.',
-    date: '2026-07-29',
-    author: 'Admin L&D Team',
-    important: false
-  },
-  {
-    id: 'ann-3',
-    title: 'Weekly Mentor Office Hours with Principal Architects',
-    content: 'Join every Thursday at 4 PM IST for live Q&A on System Design & Clean Architecture.',
-    date: '2026-07-25',
-    author: 'Senior Mentor Team',
-    important: false
-  }
-];
-
-export const mockNotifications: AppNotification[] = [
-  {
-    id: 'notif-1',
-    title: 'New Quiz Assigned',
-    message: 'ASP.NET Core Dependency Injection & Middleware Quiz is now live.',
-    timestamp: '10 mins ago',
-    type: 'quiz',
-    read: false,
-    linkSessionId: 'session-dotnet'
-  },
-  {
-    id: 'notif-2',
-    title: 'Study Material Updated',
-    message: 'Version 2.1 of Insurance Domain Fundamentals PPT uploaded by L&D.',
-    timestamp: '1 hour ago',
-    type: 'material',
-    read: false,
-    linkSessionId: 'session-insurance'
-  },
-  {
-    id: 'notif-3',
-    title: 'Roadmap Milestone Unlocked',
-    message: 'Congratulations! You unlocked "Microservices Architecture & Event Sourcing".',
-    timestamp: 'Yesterday',
-    type: 'roadmap',
-    read: true,
-    linkSessionId: 'session-microservices'
-  }
-];
 
 export const mockSessions: Session[] = [
   {
@@ -155,7 +37,6 @@ export const mockSessions: Session[] = [
     durationHours: 32,
     difficulty: 'Intermediate',
     progressPercent: 80,
-    isBookmarked: true,
     lastAccessed: 'Today, 09:15 AM',
     isPublished: true,
     rating: 4.9,
@@ -303,88 +184,22 @@ export const mockSessions: Session[] = [
         ]
       }
     ],
-    quizzes: [
+    assignments: [
       {
-        id: 'quiz-dotnet-1',
+        id: 'assign-dotnet-1',
         sessionId: 'session-dotnet',
         topicId: 'dotnet-t4',
-        title: 'C# Async/Await & Concurrency Assessment',
-        description: 'Assess your understanding of async programming, exception handling, and task-based concurrency in C#.',
-        passingScorePercent: 80,
-        timeLimitMinutes: 18,
-        questions: [
-          {
-            id: 'q1',
-            type: 'MCQ' as const,
-            prompt: 'What happens when you call an async method without the await keyword in C#?',
-            options: [
-              'The code throws a runtime InvalidOperationException.',
-              'The method executes asynchronously in the background, and execution continues immediately without waiting.',
-              'The compiler prevents compilation with a fatal syntax error.',
-              'The method automatically runs synchronously on the main thread.'
-            ],
-            correctAnswer: 'The method executes asynchronously in the background, and execution continues immediately without waiting.',
-            explanation: 'Omitting await returns a Task immediately and allows execution to continue without waiting for completion.'
-          },
-          {
-            id: 'q2',
-            type: 'Multiple Select' as const,
-            prompt: 'Which of the following are valid service lifetimes in ASP.NET Core Dependency Injection? (Select all that apply)',
-            options: ['Transient', 'Scoped', 'Singleton', 'ThreadStatic'],
-            correctAnswer: ['Transient', 'Scoped', 'Singleton'],
-            explanation: 'ASP.NET Core DI supports Transient, Scoped, and Singleton lifetimes.'
-          },
-          {
-            id: 'q3',
-            type: 'Fill in Blank' as const,
-            prompt: 'Fill in the missing C# keyword used to ensure an IDisposable object is disposed automatically when leaving its scope: ______',
-            options: ['using', 'lock', 'checked'],
-            correctAnswer: 'using',
-            explanation: 'The using statement ensures Dispose is called for IDisposable objects when leaving scope.'
-          },
-          {
-            id: 'q4',
-            type: 'Code Output' as const,
-            prompt: 'What is the output of the following C# snippet?\nint x = 5;\nFunc<int, int> func = val => val * 2;\nx = 10;\nConsole.WriteLine(func(x));',
-            options: ['10', '20', '5', '0'],
-            correctAnswer: '20',
-            explanation: 'The delegate multiplies the current x value (10) by 2, producing 20.'
-          },
-          {
-            id: 'q5',
-            type: 'True / False' as const,
-            prompt: 'In Entity Framework Core, IQueryable queries execute immediately on the database as soon as the LINQ statement is declared.',
-            options: ['True', 'False'],
-            correctAnswer: 'False',
-            explanation: 'IQueryable uses deferred execution and only queries the database when the results are enumerated or materialized.'
-          },
-          {
-            id: 'q6',
-            type: 'MCQ' as const,
-            prompt: 'Which C# construct is preferable when multiple implementations share the same base behavior but need different constructors and state?',
-            options: ['abstract class', 'interface', 'record', 'struct'],
-            correctAnswer: 'abstract class',
-            explanation: 'Abstract classes allow shared implementation and different constructors while interfaces cannot contain instance state or constructors.'
-          },
-          {
-            id: 'q7',
-            type: 'MCQ' as const,
-            prompt: 'What does the await keyword do in C# async methods?',
-            options: ['Blocks the current thread until completion', 'Schedules continuation and returns control to the caller', 'Converts the method into a synchronous method', 'Disposes the async Task object'],
-            correctAnswer: 'Schedules continuation and returns control to the caller',
-            explanation: 'Await pauses execution of the async method until the awaited task completes and schedules the continuation without blocking the thread.'
-          },
-          {
-            id: 'q8',
-            type: 'Multiple Select' as const,
-            prompt: 'Which of these are SOLID principles? (Select all that apply)',
-            options: ['Single Responsibility', 'Open/Closed', 'Liskov Substitution', 'Mutable State'],
-            correctAnswer: ['Single Responsibility', 'Open/Closed', 'Liskov Substitution'],
-            explanation: 'SOLID includes Single Responsibility, Open/Closed, Liskov Substitution, Interface Segregation, and Dependency Inversion.'
-          }
-        ]
+        title: 'Async Programming Debugging Task',
+        description: 'Diagnose and fix the race condition in the sample C# async method implementation.',
+        dueDate: '2026-08-18',
+        totalPoints: 40,
+        instructions: 'Clone the repository, update the code, and submit the corrected C# file with comments explaining the fix.',
+        submissionFormat: 'GitHub URL / File Upload',
+        attachmentName: 'AsyncRaceConditionStudyGuide.pdf',
+        attachmentUrl: 'https://example.com/AsyncRaceConditionStudyGuide.pdf',
+        status: 'Pending'
       }
-    ],
+    ]
   },
   {
     id: 'session-insurance',
@@ -396,7 +211,6 @@ export const mockSessions: Session[] = [
     durationHours: 18,
     difficulty: 'Beginner',
     progressPercent: 65,
-    isBookmarked: true,
     lastAccessed: 'Yesterday, 04:30 PM',
     isPublished: true,
     rating: 4.8,
@@ -552,83 +366,22 @@ export const mockSessions: Session[] = [
         ]
       }
     ],
-    quizzes: [
+    assignments: [
       {
-        id: 'quiz-insurance-1',
+        id: 'assign-insurance-1',
         sessionId: 'session-insurance',
         topicId: 'ins-t4',
-        title: 'Insurance Underwriting & Claims Fundamentals Quiz',
-        description: 'Verify your knowledge of underwriting principles, insurance products, and claims lifecycle management.',
-        passingScorePercent: 75,
-        timeLimitMinutes: 15,
-        questions: [
-          {
-            id: 'q1',
-            type: 'MCQ' as const,
-            prompt: 'Which principle requires both insurer and insured to disclose all material facts?',
-            options: ['Indemnity', 'Utmost Good Faith', 'Subrogation', 'Insurable Interest'],
-            correctAnswer: 'Utmost Good Faith',
-            explanation: 'Utmost Good Faith requires full disclosure of material facts by both parties.'
-          },
-          {
-            id: 'q2',
-            type: 'True / False' as const,
-            prompt: 'The principle of indemnity aims to return the insured to the same financial position as before the loss.',
-            options: ['True', 'False'],
-            correctAnswer: 'True',
-            explanation: 'Indemnity restores the insured to the pre-loss financial position, not to make a profit.'
-          },
-          {
-            id: 'q3',
-            type: 'Fill in Blank' as const,
-            prompt: 'FNOL stands for First Notice of ______.',
-            options: ['Loss', 'Liability', 'Location'],
-            correctAnswer: 'Loss',
-            explanation: 'First Notice of Loss (FNOL) is the initial report of a claim event.'
-          },
-          {
-            id: 'q4',
-            type: 'Multiple Select' as const,
-            prompt: 'Which products are typical insurance categories? (Select all that apply)',
-            options: ['Life', 'Health', 'Property', 'Software'],
-            correctAnswer: ['Life', 'Health', 'Property'],
-            explanation: 'Life, Health, and Property are core insurance categories; Software is not an insurance product category.'
-          },
-          {
-            id: 'q5',
-            type: 'MCQ' as const,
-            prompt: 'What is the primary purpose of underwriting?',
-            options: ['To generate marketing leads', 'To assess risk and determine premium pricing', 'To process claim payments', 'To develop new product features'],
-            correctAnswer: 'To assess risk and determine premium pricing',
-            explanation: 'Underwriting evaluates risk and sets appropriate rates to ensure profitability and compliance.'
-          },
-          {
-            id: 'q6',
-            type: 'MCQ' as const,
-            prompt: 'Which of the following is an element of the insurance policy lifecycle?',
-            options: ['Code deployment', 'Claim settlement', 'Database normalization', 'Network topology'],
-            correctAnswer: 'Claim settlement',
-            explanation: 'Claim settlement is a key step in the insurance policy lifecycle.'
-          },
-          {
-            id: 'q7',
-            type: 'True / False' as const,
-            prompt: 'A combined ratio below 100% indicates an underwriting profit.',
-            options: ['True', 'False'],
-            correctAnswer: 'True',
-            explanation: 'A combined ratio under 100% means premiums exceed claims and expenses.'
-          },
-          {
-            id: 'q8',
-            type: 'MCQ' as const,
-            prompt: 'Insurable interest means the insured must have a ______ in the subject matter.',
-            options: ['financial interest', 'technical skill', 'social connection', 'contractor agreement'],
-            correctAnswer: 'financial interest',
-            explanation: 'Insurable interest requires a financial stake in the insured item or person.'
-          }
-        ]
+        title: 'Policy Lifecycle Case Study',
+        description: 'Analyze a policy scenario and document the underwriting, issuance, and claims workflow.',
+        dueDate: '2026-08-20',
+        totalPoints: 50,
+        instructions: 'Read the case scenario, identify key policy lifecycle steps, and submit a one-page summary.',
+        submissionFormat: 'Document Upload',
+        attachmentName: 'PolicyLifecycleCaseStudy.pdf',
+        attachmentUrl: 'https://example.com/PolicyLifecycleCaseStudy.pdf',
+        status: 'Pending'
       }
-    ],
+    ]
   },
   {
     id: 'session-sql',
@@ -640,7 +393,6 @@ export const mockSessions: Session[] = [
     durationHours: 24,
     difficulty: 'Intermediate',
     progressPercent: 55,
-    isBookmarked: true,
     lastAccessed: '2 days ago',
     isPublished: true,
     rating: 4.85,
@@ -794,83 +546,23 @@ export const mockSessions: Session[] = [
       { id: 'sqlst-53', title: 'Concurrency Control', durationMinutes: 35, status: 'Locked' },
       { id: 'sqlst-54', title: 'End-to-End PostgreSQL Project', durationMinutes: 60, status: 'Locked' }
     ]
-  }
-],
-    quizzes: [
+  },
+  ],
+  assignments: [
       {
-        id: 'quiz-sql-1',
+        id: 'assign-sql-1',
+
         sessionId: 'session-sql',
         topicId: 'sql-t4',
-        title: 'SQL Querying & Data Management Assessment',
-        description: 'Test your knowledge of SQL query syntax, joins, normalization, and transaction behavior.',
-        passingScorePercent: 80,
-        timeLimitMinutes: 20,
-        questions: [
-          {
-            id: 'q1',
-            type: 'MCQ' as const,
-            prompt: 'Which JOIN returns rows only when there is a match in both tables?',
-            options: ['LEFT JOIN', 'RIGHT JOIN', 'INNER JOIN', 'FULL OUTER JOIN'],
-            correctAnswer: 'INNER JOIN',
-            explanation: 'INNER JOIN returns only matching rows from both tables.'
-          },
-          {
-            id: 'q2',
-            type: 'Fill in Blank' as const,
-            prompt: 'The SQL clause used to group rows and compute aggregates is ______.',
-            options: ['GROUP BY', 'ORDER BY', 'WHERE'],
-            correctAnswer: 'GROUP BY',
-            explanation: 'GROUP BY groups rows to compute aggregates such as SUM and COUNT.'
-          },
-          {
-            id: 'q3',
-            type: 'Multiple Select' as const,
-            prompt: 'Which SQL functions are considered window functions? (Select all that apply)',
-            options: ['ROW_NUMBER()', 'SUM()', 'DENSE_RANK()', 'AVG()'],
-            correctAnswer: ['ROW_NUMBER()', 'DENSE_RANK()'],
-            explanation: 'ROW_NUMBER and DENSE_RANK are window functions; SUM and AVG are aggregate functions unless used with OVER().'   
-          },
-          {
-            id: 'q4',
-            type: 'True / False' as const,
-            prompt: 'A database index always improves the performance of every SQL query.',
-            options: ['True', 'False'],
-            correctAnswer: 'False',
-            explanation: 'Indexes can slow down writes and do not benefit all query patterns.'
-          },
-          {
-            id: 'q5',
-            type: 'Code Output' as const,
-            prompt: `What result does this SQL return?\nSELECT COUNT(*) FROM Orders WHERE OrderDate >= '2026-01-01';`,
-            options: ['The number of orders since Jan 1, 2026', 'The sum of all order totals', 'A list of orders', 'The latest order date'],
-            correctAnswer: 'The number of orders since Jan 1, 2026',
-            explanation: 'COUNT(*) returns the count of rows that match the WHERE clause.'
-          },
-          {
-            id: 'q6',
-            type: 'MCQ' as const,
-            prompt: 'Which normalization form removes transitive dependencies?',
-            options: ['1NF', '2NF', '3NF', 'BCNF'],
-            correctAnswer: '3NF',
-            explanation: 'Third Normal Form removes transitive dependencies in a relational schema.'
-          },
-          {
-            id: 'q7',
-            type: 'MCQ' as const,
-            prompt: 'Which SQL command modifies the structure of an existing table?',
-            options: ['INSERT', 'ALTER TABLE', 'DROP TABLE', 'SELECT'],
-            correctAnswer: 'ALTER TABLE',
-            explanation: 'ALTER TABLE changes a table definition, such as adding or dropping columns.'
-          },
-          {
-            id: 'q8',
-            type: 'Multiple Select' as const,
-            prompt: 'Which of these are transaction isolation levels in SQL? (Select all that apply)',
-            options: ['READ COMMITTED', 'SERIALIZABLE', 'READ UNCOMMITTED', 'AUTO COMMIT'],
-            correctAnswer: ['READ COMMITTED', 'SERIALIZABLE', 'READ UNCOMMITTED'],
-            explanation: 'AUTO COMMIT is a transaction mode, not an isolation level.'
-          }
-        ]
+        title: 'PostgreSQL Query Optimization Exercise',
+        description: 'Tune a SQL query and explain the performance improvements.',
+        dueDate: '2026-08-25',
+        totalPoints: 50,
+        instructions: 'Optimize the query, document your changes, and submit the revised SQL with notes.',
+        submissionFormat: 'SQL / Document Upload',
+        attachmentName: 'QueryPerformanceChecklist.pdf',
+        attachmentUrl: 'https://example.com/QueryPerformanceChecklist.pdf',
+        status: 'Pending'
       }
     ]
   },
@@ -884,7 +576,6 @@ export const mockSessions: Session[] = [
     durationHours: 20,
     difficulty: 'Beginner',
     progressPercent: 40,
-    isBookmarked: false,
     lastAccessed: 'Just now',
     isPublished: true,
     rating: 4.9,
@@ -951,83 +642,22 @@ export const mockSessions: Session[] = [
           { id: 'c2cst-4', title: 'Personal and Professional Growth Mindset', durationMinutes: 40, status: 'Unlocked' },
           { id: 'c2cst-5', title: 'Continuous Learning and Development', durationMinutes: 40, status: 'Unlocked' }
          ]
-      },
+      }
     ],
-    quizzes: [
+    assignments: [
       {
-        id: 'quiz-c2c-1',
+        id: 'assign-c2c-1',
         sessionId: 'session-c2c',
-        topicId: 'c2c-t2',
-        title: 'Campus to Corporate Professional Skills Quiz',
-        description: 'Evaluate your understanding of workplace communication, etiquette, productivity, and presentation skills.',
-        passingScorePercent: 75,
-        timeLimitMinutes: 15,
-        questions: [
-          {
-            id: 'q1',
-            type: 'MCQ' as const,
-            prompt: 'Which behavior is most important for professional workplace communication?',
-            options: ['Using technical jargon constantly', 'Listening actively and asking clarifying questions', 'Interrupting to make your point', 'Relying only on email for all communication'],
-            correctAnswer: 'Listening actively and asking clarifying questions',
-            explanation: 'Active listening helps build trust and ensures understanding in professional interactions.'
-          },
-          {
-            id: 'q2',
-            type: 'Fill in Blank' as const,
-            prompt: 'The Pomodoro Technique typically uses repeated work intervals of ______ minutes.',
-            options: ['25', '45', '60'],
-            correctAnswer: '25',
-            explanation: 'The Pomodoro Technique uses 25-minute focused work intervals followed by short breaks.'
-          },
-          {
-            id: 'q3',
-            type: 'True / False' as const,
-            prompt: 'Business etiquette includes punctuality, professional language, and respectful behavior.',
-            options: ['True', 'False'],
-            correctAnswer: 'True',
-            explanation: 'Punctuality, professional language, and respect are core elements of business etiquette.'
-          },
-          {
-            id: 'q4',
-            type: 'MCQ' as const,
-            prompt: 'Which quadrant of the Eisenhower Matrix contains tasks that are important but not urgent?',
-            options: ['Do First', 'Schedule', 'Delegate', 'Eliminate'],
-            correctAnswer: 'Schedule',
-            explanation: 'Important but not urgent tasks should be scheduled for later.'
-          },
-          {
-            id: 'q5',
-            type: 'Multiple Select' as const,
-            prompt: 'Which skills contribute to strong teamwork? (Select all that apply)',
-            options: ['Accountability', 'Open communication', 'Individual competition', 'Collaborative problem solving'],
-            correctAnswer: ['Accountability', 'Open communication', 'Collaborative problem solving'],
-            explanation: 'Teamwork depends on accountability, communication, and collaboration.'
-          },
-          {
-            id: 'q6',
-            type: 'MCQ' as const,
-            prompt: 'Vocal variety in presentations refers to changes in which elements?',
-            options: ['Power, pitch, pace, and pause', 'Content length only', 'Cost and budget', 'Headset type'],
-            correctAnswer: 'Power, pitch, pace, and pause',
-            explanation: 'Effective presentation delivery uses variation in power, pitch, pace, and pauses.'
-          },
-          {
-            id: 'q7',
-            type: 'True / False' as const,
-            prompt: 'Professional communication should always avoid asking questions to appear confident.',
-            options: ['True', 'False'],
-            correctAnswer: 'False',
-            explanation: 'Asking questions is a sign of engagement and helps clarify expectations.'
-          },
-          {
-            id: 'q8',
-            type: 'MCQ' as const,
-            prompt: 'What is the best approach when resolving a workplace conflict?',
-            options: ['Ignore the issue', 'Discuss openly and seek a solution together', 'Blame others publicly', 'Delay indefinitely'],
-            correctAnswer: 'Discuss openly and seek a solution together',
-            explanation: 'Open discussion and collaboration are the healthiest ways to resolve conflict.'
-          }
-        ]
+        topicId: 'c2c-t4',
+        title: 'Workplace Communication Reflection',
+        description: 'Create a plan that applies communication and time management techniques to a corporate scenario.',
+        dueDate: '2026-08-21',
+        totalPoints: 40,
+        instructions: 'Submit a one-page plan describing how you would use the Pomodoro Technique and Eisenhower Matrix at work.',
+        submissionFormat: 'Document Upload',
+        attachmentName: 'CommunicationReflectionTemplate.docx',
+        attachmentUrl: 'https://example.com/CommunicationReflectionTemplate.docx',
+        status: 'Pending'
       }
     ]
   },
@@ -1041,7 +671,6 @@ export const mockSessions: Session[] = [
     durationHours: 12,
     difficulty: 'Beginner',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.8,
@@ -1093,83 +722,22 @@ export const mockSessions: Session[] = [
           { id: 'dmst-4', title: 'Connecting Business Needs with Technical Solutions', durationMinutes: 45, status: 'Completed' },
           { id: 'dmst-5', title: 'Using Data Models as a Foundation for Software and Analytics', durationMinutes: 45, status: 'Completed' }
         ]
-      },
+      }
     ],
-    quizzes: [
+    assignments: [
       {
-        id: 'quiz-data-modeling-1',
+        id: 'assign-data-modeling-1',
         sessionId: 'session-data-modeling-fundamentals',
-        topicId: 'dm-t2',
-        title: 'Data Modeling & Entity Relationship Assessment',
-        description: 'Validate your knowledge of data modeling concepts, entity relationships, normalization, and system design alignment.',
-        passingScorePercent: 75,
-        timeLimitMinutes: 18,
-        questions: [
-          {
-            id: 'q1',
-            type: 'MCQ' as const,
-            prompt: 'In data modeling, which cardinality defines one record in a table relating to many records in another table?',
-            options: ['One-to-One', 'One-to-Many', 'Many-to-Many', 'Zero-to-One'],
-            correctAnswer: 'One-to-Many',
-            explanation: 'One-to-many cardinality means one parent record relates to many child records.'
-          },
-          {
-            id: 'q2',
-            type: 'True / False' as const,
-            prompt: 'An entity in a data model typically represents a real-world object or concept.',
-            options: ['True', 'False'],
-            correctAnswer: 'True',
-            explanation: 'Entities represent objects, concepts, or things with distinct existence in the domain.'
-          },
-          {
-            id: 'q3',
-            type: 'Fill in Blank' as const,
-            prompt: 'A primary key must uniquely identify each ______ in a table.',
-            options: ['row', 'column', 'schema'],
-            correctAnswer: 'row',
-            explanation: 'A primary key uniquely identifies each row in a table.'
-          },
-          {
-            id: 'q4',
-            type: 'MCQ' as const,
-            prompt: 'Which normalization form requires that no non-key attribute depends on another non-key attribute?',
-            options: ['1NF', '2NF', '3NF', 'BCNF'],
-            correctAnswer: '3NF',
-            explanation: 'Third Normal Form removes transitive dependencies where non-key attributes depend on other non-key attributes.'
-          },
-          {
-            id: 'q5',
-            type: 'Multiple Select' as const,
-            prompt: 'Which are common relationship types in data modeling? (Select all that apply)',
-            options: ['One-to-One', 'One-to-Many', 'Many-to-Many', 'Single-to-Multi'],
-            correctAnswer: ['One-to-One', 'One-to-Many', 'Many-to-Many'],
-            explanation: 'Common relationships include one-to-one, one-to-many, and many-to-many.'
-          },
-          {
-            id: 'q6',
-            type: 'MCQ' as const,
-            prompt: 'A logical data model is primarily concerned with which of the following?',
-            options: ['Cloud provider configuration', 'Database indexing strategy', 'Entities, attributes, and relationships', 'UI component layout'],
-            correctAnswer: 'Entities, attributes, and relationships',
-            explanation: 'Logical models describe data elements and relationships independent of physical implementation.'
-          },
-          {
-            id: 'q7',
-            type: 'True / False' as const,
-            prompt: 'ER diagrams show entities, relationships, and cardinality constraints in a data model.',
-            options: ['True', 'False'],
-            correctAnswer: 'True',
-            explanation: 'ER diagrams visualize entities, relationships, and cardinality in a data model.'
-          },
-          {
-            id: 'q8',
-            type: 'MCQ' as const,
-            prompt: 'Which model type typically contains technical storage details and physical tables?',
-            options: ['Conceptual model', 'Logical model', 'Physical model', 'Business model'],
-            correctAnswer: 'Physical model',
-            explanation: 'Physical models map logical design to actual database tables and storage details.'
-          }
-        ]
+        topicId: 'dm-t3',
+        title: 'Entity Relationship Diagram Case Study',
+        description: 'Build an ER diagram and explain how it supports business requirements.',
+        dueDate: '2026-08-23',
+        totalPoints: 45,
+        instructions: 'Submit the ER diagram and a short description of entity relationships and cardinality choices.',
+        submissionFormat: 'Image / Document Upload',
+        attachmentName: 'ERDiagramTemplate.pdf',
+        attachmentUrl: 'https://example.com/ERDiagramTemplate.pdf',
+        status: 'Pending'
       }
     ]
   },
@@ -1183,7 +751,6 @@ export const mockSessions: Session[] = [
     durationHours: 18,
     difficulty: 'Beginner',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.8,
@@ -1252,7 +819,23 @@ export const mockSessions: Session[] = [
           { id: 'dfst-4', title: 'Understanding the Strategic Value of Data', durationMinutes: 75, status: 'Completed' },
           { id: 'dfst-5', title: 'Connecting Data, Technology, and Analytics End-to-End', durationMinutes: 90, status: 'Completed' }
         ]
-      },
+      }
+    ],
+    assignments: [
+      {
+        id: 'assign-data-fundamentals-1',
+        sessionId: 'session-data-fundamentals',
+        topicId: 'df-t4',
+        title: 'Business Analytics Dashboard Design',
+        description: 'Outline the analytics pipeline and dashboard requirements for a business case.',
+        dueDate: '2026-08-24',
+        totalPoints: 45,
+        instructions: 'Provide a document describing data sources, transformations, and key dashboard metrics.',
+        submissionFormat: 'Document Upload',
+        attachmentName: 'AnalyticsDashboardBrief.docx',
+        attachmentUrl: 'https://example.com/AnalyticsDashboardBrief.docx',
+        status: 'Pending'
+      }
     ]
   },
 
@@ -1266,7 +849,6 @@ export const mockSessions: Session[] = [
     durationHours: 25,
     difficulty: 'Intermediate',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.9,
@@ -1414,6 +996,22 @@ export const mockSessions: Session[] = [
           }
         ]
       }
+    ],
+    assignments: [
+      {
+        id: 'assign-html-css-js-1',
+        sessionId: 'session-html-css-js',
+        topicId: 'web-t2',
+        title: 'Interactive Web Page Challenge',
+        description: 'Create a simple responsive web page layout and describe how JavaScript updates the DOM.',
+        dueDate: '2026-08-26',
+        totalPoints: 50,
+        instructions: 'Submit the HTML/CSS/JS design explanation and include example code snippets.',
+        submissionFormat: 'Code Snippet / Document Upload',
+        attachmentName: 'WebPageChallengeGuide.pdf',
+        attachmentUrl: 'https://example.com/WebPageChallengeGuide.pdf',
+        status: 'Pending'
+      }
     ]
   },
   {
@@ -1426,7 +1024,6 @@ export const mockSessions: Session[] = [
     durationHours: 24,
     difficulty: 'Advanced',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 5.0,
@@ -1508,83 +1105,22 @@ export const mockSessions: Session[] = [
         ]
       }
     ],
-    quizzes: [
+    assignments: [
       {
-        id: 'quiz-modern-data-platforms-1',
+        id: 'assign-modern-data-platforms-1',
         sessionId: 'session-modern-data-platforms',
-        topicId: 'mdp-t1',
-        title: 'Advanced Data Platforms & Cloud Data Architecture Quiz',
-        description: 'Assess your knowledge of cloud data platforms, lakehouse principles, governance, and analytics workflows.',
-        passingScorePercent: 80,
-        timeLimitMinutes: 20,
-        questions: [
-          {
-            id: 'q1',
-            type: 'MCQ' as const,
-            prompt: 'What is the core idea of a lakehouse architecture?',
-            options: ['Separate data lake and data warehouse', 'Combine data lake storage with warehouse-style governance', 'Use only relational databases', 'Replace BI with AI'],
-            correctAnswer: 'Combine data lake storage with warehouse-style governance',
-            explanation: 'Lakehouse architecture blends data lake storage with data warehouse management and governance.'
-          },
-          {
-            id: 'q2',
-            type: 'True / False' as const,
-            prompt: 'ETL stands for Extract, Transform, and Load.',
-            options: ['True', 'False'],
-            correctAnswer: 'True',
-            explanation: 'ETL is Extract, Transform, Load.'
-          },
-          {
-            id: 'q3',
-            type: 'Multiple Select' as const,
-            prompt: 'Which components are common in modern data platform architectures? (Select all that apply)',
-            options: ['Data Lake', 'Metadata Catalog', 'Orchestration Engine', 'FTP Server'],
-            correctAnswer: ['Data Lake', 'Metadata Catalog', 'Orchestration Engine'],
-            explanation: 'Modern platforms often include data lakes, metadata catalogs, and orchestration engines; FTP is a transport mechanism, not a platform component.'
-          },
-          {
-            id: 'q4',
-            type: 'Fill in Blank' as const,
-            prompt: 'Databricks is a managed service built around Apache ______.',
-            options: ['Spark', 'Hadoop', 'Kafka'],
-            correctAnswer: 'Spark',
-            explanation: 'Databricks is built on Apache Spark for analytics and data engineering.'
-          },
-          {
-            id: 'q5',
-            type: 'MCQ' as const,
-            prompt: 'Data governance primarily focuses on which of the following?',
-            options: ['Visualizing dashboards', 'Securing and standardizing enterprise data', 'Writing SQL queries', 'Designing mobile apps'],
-            correctAnswer: 'Securing and standardizing enterprise data',
-            explanation: 'Data governance ensures data quality, security, and standards across the organization.'
-          },
-          {
-            id: 'q6',
-            type: 'True / False' as const,
-            prompt: 'A data mesh architecture centralizes all data into one monolithic storage.',
-            options: ['True', 'False'],
-            correctAnswer: 'False',
-            explanation: 'Data mesh distributes ownership and treats data as a product across domains.'
-          },
-          {
-            id: 'q7',
-            type: 'MCQ' as const,
-            prompt: 'Which Azure offering is focused on integrated analytics and data engineering?',
-            options: ['Azure App Service', 'Microsoft Fabric', 'Azure Blob Storage', 'Azure DevOps'],
-            correctAnswer: 'Microsoft Fabric',
-            explanation: 'Microsoft Fabric is an integrated platform for analytics and data engineering.'
-          },
-          {
-            id: 'q8',
-            type: 'Multiple Select' as const,
-            prompt: 'Which workloads are typical for modern data platforms? (Select all that apply)',
-            options: ['BI dashboards', 'Data science experiments', 'Gaming server hosting', 'Machine learning model training'],
-            correctAnswer: ['BI dashboards', 'Data science experiments', 'Machine learning model training'],
-            explanation: 'Modern data platforms support business intelligence, data science, and machine learning workloads.'
-          }
-        ]
+        topicId: 'mdp-t2',
+        title: 'Data Platform Architecture Proposal',
+        description: 'Draft a proposal for a modern data platform architecture meeting scalability and governance needs.',
+        dueDate: '2026-08-27',
+        totalPoints: 55,
+        instructions: 'Submit a brief architecture proposal with platform components and data flow.',
+        submissionFormat: 'Document Upload',
+        attachmentName: 'DataPlatformProposalTemplate.pdf',
+        attachmentUrl: 'https://example.com/DataPlatformProposalTemplate.pdf',
+        status: 'Pending'
       }
-    ],
+    ]
   },
   {
     id: 'session-software-testing',
@@ -1596,7 +1132,6 @@ export const mockSessions: Session[] = [
     durationHours: 16,
     difficulty: 'Beginner',
     progressPercent: 0,
-    isBookmarked: false,
     lastAccessed: 'Never',
     isPublished: true,
     rating: 4.8,
@@ -1755,6 +1290,22 @@ export const mockSessions: Session[] = [
             explanation: 'Equivalence partitioning, boundary value analysis, and decision tables are common test design techniques.'
           }
         ]
+      }
+    ],
+    assignments: [
+      {
+        id: 'assign-software-testing-1',
+        sessionId: 'session-software-testing',
+        topicId: 'st-t2',
+        title: 'Test Case Design Assignment',
+        description: 'Create a set of test cases for a sample feature and explain the chosen techniques.',
+        dueDate: '2026-08-28',
+        totalPoints: 45,
+        instructions: 'Submit a document with test cases, expected outcomes, and test design notes.',
+        submissionFormat: 'Document Upload',
+        attachmentName: 'TestCaseDesignTemplate.docx',
+        attachmentUrl: 'https://example.com/TestCaseDesignTemplate.docx',
+        status: 'Pending'
       }
     ]
   }
@@ -2099,67 +1650,449 @@ export const mockQuizzes = [
     id: 'quiz-dotnet-1',
     sessionId: 'session-dotnet',
     topicId: 'dotnet-t4',
-    title: 'C# Async/Await & Concurrency Assessment',
+    title: 'C# Async Programming Assessment',
     passingScorePercent: 80,
     timeLimitMinutes: 15,
     questions: [
       {
-        id: 'q1',
+        id: 'dotnet-q1',
         type: 'MCQ' as const,
-        prompt: 'What happens when you call an async method without the "await" keyword in C#?',
-        options: [
-          'The code throws a runtime InvalidOperationException.',
-          'The method executes asynchronously in the background, and execution continues immediately without waiting.',
-          'The compiler prevents compilation with a fatal syntax error.',
-          'The method automatically runs synchronously on the main thread.'
-        ],
-        correctAnswer: 'The method executes asynchronously in the background, and execution continues immediately without waiting.',
-        explanation: 'Omitting "await" causes the call to return a Task immediately and run concurrently in the background, triggering a compiler warning CS4014.'
+        prompt: 'Which keyword is used to create an asynchronous method in C#?',
+        options: ['await', 'async', 'yield', 'task'],
+        correctAnswer: 'async',
+        explanation: 'The async keyword marks a method as asynchronous so it can use await inside.'
       },
       {
-        id: 'q2',
-        type: 'Multiple Select' as const,
-        prompt: 'Which of the following are valid IOC Container lifetimes in ASP.NET Core Dependency Injection? (Select all that apply)',
-        options: [
-          'Transient (New instance every request for service)',
-          'Scoped (One instance per HTTP Request)',
-          'Singleton (Single instance across application lifetime)',
-          'ThreadStatic (One instance per OS Thread)'
-        ],
-        correctAnswer: [
-          'Transient (New instance every request for service)',
-          'Scoped (One instance per HTTP Request)',
-          'Singleton (Single instance across application lifetime)'
-        ],
-        explanation: 'ASP.NET Core DI natively supports Transient, Scoped, and Singleton service lifetimes.'
+        id: 'dotnet-q2',
+        type: 'MCQ' as const,
+        prompt: 'What is the correct return type for an async method that does not return a value?',
+        options: ['void', 'Task', 'Task<int>', 'IEnumerable<Task>'],
+        correctAnswer: 'Task',
+        explanation: 'Async methods that do not return a result should return Task to allow callers to await them.'
       },
       {
-        id: 'q3',
-        type: 'Fill in Blank' as const,
-        prompt: 'Fill in the missing C# keyword used to safely release unmanaged resources automatically when exiting a code block scope: ______ (using / lock / checked)',
-        options: ['using', 'lock', 'checked'],
-        correctAnswer: 'using',
-        explanation: 'The "using" statement or using declaration ensures Dispose() is called on IDisposable objects.'
+        id: 'dotnet-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which of the following is a valid way to handle exceptions from an awaited async call?',
+        options: ['Use try/catch around await', 'Use Task.DisableExceptionHandling()', 'Call await in a finally block only', 'Use async void and ignore exceptions'],
+        correctAnswer: 'Use try/catch around await',
+        explanation: 'Exceptions from awaited Tasks are propagated and can be caught using try/catch around the await expression.'
       },
       {
-        id: 'q4',
-        type: 'Code Output' as const,
-        prompt: 'What is the output of the following C# code snippet?',
-        codeSnippet: `int x = 5;
-Func<int, int> func = val => val * 2;
-x = 10;
-Console.WriteLine(func(x));`,
-        options: ['10', '20', '5', '0'],
-        correctAnswer: '20',
-        explanation: 'The delegate accepts the parameter "val" which is passed x=10 at runtime, returning 10 * 2 = 20.'
+        id: 'dotnet-q4',
+        type: 'MCQ' as const,
+        prompt: 'Which method is used to convert a query to a list and execute it immediately in LINQ to Objects?',
+        options: ['Select()', 'Where()', 'ToList()', 'Defer()'],
+        correctAnswer: 'ToList()',
+        explanation: 'ToList() materializes the query and forces immediate execution.'
       },
       {
-        id: 'q5',
-        type: 'True / False' as const,
-        prompt: 'In Entity Framework Core, IQueryable queries execute immediately on the database as soon as the LINQ statement is declared.',
-        options: ['True', 'False'],
-        correctAnswer: 'False',
-        explanation: 'IQueryable uses deferred execution. The query is only sent to the database when enumerated or materialized (e.g. .ToListAsync(), .FirstOrDefaultAsync()).'
+        id: 'dotnet-q5',
+        type: 'MCQ' as const,
+        prompt: 'What is the purpose of the using statement in C#?',
+        options: ['Declare a namespace', 'Manage resources and call Dispose', 'Start a new thread', 'Create a lambda expression'],
+        correctAnswer: 'Manage resources and call Dispose',
+        explanation: 'The using statement automatically disposes of IDisposable objects when the block exits.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-insurance-1',
+    sessionId: 'session-insurance',
+    topicId: 'ins-t1',
+    title: 'Insurance Fundamentals Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'insurance-q1',
+        type: 'MCQ' as const,
+        prompt: 'Which principle requires the insured to disclose all material facts to the insurer?',
+        options: ['Utmost Good Faith', 'Indemnity', 'Subrogation', 'Proximate Cause'],
+        correctAnswer: 'Utmost Good Faith',
+        explanation: 'Utmost good faith means both parties must share all relevant information.'
+      },
+      {
+        id: 'insurance-q2',
+        type: 'MCQ' as const,
+        prompt: 'What does insurable interest mean?',
+        options: ['The insured benefits financially from the insured item', 'The insurer can refuse coverage', 'The policy has no deductible', 'Premiums are fixed annually'],
+        correctAnswer: 'The insured benefits financially from the insured item',
+        explanation: 'Insurable interest exists when the insured would suffer a financial loss if the insured item is damaged.'
+      },
+      {
+        id: 'insurance-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which type of insurance covers property and casualty risks?',
+        options: ['Life Insurance', 'Health Insurance', 'P&C Insurance', 'Title Insurance'],
+        correctAnswer: 'P&C Insurance',
+        explanation: 'Property and casualty insurance protects against loss to property and liability exposures.'
+      },
+      {
+        id: 'insurance-q4',
+        type: 'MCQ' as const,
+        prompt: 'What is the first notice of loss (FNOL)?',
+        options: ['A policy renewal notice', 'The initial report of a claim', 'A premium invoice', 'A underwriting decision'],
+        correctAnswer: 'The initial report of a claim',
+        explanation: 'FNOL is the first notification an insurer receives when a loss occurs.'
+      },
+      {
+        id: 'insurance-q5',
+        type: 'MCQ' as const,
+        prompt: 'Which document typically describes coverage rules and exclusions?',
+        options: ['Policy Schedule', 'Insurance Proposal', 'Policy Wordings', 'Claim Form'],
+        correctAnswer: 'Policy Wordings',
+        explanation: 'Policy wordings define the terms, conditions, and exclusions of coverage.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-sql-1',
+    sessionId: 'session-sql',
+    topicId: 'sql-t1',
+    title: 'SQL & Database Engineering Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'sql-q1',
+        type: 'MCQ' as const,
+        prompt: 'Which SQL command is used to create a new table?',
+        options: ['INSERT', 'UPDATE', 'CREATE TABLE', 'ALTER TABLE'],
+        correctAnswer: 'CREATE TABLE',
+        explanation: 'CREATE TABLE is the DDL command used to define a new table structure.'
+      },
+      {
+        id: 'sql-q2',
+        type: 'MCQ' as const,
+        prompt: 'What does the WHERE clause do in a SELECT statement?',
+        options: ['Sorts the results', 'Filters rows that meet a condition', 'Groups rows', 'Defines a join condition'],
+        correctAnswer: 'Filters rows that meet a condition',
+        explanation: 'WHERE restricts the rows returned by the query based on the given predicate.'
+      },
+      {
+        id: 'sql-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which join returns only matching rows from both tables?',
+        options: ['LEFT JOIN', 'RIGHT JOIN', 'FULL JOIN', 'INNER JOIN'],
+        correctAnswer: 'INNER JOIN',
+        explanation: 'INNER JOIN returns rows where the join condition matches in both tables.'
+      },
+      {
+        id: 'sql-q4',
+        type: 'MCQ' as const,
+        prompt: 'What is the purpose of a primary key?',
+        options: ['Allow duplicate rows', 'Enforce unique row identity', 'Store large text values', 'Create indexes automatically'],
+        correctAnswer: 'Enforce unique row identity',
+        explanation: 'A primary key uniquely identifies each row in a table.'
+      },
+      {
+        id: 'sql-q5',
+        type: 'MCQ' as const,
+        prompt: 'Which SQL statement is used to remove all rows from a table but keep the table structure?',
+        options: ['DROP TABLE', 'DELETE FROM', 'TRUNCATE TABLE', 'ALTER TABLE'],
+        correctAnswer: 'TRUNCATE TABLE',
+        explanation: 'TRUNCATE TABLE removes all rows efficiently while preserving the table definition.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-c2c-1',
+    sessionId: 'session-c2c',
+    topicId: 'c2c-t1',
+    title: 'Campus to Corporate Communication Assessment',
+    passingScorePercent: 70,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'c2c-q1',
+        type: 'MCQ' as const,
+        prompt: 'What is the most important component of active listening?',
+        options: ['Interrupting quickly', 'Thinking about your response', 'Asking clarifying questions', 'Multitasking'],
+        correctAnswer: 'Asking clarifying questions',
+        explanation: 'Clarifying questions show engagement and help ensure understanding.'
+      },
+      {
+        id: 'c2c-q2',
+        type: 'MCQ' as const,
+        prompt: 'Which behavior best reflects professional workplace etiquette?',
+        options: ['Ignoring deadlines', 'Responding promptly to messages', 'Speaking loudly in meetings', 'Skipping status updates'],
+        correctAnswer: 'Responding promptly to messages',
+        explanation: 'Timely communication is a core part of professionalism.'
+      },
+      {
+        id: 'c2c-q3',
+        type: 'MCQ' as const,
+        prompt: 'What is the primary aim of the Pomodoro Technique?',
+        options: ['Work without breaks', 'Increase short bursts of focused work', 'Eliminate daily planning', 'Monitor other people’s productivity'],
+        correctAnswer: 'Increase short bursts of focused work',
+        explanation: 'Pomodoro uses timeboxing with focused work sessions and breaks to improve productivity.'
+      },
+      {
+        id: 'c2c-q4',
+        type: 'MCQ' as const,
+        prompt: 'The Eisenhower Matrix helps you prioritize tasks based on urgency and what else?',
+        options: ['Complexity', 'Importance', 'Time required', 'Budget'],
+        correctAnswer: 'Importance',
+        explanation: 'The Eisenhower Matrix uses urgency and importance as its two dimensions.'
+      },
+      {
+        id: 'c2c-q5',
+        type: 'MCQ' as const,
+        prompt: 'What is a good practice when giving constructive feedback?',
+        options: ['Focus only on personality', 'Wait until a yearly review', 'Be specific and actionable', 'Use vague terms'],
+        correctAnswer: 'Be specific and actionable',
+        explanation: 'Effective feedback is clear, specific, and gives the recipient steps they can take.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-data-modeling-fundamentals-1',
+    sessionId: 'session-data-modeling-fundamentals',
+    topicId: 'dm-t1',
+    title: 'Data Modeling Fundamentals Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'dm-q1',
+        type: 'MCQ' as const,
+        prompt: 'What is an entity in data modeling?',
+        options: ['A business process', 'A set of code libraries', 'A real-world object or concept', 'A network topology'],
+        correctAnswer: 'A real-world object or concept',
+        explanation: 'Entities represent things of interest in a data model, such as Customer or Order.'
+      },
+      {
+        id: 'dm-q2',
+        type: 'MCQ' as const,
+        prompt: 'What does cardinality describe in a relationship?',
+        options: ['The number of tables', 'The number of attributes', 'How many instances relate between entities', 'The execution speed'],
+        correctAnswer: 'How many instances relate between entities',
+        explanation: 'Cardinality defines one-to-one, one-to-many, or many-to-many relationships.'
+      },
+      {
+        id: 'dm-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which normal form eliminates repeating groups and ensures each field contains atomic values?',
+        options: ['1NF', '2NF', '3NF', 'BCNF'],
+        correctAnswer: '1NF',
+        explanation: 'First normal form requires that each column contains indivisible values and each row is unique.'
+      },
+      {
+        id: 'dm-q4',
+        type: 'MCQ' as const,
+        prompt: 'A foreign key is used to:',
+        options: ['Store a list of values', 'Enforce referential integrity between tables', 'Speed up query execution', 'Format display output'],
+        correctAnswer: 'Enforce referential integrity between tables',
+        explanation: 'Foreign keys link records across tables and enforce relationship constraints.'
+      },
+      {
+        id: 'dm-q5',
+        type: 'MCQ' as const,
+        prompt: 'What is the main purpose of a logical data model?',
+        options: ['Describe hardware requirements', 'Define business entities and relationships independent of technology', 'Assign project tasks', 'Write SQL queries'],
+        correctAnswer: 'Define business entities and relationships independent of technology',
+        explanation: 'Logical models capture data structure and relationships without platform-specific details.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-data-fundamentals-1',
+    sessionId: 'session-data-fundamentals',
+    topicId: 'df-t1',
+    title: 'Data Fundamentals Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'df-q1',
+        type: 'MCQ' as const,
+        prompt: 'What is a key component of data quality?',
+        options: ['High volume only', 'Accuracy', 'Faster internet', 'More tables'],
+        correctAnswer: 'Accuracy',
+        explanation: 'Accuracy is a foundational data quality dimension, ensuring data reflects real-world values.'
+      },
+      {
+        id: 'df-q2',
+        type: 'MCQ' as const,
+        prompt: 'What does the medallion architecture typically include?',
+        options: ['Bronze, Silver, Gold layers', 'Front-end, back-end, database', 'Alpha, Beta, Gamma', 'Load, transform, serve'],
+        correctAnswer: 'Bronze, Silver, Gold layers',
+        explanation: 'The medallion architecture organizes data into bronze/raw, silver/cleaned, and gold/curated layers.'
+      },
+      {
+        id: 'df-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which tool is often used for business intelligence and dashboards in Microsoft environments?',
+        options: ['Power BI', 'Vim', 'GitHub', 'Docker'],
+        correctAnswer: 'Power BI',
+        explanation: 'Power BI is a Microsoft analytics service for building dashboards and reports.'
+      },
+      {
+        id: 'df-q4',
+        type: 'MCQ' as const,
+        prompt: 'Which Azure service is typically used for managed data lakes and analytics?',
+        options: ['Azure DevOps', 'Azure Data Lake', 'Azure Functions', 'Azure Active Directory'],
+        correctAnswer: 'Azure Data Lake',
+        explanation: 'Azure Data Lake is used for scalable storage and analytics on large volumes of data.'
+      },
+      {
+        id: 'df-q5',
+        type: 'MCQ' as const,
+        prompt: 'Why is data governance important?',
+        options: ['To increase storage costs', 'To ensure consistent policies and compliance', 'To slow down data access', 'To avoid user training'],
+        correctAnswer: 'To ensure consistent policies and compliance',
+        explanation: 'Data governance provides rules and processes for managing data quality, privacy, and compliance.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-html-css-js-1',
+    sessionId: 'session-html-css-js',
+    topicId: 'web-t1',
+    title: 'Web Development Fundamentals Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'web-q1',
+        type: 'MCQ' as const,
+        prompt: 'Which HTML element is used to define the main content of a page?',
+        options: ['<header>', '<main>', '<section>', '<div>'],
+        correctAnswer: '<main>',
+        explanation: '<main> indicates the primary content of the document.'
+      },
+      {
+        id: 'web-q2',
+        type: 'MCQ' as const,
+        prompt: 'Which CSS property controls the space between an element’s border and its content?',
+        options: ['margin', 'padding', 'border-spacing', 'gap'],
+        correctAnswer: 'padding',
+        explanation: 'Padding adds space inside the border, between the border and content.'
+      },
+      {
+        id: 'web-q3',
+        type: 'MCQ' as const,
+        prompt: 'What is the purpose of document.querySelector in JavaScript?',
+        options: ['Create a new element', 'Select an element from the DOM', 'Send an HTTP request', 'Style an element'],
+        correctAnswer: 'Select an element from the DOM',
+        explanation: 'querySelector returns the first element matching a CSS selector.'
+      },
+      {
+        id: 'web-q4',
+        type: 'MCQ' as const,
+        prompt: 'Which event is fired when the DOM has fully loaded?',
+        options: ['click', 'load', 'DOMContentLoaded', 'change'],
+        correctAnswer: 'DOMContentLoaded',
+        explanation: 'DOMContentLoaded fires when the initial HTML document is completely loaded and parsed.'
+      },
+      {
+        id: 'web-q5',
+        type: 'MCQ' as const,
+        prompt: 'Which JavaScript keyword is used to define an asynchronous function?',
+        options: ['await', 'async', 'defer', 'setTimeout'],
+        correctAnswer: 'async',
+        explanation: 'The async keyword defines an asynchronous function that can use await.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-modern-data-platforms-1',
+    sessionId: 'session-modern-data-platforms',
+    topicId: 'mdp-t1',
+    title: 'Modern Data Platforms Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'mdp-q1',
+        type: 'MCQ' as const,
+        prompt: 'Which architecture pattern combines data lakes and warehouses?',
+        options: ['Monolith', 'Data Lakehouse', 'MVC', 'Client-Server'],
+        correctAnswer: 'Data Lakehouse',
+        explanation: 'Lakehouse architecture merges data lake flexibility with data warehouse structure.'
+      },
+      {
+        id: 'mdp-q2',
+        type: 'MCQ' as const,
+        prompt: 'What does ETL stand for?',
+        options: ['Extract, Transform, Load', 'Evaluate, Test, Launch', 'Enterprise, Technology, Logic', 'Extract, Transfer, Link'],
+        correctAnswer: 'Extract, Transform, Load',
+        explanation: 'ETL is the process of extracting data, transforming it, and loading it into a target store.'
+      },
+      {
+        id: 'mdp-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which Microsoft service is commonly used for analytics and lakehouse storage?',
+        options: ['Azure Functions', 'Azure Data Factory', 'Databricks', 'Power Apps'],
+        correctAnswer: 'Databricks',
+        explanation: 'Databricks provides analytics and lakehouse capabilities on Azure.'
+      },
+      {
+        id: 'mdp-q4',
+        type: 'MCQ' as const,
+        prompt: 'What is data governance primarily concerned with?',
+        options: ['Performance tuning', 'Data ownership and policies', 'Color schemes in dashboards', 'Network configuration'],
+        correctAnswer: 'Data ownership and policies',
+        explanation: 'Data governance defines responsibilities, policies, and compliance rules for data.'
+      },
+      {
+        id: 'mdp-q5',
+        type: 'MCQ' as const,
+        prompt: 'Why are metadata catalogs important in modern data platforms?',
+        options: ['They store actual data rows', 'They track data lineage and discovery', 'They replace the database engine', 'They host web applications'],
+        correctAnswer: 'They track data lineage and discovery',
+        explanation: 'Catalogs make it easier to discover data assets and understand lineage and usage.'
+      }
+    ]
+  },
+  {
+    id: 'quiz-software-testing-1',
+    sessionId: 'session-software-testing',
+    topicId: 'st-t1',
+    title: 'Software Testing Fundamentals Assessment',
+    passingScorePercent: 75,
+    timeLimitMinutes: 15,
+    questions: [
+      {
+        id: 'st-q1',
+        type: 'MCQ' as const,
+        prompt: 'Which testing type verifies that the system meets user requirements?',
+        options: ['Unit Testing', 'Integration Testing', 'Acceptance Testing', 'Smoke Testing'],
+        correctAnswer: 'Acceptance Testing',
+        explanation: 'Acceptance testing checks if the system satisfies business requirements and user needs.'
+      },
+      {
+        id: 'st-q2',
+        type: 'MCQ' as const,
+        prompt: 'What is boundary value analysis used for?',
+        options: ['Checking performance at high load', 'Testing values at the edges of input ranges', 'Improving code readability', 'Designing user interfaces'],
+        correctAnswer: 'Testing values at the edges of input ranges',
+        explanation: 'Boundary value analysis tests values near the boundaries of input domains where defects often occur.'
+      },
+      {
+        id: 'st-q3',
+        type: 'MCQ' as const,
+        prompt: 'Which activity is part of defect management?',
+        options: ['Writing user stories', 'Logging and tracking bugs', 'Deploying to production', 'Creating test automation frameworks'],
+        correctAnswer: 'Logging and tracking bugs',
+        explanation: 'Defect management involves identifying, logging, tracking, and resolving bugs.'
+      },
+      {
+        id: 'st-q4',
+        type: 'MCQ' as const,
+        prompt: 'What does regression testing verify?',
+        options: ['New features work in isolation', 'No new code was added', 'Existing functionality still works after changes', 'Only UI elements render correctly'],
+        correctAnswer: 'Existing functionality still works after changes',
+        explanation: 'Regression testing ensures changes don’t break existing behavior.'
+      },
+      {
+        id: 'st-q5',
+        type: 'MCQ' as const,
+        prompt: 'What is a test case?',
+        options: ['A bug report', 'A scripted set of conditions and expected results', 'A deployment pipeline', 'A production incident'],
+        correctAnswer: 'A scripted set of conditions and expected results',
+        explanation: 'A test case defines inputs, execution conditions, and expected outcomes for a test scenario.'
       }
     ]
   },
@@ -2952,64 +2885,7 @@ getStudentData(101).then(res => console.log(JSON.stringify(res)));`,
   }
 ];
 
-export const mockKnowledgeGraphNodes: KnowledgeGraphNode[] = [
-  {
-    id: 'n-dotnet-core',
-    label: '.NET 8 Core Runtime',
-    category: '.NET with C#',
-    description: 'Foundation runtime engine, CLR, garbage collection, and cross-platform architecture.',
-    prerequisites: []
-  },
-  {
-    id: 'n-csharp-oop',
-    label: 'C# OOP & SOLID',
-    category: '.NET with C#',
-    description: 'Object-oriented programming, interfaces, abstraction, and SOLID design rules.',
-    prerequisites: ['n-dotnet-core']
-  },
-  {
-    id: 'n-aspnet-api',
-    label: 'ASP.NET Core REST API',
-    category: 'API Development',
-    description: 'Web API controllers, routing, dependency injection, and middleware pipeline.',
-    prerequisites: ['n-csharp-oop']
-  },
-  {
-    id: 'n-ef-core',
-    label: 'Entity Framework Core',
-    category: 'SQL',
-    description: 'ORM code-first data mapping, LINQ query provider, DbContext, and migrations.',
-    prerequisites: ['n-csharp-oop', 'n-sql-basics']
-  },
-  {
-    id: 'n-sql-basics',
-    label: 'SQL & Database Design',
-    category: 'SQL',
-    description: 'Relational 3NF normalization, DDL/DML, constraints, indexing, and joins.',
-    prerequisites: []
-  },
-  {
-    id: 'n-react-ts',
-    label: 'React & TypeScript',
-    category: 'Frontend',
-    description: 'Component architecture, Hooks, strict type interfaces, and state management.',
-    prerequisites: []
-  },
-  {
-    id: 'n-microservices',
-    label: 'Microservices & Gateway',
-    category: 'Microservices',
-    description: 'Event-driven messaging, Ocelot API Gateway, and distributed transaction outbox.',
-    prerequisites: ['n-aspnet-api', 'n-ef-core']
-  },
-  {
-    id: 'n-azure-devops',
-    label: 'Azure Cloud & CI/CD',
-    category: 'Azure',
-    description: 'App Services, Azure Pipelines, Docker containers, and Key Vault integration.',
-    prerequisites: ['n-aspnet-api', 'n-react-ts']
-  }
-];
+
 
 export const mockDiscussions: DiscussionPost[] = [
   {
@@ -3056,16 +2932,7 @@ export const mockPersonalNotes: PersonalNote[] = [
   }
 ];
 
-export const mockCertificates: Certificate[] = [
-  {
-    id: 'cert-101',
-    certificateId: 'CERT-GT-2026-DOTNET-8821',
-    studentName: 'Alex Vance',
-    trackName: '.NET with C# Enterprise Architecture',
-    issuedDate: 'July 30, 2026',
-    qrCodeUrl: 'https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=VERIFIED-CERT-8821'
-  }
-];
+
 
 export const mockSessionTrackerRecords: SessionTrackerRecord[] = [
   {

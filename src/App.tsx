@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { User, Session, Quiz, RoadmapTopic, StudyMaterial, AppNotification, Announcement, Badge } from './types';
-import { mockUser, mockSessions, mockAnnouncements, mockBadges } from './data/mockData';
+import { User, Session, Quiz, RoadmapTopic, StudyMaterial } from './types';
+import { mockUser, mockSessions } from './data/mockData';
 import { fetchSessionsApi, logActivityApi } from './services/api';
 import { Header } from './components/Header';
 import { LandingPage } from './components/LandingPage';
 import { AuthModal } from './components/AuthModal';
-import { GTDashboard } from './components/GT/GTDashboard';
+import { ChangePasswordModal } from './components/ChangePasswordModal';
 import { SessionsList } from './components/GT/SessionsList';
 import { SessionDetailView } from './components/GT/SessionDetailView';
 import { QuizView } from './components/GT/QuizView';
 import { InteractivePlayground } from './components/GT/InteractivePlayground';
-import { KnowledgeHubView } from './components/KnowledgeHub/KnowledgeHubView';
 import { AdminDashboard } from './components/Admin/AdminDashboard';
 import { SessionManager } from './components/Admin/SessionManager';
 import { RoadmapBuilder } from './components/Admin/RoadmapBuilder';
@@ -22,7 +21,7 @@ import { AIAssistant } from './components/AIAssistant';
 import { InspectModeOverlay } from './components/InspectModeOverlay';
 import { GlobalSearchModal } from './components/GlobalSearchModal';
 import { UserGuideModal } from './components/UserGuideModal';
-import { Bookmark, X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles, Table } from 'lucide-react';
+import { X, LayoutDashboard, BookOpen, Terminal, GraduationCap, Sparkles, Table } from 'lucide-react';
 import { useToast } from './context/ToastContext';
 
 // Helpers for URL Hash Sync & Route Persistence
@@ -36,7 +35,6 @@ const getHashState = () => {
 
   if (parts[0] === 'gt') {
     const view = parts[1] || 'sessions';
-    if (view === 'knowledge-hub') return { portal: 'GT' as const, gtViewMode: 'knowledge-hub' as const };
     if (view === 'playground') return { portal: 'GT' as const, gtViewMode: 'playground' as const };
     
     // sessions route
@@ -53,7 +51,7 @@ const getHashState = () => {
   }
 
   if (parts[0] === 'admin') {
-    const adminMode = (parts[1] || 'dashboard') as any;
+    const adminMode = (parts[1] || 'tracker') as any;
     return {
       portal: 'Admin' as const,
       adminViewMode: adminMode,
@@ -66,7 +64,7 @@ const getHashState = () => {
 
 const buildHashFromState = (
   portal: 'Landing' | 'GT' | 'Admin',
-  gtMode: 'sessions' | 'knowledge-hub' | 'playground',
+  gtMode: 'sessions' | 'playground',
   adminMode: string,
   sessionId: string | null,
   quizId: string | null,
@@ -76,7 +74,6 @@ const buildHashFromState = (
 ) => {
   if (portal === 'Landing') return '#landing';
   if (portal === 'GT') {
-    if (gtMode === 'knowledge-hub') return '#gt/knowledge-hub';
     if (gtMode === 'playground') return '#gt/playground';
     if (sessionId) {
       if (quizId) return `#gt/sessions/${sessionId}/quiz/${quizId}`;
@@ -111,8 +108,6 @@ export function App() {
   });
 
   const [sessions, setSessions] = useState<Session[]>(mockSessions);
-  const [announcements] = useState<Announcement[]>(mockAnnouncements);
-  const [badges] = useState<Badge[]>(mockBadges);
 
   // Global Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
@@ -127,8 +122,8 @@ export function App() {
   });
 
   const [isAuthModalOpen, setIsAuthModalOpen] = useState<boolean>(false);
-  const [authModalMode, setAuthModalMode] = useState<'login' | 'signup'>('login');
   const [authModalRole, setAuthModalRole] = useState<'GT' | 'Admin'>('GT');
+  const [isChangePasswordOpen, setIsChangePasswordOpen] = useState<boolean>(false);
 
   // Admin Authentication State
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState<boolean>(() => {
@@ -144,22 +139,28 @@ export function App() {
   
   // Navigation State
   const [activePortal, setActivePortal] = useState<'Landing' | 'GT' | 'Admin'>(initialHashState.portal);
-  const [gtViewMode, setGtViewMode] = useState<'sessions' | 'knowledge-hub' | 'playground'>(
+  const [gtViewMode, setGtViewMode] = useState<'sessions' | 'playground'>(
     initialHashState.portal === 'GT' && 'gtViewMode' in initialHashState ? initialHashState.gtViewMode : 'sessions'
   );
   const [adminViewMode, setAdminViewMode] = useState<'dashboard' | 'sessions' | 'tracker' | 'roadmap-builder' | 'material-uploader' | 'quiz-builder'>(
-    initialHashState.portal === 'Admin' && 'adminViewMode' in initialHashState ? initialHashState.adminViewMode : 'dashboard'
+    initialHashState.portal === 'Admin' && 'adminViewMode' in initialHashState ? initialHashState.adminViewMode : 'tracker'
   );
 
   // Detail Selection State
   const [selectedSessionId, setSelectedSessionId] = useState<string | null>(
-    initialHashState.portal === 'GT' && 'selectedSessionId' in initialHashState ? initialHashState.selectedSessionId : null
+    initialHashState.portal === 'GT' && 'selectedSessionId' in initialHashState
+      ? (initialHashState.selectedSessionId ?? null)
+      : null
   );
   const [sessionDetailTab, setSessionDetailTab] = useState<string>(
-    initialHashState.portal === 'GT' && 'sessionTab' in initialHashState ? initialHashState.sessionTab : 'roadmap'
+    initialHashState.portal === 'GT' && 'sessionTab' in initialHashState
+      ? (initialHashState.sessionTab ?? 'roadmap')
+      : 'roadmap'
   );
   const [sessionDetailTopicId, setSessionDetailTopicId] = useState<string>(
-    initialHashState.portal === 'GT' && 'sessionTopicId' in initialHashState ? initialHashState.sessionTopicId : ''
+    initialHashState.portal === 'GT' && 'sessionTopicId' in initialHashState
+      ? (initialHashState.sessionTopicId ?? '')
+      : ''
   );
   const [activeAdminSession, setActiveAdminSession] = useState<Session | null>(null);
   const [activeQuiz, setActiveQuiz] = useState<Quiz | null>(null);
@@ -183,51 +184,35 @@ export function App() {
     return () => window.removeEventListener('keydown', handleGlobalKeyDown);
   }, []);
 
-  // Notifications State
-  const [notifications, setNotifications] = useState<AppNotification[]>([
-    {
-      id: 'notif-1',
-      title: 'New Material Version Added',
-      message: 'Version 2.1 of .NET Memory Profiling guide has been published by Admin.',
-      timestamp: '10 mins ago',
-      type: 'material',
-      read: false
-    },
-    {
-      id: 'notif-2',
-      title: 'Batch Leaderboard Updated',
-      message: 'You unlocked C# Champion badge (+100 XP)!',
-      timestamp: '1 hour ago',
-      type: 'announcement',
-      read: false
-    }
-  ]);
+
 
   // Auth Handlers
   const handleOpenLogin = (role: 'GT' | 'Admin' = 'GT') => {
-    setAuthModalMode('login');
     setAuthModalRole(role);
     setIsAuthModalOpen(true);
   };
 
-  const handleOpenSignUp = () => {
-    setAuthModalMode('signup');
-    setAuthModalRole('GT');
-    setIsAuthModalOpen(true);
+  const handleOpenChangePassword = () => {
+    setIsChangePasswordOpen(true);
   };
 
-  const handleAuthSuccess = (role: 'GT' | 'Admin', userData?: { name: string; email: string }) => {
+  const handleAuthSuccess = (role: 'GT' | 'Admin', userData?: { name: string; email: string; isGuest?: boolean }) => {
     setIsAuthenticated(true);
     if (userData) {
       setCurrentUser(prev => ({
         ...prev,
         name: userData.name,
-        email: userData.email
+        email: userData.email,
+        role: role,
+        isGuest: userData.isGuest ?? prev.isGuest
       }));
     }
     setActivePortal(role);
     if (role === 'Admin') {
       setIsAdminAuthenticated(true);
+      setAdminViewMode('tracker');
+    } else {
+      setIsAdminAuthenticated(false);
     }
     setIsAuthModalOpen(false);
   };
@@ -288,7 +273,7 @@ export function App() {
       setActivePortal(state.portal);
       if (state.portal === 'GT') {
         if ('gtViewMode' in state) setGtViewMode(state.gtViewMode);
-        setSelectedSessionId('selectedSessionId' in state ? state.selectedSessionId : null);
+        setSelectedSessionId('selectedSessionId' in state ? (state.selectedSessionId ?? null) : null);
         if ('sessionTab' in state && state.sessionTab) setSessionDetailTab(state.sessionTab);
         if ('sessionTopicId' in state && state.sessionTopicId !== undefined) setSessionDetailTopicId(state.sessionTopicId);
         
@@ -352,26 +337,6 @@ export function App() {
     }
   }, [sessions, activePortal, activeAdminSession]);
 
-  // Handlers
-  const handleToggleBookmark = (sessionId: string) => {
-    setSessions(prev => {
-      let isAdded = false;
-      const newSessions = prev.map(s => {
-        if (s.id === sessionId) {
-          isAdded = !s.isBookmarked;
-          return { ...s, isBookmarked: !s.isBookmarked };
-        }
-        return s;
-      });
-      if (isAdded) {
-        addToast('success', 'Session bookmarked');
-      } else {
-        addToast('info', 'Bookmark removed');
-      }
-      return newSessions;
-    });
-  };
-
   const handleSaveAdminSession = (sessionData: Partial<Session>) => {
     if (!sessionData.id) return;
     setSessions(prev => {
@@ -398,7 +363,6 @@ export function App() {
     quizzes: rawSelectedSession.quizzes || [],
     discussions: []
   } : undefined;
-  const bookmarkedSessions = sessions.filter(s => s.isBookmarked);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-slate-100 to-slate-200 text-slate-900 font-sans selection:bg-blue-600 selection:text-white flex flex-col">
@@ -413,9 +377,16 @@ export function App() {
             handleOpenLogin(portal);
             return;
           }
+          if (portal === 'Admin' && currentUser.role !== 'Admin') {
+            addToast('error', 'Access Denied (RBAC): Admin console is restricted to L&D Administrators.');
+            return;
+          }
           setActivePortal(portal);
           setSelectedSessionId(null);
           setActiveQuiz(null);
+          if (portal === 'Admin') {
+            setAdminViewMode('tracker');
+          }
           if (portal !== 'GT') {
             setInspectModeActive(false);
           }
@@ -423,13 +394,8 @@ export function App() {
         inspectModeActive={inspectModeActive}
         setInspectModeActive={setInspectModeActive}
         onOpenLogin={handleOpenLogin}
-        onOpenSignUp={handleOpenSignUp}
+        onOpenChangePassword={handleOpenChangePassword}
         onLogout={handleLogout}
-        notifications={notifications}
-        onMarkNotificationsRead={() => {
-          setNotifications(prev => prev.map(n => ({ ...n, read: true })));
-        }}
-        onOpenBookmarks={() => setIsBookmarksOpen(!isBookmarksOpen)}
         onOpenPlayground={() => {
           if (!isAuthenticated) {
             handleOpenLogin('GT');
@@ -450,7 +416,6 @@ export function App() {
         {(!isAuthenticated || activePortal === 'Landing') && (
           <LandingPage
             onOpenLogin={handleOpenLogin}
-            onOpenSignUp={handleOpenSignUp}
             onOpenUserGuide={() => setIsUserGuideOpen(true)}
           />
         )}
@@ -514,7 +479,6 @@ export function App() {
                   sessionStorage.setItem('activeQuizId', quiz.id);
                   logActivityApi('StartQuiz', `User started quiz for session: ${selectedSession.name}`);
                 }}
-                onToggleBookmark={handleToggleBookmark}
                 initialTab={sessionDetailTab}
                 initialTopicId={sessionDetailTopicId}
                 onStateChange={(tab, topicId) => {
@@ -522,8 +486,6 @@ export function App() {
                   if (topicId !== undefined) setSessionDetailTopicId(topicId);
                 }}
               />
-            ) : gtViewMode === 'knowledge-hub' ? (
-              <KnowledgeHubView currentUser={currentUser} />
             ) : (
               <SessionsList
                 sessions={sessions}
@@ -532,7 +494,6 @@ export function App() {
                   const sessionName = sessions.find(s => s.id === id)?.name || id;
                   logActivityApi('StartLearning', `User opened learning session: ${sessionName}`);
                 }}
-                onToggleBookmark={handleToggleBookmark}
               />
             )}
 
@@ -544,7 +505,9 @@ export function App() {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
             {!isAdminAuthenticated ? (
               <AdminAuthGate
-                onLoginSuccess={() => setIsAdminAuthenticated(true)}
+                onLoginSuccess={(userData) => {
+                  handleAuthSuccess('Admin', userData);
+                }}
                 onCancel={() => setActivePortal('GT')}
               />
             ) : selectedSession ? (
@@ -555,7 +518,6 @@ export function App() {
                   setActiveQuiz(quiz);
                   sessionStorage.setItem('activeQuizId', quiz.id);
                 }}
-                onToggleBookmark={handleToggleBookmark}
               />
             ) : (
               <div className="space-y-6">
@@ -691,13 +653,19 @@ export function App() {
         />
       )}
 
-      {/* Auth Modal */}
+      {/* Auth Modal (Clean Login & Multi-Step Forgot Password) */}
       <AuthModal
         isOpen={isAuthModalOpen}
-        initialMode={authModalMode}
         initialRole={authModalRole}
         onClose={() => setIsAuthModalOpen(false)}
         onAuthSuccess={handleAuthSuccess}
+      />
+
+      {/* Change Password Modal (For Authenticated Users from Profile) */}
+      <ChangePasswordModal
+        isOpen={isChangePasswordOpen}
+        userEmail={currentUser.email}
+        onClose={() => setIsChangePasswordOpen(false)}
       />
 
       {/* Global Command-K Search Modal */}
@@ -715,61 +683,7 @@ export function App() {
         }}
       />
 
-      {/* Saved Bookmarks Drawer Slide-Over */}
-      {isBookmarksOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex justify-end">
-          <div className="bg-slate-900 border-l border-slate-800 w-full max-w-md h-full p-6 shadow-2xl flex flex-col justify-between animate-fadeIn">
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-4">
-                <div className="flex items-center gap-2 text-amber-400 font-bold text-sm">
-                  <Bookmark className="w-4 h-4 fill-amber-400" />
-                  <span>Saved Bookmarks ({bookmarkedSessions.length})</span>
-                </div>
-                <button
-                  onClick={() => setIsBookmarksOpen(false)}
-                  className="p-1 hover:bg-slate-800 rounded-lg text-slate-400 hover:text-white"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
 
-              <div className="space-y-3">
-                {bookmarkedSessions.length === 0 ? (
-                  <p className="text-slate-500 text-xs text-center py-8">
-                    No bookmarked sessions yet. Click the bookmark icon on any session card to save it here.
-                  </p>
-                ) : (
-                  bookmarkedSessions.map((s) => (
-                    <div
-                      key={s.id}
-                      onClick={() => {
-                        if (!isAuthenticated) {
-                          handleOpenLogin('GT');
-                          return;
-                        }
-                        setActivePortal('GT');
-                        setSelectedSessionId(s.id);
-                        setIsBookmarksOpen(false);
-                      }}
-                      className="bg-slate-950 p-4 rounded-2xl border border-slate-800 hover:border-slate-700 cursor-pointer space-y-2 transition-colors"
-                    >
-                      <div className="flex items-center justify-between text-xs font-bold text-white">
-                        <span>{s.name}</span>
-                        <span className="text-emerald-400 font-mono">{s.progressPercent}%</span>
-                      </div>
-                      <p className="text-slate-400 text-xs line-clamp-1">{s.description}</p>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-slate-800 text-[10px] text-slate-500 font-mono text-center">
-              Quick Bookmarks • Student Portal L&D
-            </div>
-          </div>
-        </div>
-      )}
 
       {/* Footer */}
       <footer className="border-t border-slate-200 py-6 bg-white/80 backdrop-blur-md text-center text-xs text-slate-500 font-mono">

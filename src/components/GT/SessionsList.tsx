@@ -1,10 +1,9 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react';
-import { EnterpriseHeroSection } from '../KnowledgeHub/EnterpriseHeroSection';
+import { EnterpriseHeroSection } from './EnterpriseHeroSection';
 import { Session, CategoryType, StudyMaterial } from '../../types';
 import {
   Search,
   Filter,
-  //Bookmark, 
   ChevronDown,
   ChevronRight,
   Play,
@@ -18,7 +17,6 @@ import {
 interface SessionsListProps {
   sessions: Session[];
   onSelectSession: (sessionId: string) => void;
-  onToggleBookmark: (sessionId: string) => void;
 }
 
 const DOMAIN_THUMBNAILS: Record<string, string> = {
@@ -43,8 +41,7 @@ const heroVideo = '/videos/overall-final-vid-new.mp4';
 
 export const SessionsList: React.FC<SessionsListProps> = ({
   sessions,
-  onSelectSession,
-  onToggleBookmark
+  onSelectSession
 }) => {
   const [activeCardId, setActiveCardId] = useState<string | null>(null);
 
@@ -58,6 +55,7 @@ export const SessionsList: React.FC<SessionsListProps> = ({
 
   const searchContainerRef = useRef<HTMLDivElement>(null);
   const filterDropdownRef = useRef<HTMLDivElement>(null);
+  const activeCardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
@@ -66,6 +64,9 @@ export const SessionsList: React.FC<SessionsListProps> = ({
       }
       if (filterDropdownRef.current && !filterDropdownRef.current.contains(e.target as Node)) {
         setIsFilterDropdownOpen(false);
+      }
+      if (activeCardRef.current && !activeCardRef.current.contains(e.target as Node)) {
+        setActiveCardId(null);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -422,7 +423,15 @@ export const SessionsList: React.FC<SessionsListProps> = ({
           return (
             <div
               key={session.id}
-              onClick={() => setActiveCardId(prev => prev === session.id ? null : session.id)}
+              ref={isActive ? activeCardRef : undefined}
+              onClick={(e) => {
+                if (!isActive) {
+                  setActiveCardId(session.id);
+                } else {
+                  // Clicks inside the opened card do not close it
+                  e.stopPropagation();
+                }
+              }}
               className={`
                 group relative bg-white border rounded-[20px] overflow-hidden flex flex-col justify-between h-full
                 transition-all duration-300 ease-out transform cursor-pointer
@@ -436,7 +445,15 @@ export const SessionsList: React.FC<SessionsListProps> = ({
               }}
             >
               <div>
-                <div className="relative h-44 overflow-hidden">
+                <div
+                  className="relative h-44 overflow-hidden"
+                  onClick={(e) => {
+                    if (isActive) {
+                      e.stopPropagation();
+                      setActiveCardId(null);
+                    }
+                  }}
+                >
                   <img
                     src={thumbnail}
                     alt={session.name}

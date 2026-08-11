@@ -36,25 +36,25 @@ export interface User {
 }
 
 export type DifficultyLevel = 'Beginner' | 'Intermediate' | 'Advanced';
-export type CategoryType = 
-  | 'Insurance' 
+export type CategoryType =
+  | 'Insurance'
   | '.NET'
-  | '.NET with C#' 
-  | 'Frontend' 
-  | 'SQL' 
+  | '.NET with C#'
+  | 'Frontend'
+  | 'SQL'
   | 'Data'
   | 'Data Modeling'
-  | 'Database Modelling' 
+  | 'Database Modelling'
   | 'C2C'
   | 'Campus to Corporate'
-  | 'Data Engineering' 
-  | 'System Design' 
-  | 'Azure' 
-  | 'Git' 
-  | 'DevOps' 
-  | 'API Development' 
-  | 'Microservices' 
-  | 'Testing' 
+  | 'Data Engineering'
+  | 'System Design'
+  | 'Azure'
+  | 'Git'
+  | 'DevOps'
+  | 'API Development'
+  | 'Microservices'
+  | 'Testing'
   | 'Quality Assurance'
   | 'Architecture';
 
@@ -89,17 +89,17 @@ export interface RoadmapTopic {
   assignment?: string;
 }
 
-export type MaterialType = 
-  | 'PowerPoint' 
-  | 'PDF' 
-  | 'Notes' 
-  | 'Word' 
+export type MaterialType =
+  | 'PowerPoint'
+  | 'PDF'
+  | 'Notes'
+  | 'Word'
   | 'Excel'
-  | 'Video' 
-  | 'Udemy' 
-  | 'YouTube' 
-  | 'Code' 
-  | 'GitHub' 
+  | 'Video'
+  | 'Udemy'
+  | 'YouTube'
+  | 'Code'
+  | 'GitHub'
   | 'Image'
   | 'Markdown'
   | 'External';
@@ -120,7 +120,15 @@ export interface StudyMaterial {
   title: string;
   type: MaterialType;
   url: string;
+  file?: File;
   urlType?: string;
+  materialCategory?: 'Provided' | 'Additional' | string;
+  materialType?: 'Provided' | 'Additional' | string;
+  fileName?: string;
+  fileType?: string;
+  fileSize?: string;
+  course?: string;
+  module?: string;
   description: string;
   durationOrPages?: string;
   currentVersion: number;
@@ -129,12 +137,12 @@ export interface StudyMaterial {
   tags: string[];
 }
 
-export type QuestionType = 
-  | 'MCQ' 
-  | 'Multiple Select' 
-  | 'Fill in Blank' 
-  | 'Code Output' 
-  | 'Match the Following' 
+export type QuestionType =
+  | 'MCQ'
+  | 'Multiple Select'
+  | 'Fill in Blank'
+  | 'Code Output'
+  | 'Match the Following'
   | 'True / False';
 
 export interface QuizQuestion {
@@ -197,7 +205,6 @@ export interface Session {
   durationHours: number;
   difficulty: DifficultyLevel;
   progressPercent: number;
-  isBookmarked?: boolean;
   lastAccessed?: string;
   isPublished: boolean;
   learningObjectives: string[];
@@ -249,44 +256,6 @@ export interface DiscussionReply {
   isAnswer?: boolean;
 }
 
-export interface Badge {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  earnedDate?: string;
-  category: string;
-  isEarned: boolean;
-}
-
-export interface Certificate {
-  id: string;
-  certificateId: string;
-  studentName: string;
-  trackName: string;
-  issuedDate: string;
-  qrCodeUrl: string;
-}
-
-export interface AppNotification {
-  id: string;
-  title: string;
-  message: string;
-  timestamp: string;
-  type: 'session' | 'material' | 'quiz' | 'announcement' | 'roadmap';
-  read: boolean;
-  linkSessionId?: string;
-}
-
-export interface Announcement {
-  id: string;
-  title: string;
-  content: string;
-  date: string;
-  author: string;
-  important?: boolean;
-}
-
 export interface InspectMetadata {
   id: string;
   componentName: string;
@@ -314,181 +283,5 @@ export interface CodePlaygroundExercise {
   hints: string[];
 }
 
-export interface KnowledgeGraphNode {
-  id: string;
-  label: string;
-  category: CategoryType;
-  description: string;
-  prerequisites: string[];
-  x?: number;
-  y?: number;
-}
 
-// --- KNOWLEDGE HUB TYPES ---
-
-export interface KnowledgeHubChannel {
-  id: string;
-  topicId: string;
-  name: string;
-  description: string;
-}
-
-export interface KnowledgeHubTopic {
-  id: string;
-  name: string;
-  slug: string;
-  iconName: string;
-  description: string;
-  color: string;
-  membersCount: number;
-  discussionsCount: number;
-  documentsCount: number;
-  isJoined?: boolean;
-  isFollowed?: boolean;
-  isBookmarked?: boolean;
-  notifyPreferences?: 'all' | 'mentions' | 'none';
-  channels: KnowledgeHubChannel[];
-}
-
-export type DiscussionPriority = 'Low' | 'Medium' | 'High' | 'Critical';
-export type DiscussionState = 'Open' | 'In Progress' | 'Answered' | 'Resolved' | 'Closed' | 'Archived';
-
-export interface KnowledgeHubAttachment {
-  id: string;
-  name: string;
-  size: string;
-  type: 'pdf' | 'docx' | 'xlsx' | 'pptx' | 'txt' | 'png' | 'jpg' | 'zip';
-  url: string;
-}
-
-export interface KnowledgeHubComment {
-  id: string;
-  parentId: string; // discussionId or answerId
-  authorId?: string;
-  authorName: string;
-  authorRole: UserRole | 'Mentor' | 'Trainer';
-  authorAvatar?: string;
-  body: string;
-  createdAt: string;
-  mentions?: string[];
-  likes?: number;
-}
-
-export interface KnowledgeHubAnswer {
-  id: string;
-  discussionId: string;
-  authorId: string;
-  authorName: string;
-  authorRole: UserRole | 'Mentor' | 'Trainer';
-  authorAvatar?: string;
-  body: string;
-  codeSnippet?: string;
-  createdAt: string;
-  upvotes: number;
-  downvotes: number;
-  userVote?: 'up' | 'down' | null;
-  isAccepted: boolean;
-  attachments?: KnowledgeHubAttachment[];
-  comments: KnowledgeHubComment[];
-}
-
-export interface KnowledgeHubDiscussion {
-  id: string;
-  title: string;
-  description: string;
-  topicId: string;
-  topicName: string;
-  tags: string[];
-  priority: DiscussionPriority;
-  state: DiscussionState;
-  authorId: string;
-  authorName: string;
-  authorRole: UserRole | 'Mentor' | 'Trainer';
-  authorAvatar?: string;
-  batch: string;
-  createdAt: string;
-  upvotes: number;
-  downvotes: number;
-  userVote?: 'up' | 'down' | null;
-  isBookmarked?: boolean;
-  acceptedAnswerId?: string;
-  isLocked?: boolean;
-  attachments?: KnowledgeHubAttachment[];
-  answers: KnowledgeHubAnswer[];
-  comments: KnowledgeHubComment[];
-  sessionId?: string; // Linked session for Feature 14
-  viewsCount?: number;
-}
-
-export interface DocumentVersionHistory {
-  version: string;
-  uploadedBy: string;
-  uploadedAt: string;
-  changelog: string;
-  fileSize: string;
-  downloadUrl?: string;
-}
-
-export interface KnowledgeHubDocument {
-  id: string;
-  name: string;
-  description: string;
-  topicId: string;
-  topicName: string;
-  tags: string[];
-  version: string;
-  author: string;
-  uploadedDate: string;
-  fileType: 'PDF' | 'DOCX' | 'XLSX' | 'PPTX' | 'TXT' | 'PNG' | 'JPG' | 'ZIP';
-  fileSize: string;
-  downloadCount: number;
-  isApproved: boolean;
-  versions: DocumentVersionHistory[];
-  sessionId?: string;
-  summaryAi?: string;
-  faqsAi?: { question: string; answer: string }[];
-  flashCardsAi?: { front: string; back: string }[];
-}
-
-export interface KnowledgeHubChatMessage {
-  id: string;
-  channelId: string;
-  topicId: string;
-  authorName: string;
-  authorRole: UserRole | 'Mentor' | 'Trainer';
-  authorAvatar?: string;
-  content: string;
-  timestamp: string;
-  reactions: { emoji: string; count: number; users: string[] }[];
-  repliesCount?: number;
-  attachments?: KnowledgeHubAttachment[];
-  codeSnippet?: string;
-  isAiGenerated?: boolean;
-}
-
-export type ReputationLevel = 'Beginner' | 'Contributor' | 'Expert' | 'Mentor' | 'Champion';
-
-export interface KnowledgeHubBadgeItem {
-  id: string;
-  title: string;
-  description: string;
-  tier: 'Bronze' | 'Silver' | 'Gold';
-  icon: string;
-  earnedDate?: string;
-  isEarned: boolean;
-}
-
-export interface ReputationProfile {
-  userId: string;
-  userName: string;
-  points: number;
-  level: ReputationLevel;
-  nextLevelPoints: number;
-  questionsAsked: number;
-  answersGiven: number;
-  acceptedAnswers: number;
-  documentsUploaded: number;
-  upvotesReceived: number;
-  badges: KnowledgeHubBadgeItem[];
-}
 

@@ -1,10 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Session, StudyMaterial, Quiz, PersonalNote, DiscussionPost } from '../../types';
 import { InteractiveRoadmap } from './InteractiveRoadmap';
-import { summarizeMaterialAiApi } from '../../services/api';
-import { SessionDiscussionHub } from '../KnowledgeHub/SessionDiscussionHub';
-import { initialDiscussions, initialDocuments, initialChatMessages } from '../../data/knowledgeHubData';
-import { mockUser } from '../../data/mockData';
+import { fetchStudyMaterialsApi, summarizeMaterialAiApi } from '../../services/api';
 import {
   ArrowLeft,
   BookOpen,
@@ -43,10 +40,18 @@ interface CustomMaterialItem {
   title: string;
   type: 'Doc (PDF/Word)' | 'PowerPoint (PPT)' | 'Video Link' | 'Video File (MP4)' | 'Notes / Guide' | 'Spreadsheet';
   url: string;
+  category?: 'Provided' | 'Additional';
+  fileName?: string;
+  fileType?: string;
+  fileSize?: string;
+  topicId?: string;
+  topicTitle?: string;
+  author?: string;
+  dateAdded?: string;
   description: string;
-  updatedAt: string;
+  updatedAt?: string;
   sourceOrAuthor?: string;
-  tags: string[];
+  tags?: string[];
   fileSizeOrDuration?: string;
 }
 
@@ -54,17 +59,752 @@ interface SessionDetailViewProps {
   session: Session & { studyMaterials: StudyMaterial[]; quizzes: Quiz[]; discussions: DiscussionPost[] };
   onBack: () => void;
   onStartQuiz: (quiz: Quiz) => void;
-  onToggleBookmark: (sessionId: string) => void;
   initialTab?: string;
   initialTopicId?: string;
   onStateChange?: (tab: string, topicId?: string) => void;
 }
 
+const providedMaterialMocks: Record<string, CustomMaterialItem[]> = {
+  'session-dotnet': [
+    {
+      id: 'prov-dotnet-1',
+      title: 'Enterprise .NET Architecture Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official curriculum guide covering .NET 8 architecture, clean code, and enterprise service design.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Santhosh',
+      tags: ['Official', '.NET', 'Architecture'],
+      fileSizeOrDuration: '46 Pages'
+    },
+    {
+      id: 'prov-dotnet-2',
+      title: 'ASP.NET Core Web API Best Practices Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Trainer slide deck on building resilient APIs, dependency injection, middleware, and swagger integration.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Santhosh',
+      tags: ['API', 'Best Practices'],
+      fileSizeOrDuration: '25 Slides'
+    },
+    {
+      id: 'prov-dotnet-3',
+      title: 'C# Performance Tuning & Async Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Detailed notes on async programming, garbage collection, and high-performance CLR patterns.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Lead L&D Architect',
+      tags: ['Performance', 'C#'],
+      fileSizeOrDuration: '30 Pages'
+    }
+  ],
+  'session-insurance': [
+    {
+      id: 'prov-ins-1',
+      title: 'Insurance Domain Fundamentals Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official training manual for life, P&C, underwriting, claims, and regulatory compliance.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Harish',
+      tags: ['Insurance', 'Official'],
+      fileSizeOrDuration: '40 Pages'
+    },
+    {
+      id: 'prov-ins-2',
+      title: 'Underwriting & Risk Assessment Slide Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session material explaining pricing, rating tables, and risk classification workflows.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Harish',
+      tags: ['Underwriting', 'Risk'],
+      fileSizeOrDuration: '22 Slides'
+    },
+    {
+      id: 'prov-ins-3',
+      title: 'Claims Workflow Process Document',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Reference notes for end-to-end claims processing including FNOL, investigation, and settlement.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Claims Team',
+      tags: ['Claims', 'Process'],
+      fileSizeOrDuration: '28 Pages'
+    }
+  ],
+  'session-sql': [
+    {
+      id: 'prov-sql-1',
+      title: 'SQL & Relational Database Engineering Manual',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official database guide with normalization, indexing, query optimization, and transaction design.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Janani',
+      tags: ['SQL', 'Database'],
+      fileSizeOrDuration: '48 Pages'
+    },
+    {
+      id: 'prov-sql-2',
+      title: 'Advanced Querying & Window Functions Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session slides on CTEs, window functions, and query performance trade-offs.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Janani',
+      tags: ['Query', 'Window Functions'],
+      fileSizeOrDuration: '27 Slides'
+    },
+    {
+      id: 'prov-sql-3',
+      title: 'PostgreSQL Performance Tuning Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Notes on explain plans, B-Tree indexes, constraints, and locking strategy.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'DBA Lead',
+      tags: ['Performance', 'PostgreSQL'],
+      fileSizeOrDuration: '24 Pages'
+    }
+  ],
+  'session-c2c': [
+    {
+      id: 'prov-c2c-1',
+      title: 'Campus to Corporate Workplace Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official transition guide for professionalism, communication, and workplace behavior.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Mayford',
+      tags: ['Career', 'Soft Skills'],
+      fileSizeOrDuration: '34 Pages'
+    },
+    {
+      id: 'prov-c2c-2',
+      title: 'Effective Communication Workshop Slides',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Essential slides on active listening, presentation skills, and stakeholder communication.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Mayford',
+      tags: ['Communication', 'Workshop'],
+      fileSizeOrDuration: '20 Slides'
+    },
+    {
+      id: 'prov-c2c-3',
+      title: 'Time Management & Productivity Checklist',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Printable checklist for daily planning, priorities, and the Eisenhower decision matrix.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'GT Productivity Team',
+      tags: ['Productivity', 'Planning'],
+      fileSizeOrDuration: '15 Pages'
+    }
+  ],
+  'session-data-modeling-fundamentals': [
+    {
+      id: 'prov-dm-1',
+      title: 'Data Modeling Fundamentals Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official notes on entity relationships, cardinality, normalization, and conceptual modeling.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Gabriel',
+      tags: ['Data Modeling', 'ERD'],
+      fileSizeOrDuration: '38 Pages'
+    },
+    {
+      id: 'prov-dm-2',
+      title: 'ERD Patterns & Relationship Cards Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Slide deck covering one-to-one, one-to-many, and many-to-many modeling patterns.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Gabriel',
+      tags: ['ERD', 'Models'],
+      fileSizeOrDuration: '24 Slides'
+    },
+    {
+      id: 'prov-dm-3',
+      title: 'Normalization & Schema Design Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Practical reference for applying 1NF-3NF and avoiding update anomalies.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Data Team',
+      tags: ['Normalization', 'Schema'],
+      fileSizeOrDuration: '26 Pages'
+    }
+  ],
+  'session-data-fundamentals': [
+    {
+      id: 'prov-df-1',
+      title: 'Data Fundamentals & Quality Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official guide that explains data quality, governance, and foundational analytics concepts.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Parthiban',
+      tags: ['Data Quality', 'Governance'],
+      fileSizeOrDuration: '36 Pages'
+    },
+    {
+      id: 'prov-df-2',
+      title: 'Medallion Architecture & Azure Data Flow Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session slides on bronze/silver/gold data layering and modern analytics pipelines.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Parthiban',
+      tags: ['Medallion', 'Azure'],
+      fileSizeOrDuration: '28 Slides'
+    },
+    {
+      id: 'prov-df-3',
+      title: 'Analytics Reporting Starter Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Reference notes for building dashboards and business reports.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'BI Team',
+      tags: ['Analytics', 'Reporting'],
+      fileSizeOrDuration: '22 Pages'
+    }
+  ],
+  'session-html-css-js': [
+    {
+      id: 'prov-web-1',
+      title: 'HTML, CSS & JavaScript Foundations Manual',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official web fundamentals handbook for markup, styling, and scripting best practices.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Sre',
+      tags: ['Web', 'Frontend'],
+      fileSizeOrDuration: '42 Pages'
+    },
+    {
+      id: 'prov-web-2',
+      title: 'Responsive Design & Layout Patterns Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Slides covering responsive grids, flexbox, and modern CSS layout strategies.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Sre',
+      tags: ['Responsive', 'CSS'],
+      fileSizeOrDuration: '30 Slides'
+    },
+    {
+      id: 'prov-web-3',
+      title: 'JavaScript DOM & Event Handling Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Session notes on DOM manipulation, event listeners, and async browser operations.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Frontend Team',
+      tags: ['JavaScript', 'DOM'],
+      fileSizeOrDuration: '25 Pages'
+    }
+  ],
+  'session-modern-data-platforms': [
+    {
+      id: 'prov-mdp-1',
+      title: 'Modern Data Platforms Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official enterprise guide for lakehouse architecture, governance, and analytics.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Anitha',
+      tags: ['Data Engineering', 'Lakehouse'],
+      fileSizeOrDuration: '48 Pages'
+    },
+    {
+      id: 'prov-mdp-2',
+      title: 'Azure Fabric & Databricks Pipeline Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Slides on ETL orchestration, Fabric workspaces, and Databricks data pipelines.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Anitha',
+      tags: ['Azure', 'Databricks'],
+      fileSizeOrDuration: '29 Slides'
+    },
+    {
+      id: 'prov-mdp-3',
+      title: 'Data Modeling & Governance Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Authoritative notes on metadata, cataloging, and governance controls for modern data platforms.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'Data Ops Team',
+      tags: ['Governance', 'Metadata'],
+      fileSizeOrDuration: '26 Pages'
+    }
+  ],
+  'session-software-testing': [
+    {
+      id: 'prov-st-1',
+      title: 'Software Testing Fundamentals Handbook',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Official guide for testing methodologies, planning, and quality assurance fundamentals.',
+      updatedAt: 'Today',
+      sourceOrAuthor: 'Trainer Swathi',
+      tags: ['Testing', 'QA'],
+      fileSizeOrDuration: '40 Pages'
+    },
+    {
+      id: 'prov-st-2',
+      title: 'Test Design Techniques & Execution Deck',
+      type: 'PowerPoint (PPT)',
+      url: '#',
+      description: 'Session slides for equivalence partitioning, boundary analysis, and test execution best practices.',
+      updatedAt: 'Yesterday',
+      sourceOrAuthor: 'Swathi',
+      tags: ['Test Design', 'Execution'],
+      fileSizeOrDuration: '27 Slides'
+    },
+    {
+      id: 'prov-st-3',
+      title: 'Defect Management Workflow Notes',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Process notes on defect triage, tracking, and closure workflows in software QA.',
+      updatedAt: '2 days ago',
+      sourceOrAuthor: 'QA Team',
+      tags: ['Defect', 'Workflow'],
+      fileSizeOrDuration: '24 Pages'
+    }
+  ]
+};
+
+const additionalMaterialMocks: Record<string, CustomMaterialItem[]> = {
+  'session-dotnet': [
+    {
+      id: 'add-dotnet-1',
+      title: 'Advanced .NET Microservices Reference Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental reference covering microservices patterns, event-driven architecture, and resilient APIs.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Community Engineering',
+      tags: ['Microservices', 'Reference'],
+      fileSizeOrDuration: '22 Pages'
+    },
+    {
+      id: 'add-dotnet-2',
+      title: 'Performance Engineering Video Case Study',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video covering .NET performance profiling and async scaling strategies.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Video', 'Performance'],
+      fileSizeOrDuration: '35 mins'
+    },
+    {
+      id: 'add-dotnet-3',
+      title: 'Tech Interview Practice Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Supplementary study notes focused on common .NET interview questions and architecture review topics.',
+      updatedAt: '1 week ago',
+      sourceOrAuthor: 'Mentor Team',
+      tags: ['Interview', 'Notes'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-insurance': [
+    {
+      id: 'add-ins-1',
+      title: 'Insurance Industry Analytics & Case Study',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Additional reading on claims analytics, fraud detection, and policy profitability models.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Insurance Research Group',
+      tags: ['Analytics', 'Case Study'],
+      fileSizeOrDuration: '20 Pages'
+    },
+    {
+      id: 'add-ins-2',
+      title: 'Regulatory Compliance Video Discussion',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video session on IRDAI and Solvency II compliance for insurance systems.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Compliance', 'Video'],
+      fileSizeOrDuration: '40 mins'
+    },
+    {
+      id: 'add-ins-3',
+      title: 'Peer Discussion Notes on Claims Processing',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Shared peer notes summarizing real-world claims processing exceptions and workflow challenges.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Peer Cohort',
+      tags: ['Discussion', 'Notes'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-sql': [
+    {
+      id: 'add-sql-1',
+      title: 'Database Design & Normalization Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplementary article on schema design, normalization tradeoffs, and query simplification.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'SQL Experts',
+      tags: ['Design', 'Normalization'],
+      fileSizeOrDuration: '18 Pages'
+    },
+    {
+      id: 'add-sql-2',
+      title: 'Query Optimization Video Case Study',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video explaining query tuning, index selection, and execution plan analysis.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Optimization', 'Video'],
+      fileSizeOrDuration: '38 mins'
+    },
+    {
+      id: 'add-sql-3',
+      title: 'SQL Cheat Sheet & Quick Reference',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Quick reference notes for SQL syntax, joins, aggregate functions, and window functions.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'DBA Team',
+      tags: ['Cheat Sheet', 'Reference'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-c2c': [
+    {
+      id: 'add-c2c-1',
+      title: 'Corporate Communication Case Study',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplementary case study on client interaction, stakeholder communication, and professionalism. ',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Corporate Training',
+      tags: ['Communication', 'Case Study'],
+      fileSizeOrDuration: '18 Pages'
+    },
+    {
+      id: 'add-c2c-2',
+      title: 'Behavioral Interview Prep Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video on behavioral interview questions, storytelling, and confidence building.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Interview', 'Video'],
+      fileSizeOrDuration: '33 mins'
+    },
+    {
+      id: 'add-c2c-3',
+      title: 'Professional Email Writing & Etiquette Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional guide for writing professional emails, status updates, and meeting follow-ups.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'HR Team',
+      tags: ['Email', 'Etiquette'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-data-modeling-fundamentals': [
+    {
+      id: 'add-dm-1',
+      title: 'Dimensional Modeling Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental article comparing normalized vs dimensional models and star/snowflake schemas.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'Data Architecture Group',
+      tags: ['Dimensional', 'Article'],
+      fileSizeOrDuration: '20 Pages'
+    },
+    {
+      id: 'add-dm-2',
+      title: 'Data Warehouse Reference Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'External video covering data warehouse architecture and data modeling best practices.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Warehouse', 'Video'],
+      fileSizeOrDuration: '36 mins'
+    },
+    {
+      id: 'add-dm-3',
+      title: 'Data Governance & Vocabulary Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional notes on data governance, business glossary, and metadata management.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Governance Team',
+      tags: ['Governance', 'Metadata'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-data-fundamentals': [
+    {
+      id: 'add-df-1',
+      title: 'Power BI & Analytics Best Practices',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental guide for building effective dashboards, KPI metrics, and executive reports.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'BI Team',
+      tags: ['Analytics', 'Power BI'],
+      fileSizeOrDuration: '22 Pages'
+    },
+    {
+      id: 'add-df-2',
+      title: 'Modern Data Platform Video Overview',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video on modern data architectures, cloud integration, and analytics ecosystems.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Data Platform', 'Video'],
+      fileSizeOrDuration: '34 mins'
+    },
+    {
+      id: 'add-df-3',
+      title: 'Data Source Mapping & Quality Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Auxiliary notes for source mapping, data lineage, and quality checks.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Data Management',
+      tags: ['Lineage', 'Quality'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-html-css-js': [
+    {
+      id: 'add-web-1',
+      title: 'Frontend Accessibility & UX Guide',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Additional guide on accessibility practices and UX-friendly web interfaces.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'UX Team',
+      tags: ['Accessibility', 'UX'],
+      fileSizeOrDuration: '20 Pages'
+    },
+    {
+      id: 'add-web-2',
+      title: 'JavaScript Performance Optimization Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video on browser performance, event delegation, and asynchronous resource loading.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Performance', 'Video'],
+      fileSizeOrDuration: '38 mins'
+    },
+    {
+      id: 'add-web-3',
+      title: 'CSS Grid & Flexbox Quick Reference',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Practical reference sheet for modern layout patterns and responsive styling utilities.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Frontend Team',
+      tags: ['CSS', 'Layouts'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-modern-data-platforms': [
+    {
+      id: 'add-mdp-1',
+      title: 'DataOps & Automation Article',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental article on data operations, orchestration, and pipeline automation.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'DataOps Group',
+      tags: ['DataOps', 'Automation'],
+      fileSizeOrDuration: '22 Pages'
+    },
+    {
+      id: 'add-mdp-2',
+      title: 'AI-Driven Analytics Video Overview',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video focusing on AI, analytics, and strategic data platform decision-making.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['AI', 'Analytics'],
+      fileSizeOrDuration: '40 mins'
+    },
+    {
+      id: 'add-mdp-3',
+      title: 'Cloud Governance & Catalog Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional notes on governance, cataloging, and data stewardship practices.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'Governance Team',
+      tags: ['Governance', 'Catalog'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ],
+  'session-software-testing': [
+    {
+      id: 'add-st-1',
+      title: 'QA Automation & Tooling Reference',
+      type: 'Doc (PDF/Word)',
+      url: '#',
+      description: 'Supplemental reference on automation frameworks, test environment setup, and reporting.',
+      updatedAt: '3 days ago',
+      sourceOrAuthor: 'QA Automation Team',
+      tags: ['Automation', 'QA'],
+      fileSizeOrDuration: '24 Pages'
+    },
+    {
+      id: 'add-st-2',
+      title: 'Performance Testing Best Practices Video',
+      type: 'Video Link',
+      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
+      description: 'Video on load testing, performance metrics, and user experience validation.',
+      updatedAt: '5 days ago',
+      sourceOrAuthor: 'External Resource',
+      tags: ['Performance', 'Video'],
+      fileSizeOrDuration: '36 mins'
+    },
+    {
+      id: 'add-st-3',
+      title: 'Bug Triage & Defect Notes',
+      type: 'Notes / Guide',
+      url: '#',
+      description: 'Additional notes for defect severity classification, triage workflows, and root-cause analysis.',
+      updatedAt: '4 days ago',
+      sourceOrAuthor: 'QA Team',
+      tags: ['Bug Triage', 'Defects'],
+      fileSizeOrDuration: 'Text Document'
+    }
+  ]
+};
+
+const getMaterialDisplayType = (material: Partial<StudyMaterial> & { type?: string; urlType?: string }): CustomMaterialItem['type'] => {
+  const normalizedType = (material.type || '').toLowerCase();
+  const normalizedUrlType = (material.urlType || '').toLowerCase();
+
+  if (normalizedType.includes('powerpoint') || normalizedType.includes('ppt')) {
+    return 'PowerPoint (PPT)';
+  }
+  if (normalizedType.includes('video') || normalizedType.includes('youtube') || normalizedUrlType === 'video') {
+    return normalizedType.includes('youtube') ? 'Video Link' : 'Video File (MP4)';
+  }
+  if (normalizedType.includes('excel') || normalizedType.includes('spreadsheet')) {
+    return 'Spreadsheet';
+  }
+  if (normalizedType.includes('word') || normalizedType === 'pdf' || normalizedType.includes('pdf')) {
+    return 'Doc (PDF/Word)';
+  }
+  if (normalizedType.includes('note') || normalizedType.includes('markdown')) {
+    return 'Notes / Guide';
+  }
+  return 'Notes / Guide';
+};
+
+const getMaterialCategory = (material: Partial<StudyMaterial> & { materialCategory?: string; materialType?: string; category?: string }) => {
+  const categoryValue = (material.materialType || material.materialCategory || material.category || 'Provided').toString().toLowerCase();
+  return categoryValue === 'additional' ? 'Additional' : 'Provided';
+};
+
+const buildMaterialItemsFromSession = (sessionData: Session & { studyMaterials?: StudyMaterial[]; providedMaterials?: StudyMaterial[]; additionalMaterials?: StudyMaterial[]; assignments?: any[] }) => {
+  const studyMaterials = [...(sessionData.studyMaterials || [])];
+  const providedItems = [
+    ...(sessionData.providedMaterials || []).map((material, idx) => ({
+      id: `prov-session-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '',
+      file: material.file,
+      fileName: material.fileName,
+      fileType: material.fileType,
+      description: material.description || 'Official study material provided for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Official'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    })),
+    ...studyMaterials.filter(material => getMaterialCategory(material) === 'Provided').map((material, idx) => ({
+      id: `prov-study-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '',
+      file: material.file,
+      fileName: material.fileName,
+      fileType: material.fileType,
+      description: material.description || 'Official study material provided for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Official'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    })),
+    ...(sessionData.assignments || []).filter((assignment: any) => assignment?.attachmentUrl).map((assignment: any, idx: number) => ({
+      id: `prov-assign-${idx}`,
+      title: `${assignment.title} (Assignment Attachment)`,
+      type: 'Doc (PDF/Word)' as CustomMaterialItem['type'],
+      url: assignment.attachmentUrl || '#',
+      description: assignment.instructions || 'Assignment attachment file',
+      updatedAt: assignment.dueDate || 'Assignment',
+      tags: ['Assignment'],
+      fileSizeOrDuration: 'Attached File'
+    }))
+  ];
+
+  const additionalItems = [
+    ...(sessionData.additionalMaterials || []).map((material, idx) => ({
+      id: `add-session-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '',
+      file: material.file,
+      fileName: material.fileName,
+      fileType: material.fileType,
+      description: material.description || 'Supplementary reference material for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Reference'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    })),
+    ...studyMaterials.filter(material => getMaterialCategory(material) === 'Additional').map((material, idx) => ({
+      id: `add-study-${idx}`,
+      title: material.title,
+      type: getMaterialDisplayType(material),
+      url: material.url || '#',
+      description: material.description || 'Supplementary reference material for this session.',
+      updatedAt: material.versions?.[0]?.updatedAt || 'Live from portal',
+      sourceOrAuthor: material.versions?.[0]?.updatedBy || 'Portal',
+      tags: material.tags || ['Reference'],
+      fileSizeOrDuration: material.durationOrPages || 'Live file'
+    }))
+  ];
+
+  return { provided: providedItems, additional: additionalItems };
+};
+
 export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   session,
   onBack,
   onStartQuiz,
-  onToggleBookmark,
   initialTab,
   initialTopicId,
   onStateChange
@@ -104,140 +844,65 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   const [additionalSearch, setAdditionalSearch] = useState('');
   const [additionalFilterType, setAdditionalFilterType] = useState<string>('All');
 
+  const [isMaterialsLoading, setIsMaterialsLoading] = useState(true);
+
   // Provided Materials List
-  const [providedMaterialsList, setProvidedMaterialsList] = useState<CustomMaterialItem[]>([
-    {
-      id: 'prov-1',
-      title: 'Official Enterprise Curriculum Handbook & Architecture Guide',
-      type: 'Doc (PDF/Word)',
-      url: 'https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf',
-      description: 'Standard organization-issued reference guide covering design patterns and code standards.',
-      updatedAt: 'Today',
-      tags: ['Curriculum', 'Official'],
-      fileSizeOrDuration: '2.4 MB (42 Pages)'
-    },
-    {
-      id: 'prov-2',
-      title: 'Technical Deep Dive Slide Deck',
-      type: 'PowerPoint (PPT)',
-      url: '#',
-      description: 'Official trainer presentation deck used during the live interactive lecture.',
-      updatedAt: 'Yesterday',
-      tags: ['Presentation', 'Trainer Deck'],
-      fileSizeOrDuration: '14.8 MB (28 Slides)'
-    },
-    {
-      id: 'prov-3',
-      title: 'Live Workshop & Hands-on Demo Recording',
-      type: 'Video File (MP4)',
-      url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-      description: 'Full recording of the live trainer demonstration and step-by-step lab walkthrough.',
-      updatedAt: '3 days ago',
-      tags: ['Recording', 'Video'],
-      fileSizeOrDuration: '45 mins'
-    },
-    {
-      id: 'prov-notes-1',
-      title: `${session.name} - Quick Trainer Reference Sheet`,
-      type: 'Notes / Guide' as CustomMaterialItem['type'],
-      url: '#',
-      description: 'Concise reference notes and cheat sheet provided directly by the trainer for quick review.',
-      updatedAt: '4 days ago',
-      tags: ['Notes', 'CheatSheet'],
-      fileSizeOrDuration: 'Markdown Notes'
-    },
-    ...(session.studyMaterials || []).map((sm, idx) => ({
-      id: `prov-sm-${idx}`,
-      title: sm.title,
-      type: (sm.type === 'PowerPoint' ? 'PowerPoint (PPT)' : sm.type === 'Video' ? 'Video File (MP4)' : sm.type === 'PDF' || sm.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
-      url: sm.url || '#',
-      description: sm.description,
-      updatedAt: 'Official L&D',
-      tags: sm.tags || ['Official'],
-      fileSizeOrDuration: sm.durationOrPages || 'Standard'
-    })),
-    // Include any materials specifically set on the session by admins
-    ...(session.providedMaterials || []).map((pm, idx) => ({
-      id: `prov-pm-${idx}`,
-      title: pm.title,
-      type: (pm.type === 'PowerPoint' ? 'PowerPoint (PPT)' : pm.type === 'Video' ? 'Video File (MP4)' : pm.type === 'PDF' || pm.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
-      url: pm.url || '#',
-      description: pm.description,
-      updatedAt: 'Provided',
-      tags: pm.tags || ['Provided'],
-      fileSizeOrDuration: pm.durationOrPages || 'Standard'
-    })),
-    // Include any assignment attachments so uploaded docs are discoverable in materials
-    ...(session.assignments || []).filter(a => a.attachmentUrl).map((a, idx) => ({
-      id: `prov-assign-${idx}`,
-      title: `${a.title} (Assignment Attachment)`,
-      type: 'Doc (PDF/Word)' as CustomMaterialItem['type'],
-      url: a.attachmentUrl || '#',
-      description: a.instructions || 'Assignment attachment file',
-      updatedAt: a.dueDate || 'Assignment',
-      tags: ['Assignment'],
-      fileSizeOrDuration: 'Attached File'
-    }))
-  ]);
+  const [providedMaterialsList, setProvidedMaterialsList] = useState<CustomMaterialItem[]>(() => {
+    const initialMaterials = buildMaterialItemsFromSession(session);
+    return initialMaterials.provided;
+  });
 
   // Additional Materials List
-  const [additionalMaterialsList, setAdditionalMaterialsList] = useState<CustomMaterialItem[]>([
-    {
-      id: 'add-1',
-      title: 'Community Architecture Benchmark Study & Article',
-      type: 'Doc (PDF/Word)',
-      url: '#',
-      description: 'Referenced case study analyzing real-world production performance benchmarks.',
-      sourceOrAuthor: 'GT Trainee Research Group',
-      updatedAt: '2 days ago',
-      tags: ['Reference', 'Case Study'],
-      fileSizeOrDuration: '1.2 MB'
-    },
-    {
-      id: 'add-2',
-      title: 'Industry Framework Comparisons & Best Practices Deck',
-      type: 'PowerPoint (PPT)',
-      url: '#',
-      description: 'Supplementary slide deck created by senior GT mentors comparing alternative frameworks.',
-      sourceOrAuthor: 'Senior Mentor Team',
-      updatedAt: '3 days ago',
-      tags: ['Slides', 'Mentors'],
-      fileSizeOrDuration: '8.5 MB'
-    },
-    {
-      id: 'add-3',
-      title: 'External Tech Talk: Deep Dive into Microservice Communication',
-      type: 'Video Link',
-      url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',
-      description: 'Recommended external YouTube tech conference talk referenced during discussions.',
-      sourceOrAuthor: 'External YouTube Resource',
-      updatedAt: '5 days ago',
-      tags: ['Video Link', 'External'],
-      fileSizeOrDuration: '32 mins'
-    },
-    {
-      id: 'add-4',
-      title: 'GT Batch Peer Discussion & Collaborative Revision Notes',
-      type: 'Notes / Guide',
-      url: '#',
-      description: 'Shared notes compile during peer study sessions containing code snippets and Q&A.',
-      sourceOrAuthor: 'Alex Vance & Peer Cohort',
-      updatedAt: 'Yesterday',
-      tags: ['Notes', 'Collaborative'],
-      fileSizeOrDuration: 'Text Document'
-    }
-    ,
-    ...(session.additionalMaterials || []).map((am, idx) => ({
-      id: `add-am-${idx}`,
-      title: am.title,
-      type: (am.type === 'PowerPoint' ? 'PowerPoint (PPT)' : am.type === 'Video' ? 'Video File (MP4)' : am.type === 'PDF' || am.type === 'Word' ? 'Doc (PDF/Word)' : 'Notes / Guide') as CustomMaterialItem['type'],
-      url: am.url || '#',
-      description: am.description,
-      updatedAt: 'Additional',
-      tags: am.tags || ['Additional'],
-      fileSizeOrDuration: am.durationOrPages || 'Standard'
-    }))
-  ]);
+  const [additionalMaterialsList, setAdditionalMaterialsList] = useState<CustomMaterialItem[]>(() => {
+    const initialMaterials = buildMaterialItemsFromSession(session);
+    return initialMaterials.additional;
+  });
+
+  useEffect(() => {
+    let isActive = true;
+
+    const loadMaterials = async () => {
+      setIsMaterialsLoading(true);
+      try {
+        const apiMaterials = await fetchStudyMaterialsApi(session.id);
+        const mergedMaterials = [
+          ...(apiMaterials || []),
+          ...(session.studyMaterials || []),
+          ...(session.providedMaterials || []),
+          ...(session.additionalMaterials || [])
+        ];
+
+        const normalizedMaterials = buildMaterialItemsFromSession({
+          ...session,
+          studyMaterials: mergedMaterials,
+          providedMaterials: session.providedMaterials || [],
+          additionalMaterials: session.additionalMaterials || []
+        });
+
+        if (!isActive) return;
+
+        setProvidedMaterialsList(normalizedMaterials.provided);
+        setAdditionalMaterialsList(normalizedMaterials.additional);
+      } catch (error) {
+        console.error('Failed to load study materials', error);
+        if (isActive) {
+          const fallbackMaterials = buildMaterialItemsFromSession(session);
+          setProvidedMaterialsList(fallbackMaterials.provided);
+          setAdditionalMaterialsList(fallbackMaterials.additional);
+        }
+      } finally {
+        if (isActive) {
+          setIsMaterialsLoading(false);
+        }
+      }
+    };
+
+    loadMaterials();
+
+    return () => {
+      isActive = false;
+    };
+  }, [session.id, session.studyMaterials, session.providedMaterials, session.additionalMaterials]);
 
   // Modals for Uploading Materials
   const [isUploadProvidedModalOpen, setIsUploadProvidedModalOpen] = useState(false);
@@ -246,7 +911,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   // New Material Form Fields
   const [matTitle, setMatTitle] = useState('');
   const [matType, setMatType] = useState<CustomMaterialItem['type']>('Doc (PDF/Word)');
-  const [matUrl, setMatUrl] = useState('');
+  const [matFile, setMatFile] = useState<File | null>(null);
   const [matFileName, setMatFileName] = useState('');
   const [matSource, setMatSource] = useState('');
   const [matDesc, setMatDesc] = useState('');
@@ -299,11 +964,14 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       id: `prov-new-${Date.now()}`,
       title: matTitle,
       type: matType,
-      url: matUrl.trim() || '#',
+      url: '',
+      file: matFile || undefined,
+      fileName: matFileName || matFile?.name,
+      fileType: matFile?.type,
+      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Uploaded Document',
       description: matDesc || 'Uploaded organization study material.',
       updatedAt: 'Just now',
-      tags: matTags ? matTags.split(',').map(t => t.trim()) : ['Provided', 'Official'],
-      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Link / File'
+      tags: matTags ? matTags.split(',').map(t => t.trim()) : ['Provided', 'Official']
     };
     setProvidedMaterialsList([newItem, ...providedMaterialsList]);
     setIsUploadProvidedModalOpen(false);
@@ -317,12 +985,15 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       id: `add-new-${Date.now()}`,
       title: matTitle,
       type: matType,
-      url: matUrl.trim() || '#',
+      url: '',
+      file: matFile || undefined,
+      fileName: matFileName || matFile?.name,
+      fileType: matFile?.type,
       description: matDesc || 'User uploaded additional reference material.',
       sourceOrAuthor: matSource || 'GT Trainee',
       updatedAt: 'Just now',
       tags: matTags ? matTags.split(',').map(t => t.trim()) : ['Additional', 'Reference'],
-      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Link / File'
+      fileSizeOrDuration: matFileName ? `Uploaded: ${matFileName}` : 'Uploaded Document'
     };
     setAdditionalMaterialsList([newItem, ...additionalMaterialsList]);
     setIsUploadAdditionalModalOpen(false);
@@ -332,7 +1003,7 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
   const resetMatForm = () => {
     setMatTitle('');
     setMatType('Doc (PDF/Word)');
-    setMatUrl('');
+    setMatFile(null);
     setMatFileName('');
     setMatSource('');
     setMatDesc('');
@@ -394,6 +1065,88 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
       return post;
     }));
     setReplyInputs(prev => ({ ...prev, [postId]: '' }));
+  };
+
+  const handleOpenMaterial = (material: CustomMaterialItem) => {
+    if (material.file) {
+      const blobUrl = URL.createObjectURL(material.file);
+      window.open(blobUrl, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    if (material.url && material.url !== '#') {
+      window.open(material.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+
+    const content = [material.title, material.description].filter(Boolean).join('\n\n');
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    link.rel = 'noreferrer';
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
+
+  const handleDownloadMaterial = async (material: CustomMaterialItem) => {
+    const baseName = (material.fileName || material.title || 'study-material').replace(/[\\/:*?"<>|]/g, '-');
+    const extension = material.fileName?.split('.').pop() || material.fileType?.split('/')?.pop() || material.url?.split('.').pop() || 'bin';
+    const downloadName = material.fileName ? material.fileName : `${baseName}.${extension}`;
+
+    if (material.file) {
+      const blobUrl = URL.createObjectURL(material.file);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = downloadName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      // revoke after short delay to allow browser to process
+      setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+      return;
+    }
+
+    if (material.url && material.url !== '#') {
+      try {
+        const response = await fetch(material.url, { credentials: 'include' });
+        if (!response.ok) throw new Error('Download failed');
+
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = blobUrl;
+        link.download = downloadName;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 10000);
+        return;
+      } catch {
+        const link = document.createElement('a');
+        link.href = material.url;
+        link.download = downloadName;
+        link.rel = 'noopener';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        return;
+      }
+    }
+
+    const content = [material.title, material.description].filter(Boolean).join('\n\n');
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${baseName}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
   };
 
   // Helper function for material type icon
@@ -479,8 +1232,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <button
           onClick={() => handleTabSelect('roadmap')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'roadmap'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+            : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
             }`}
         >
           <Layers className={`w-4 h-4 ${activeTab === 'roadmap' ? 'text-white' : 'text-blue-600'}`} />
@@ -491,8 +1244,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <button
           onClick={() => handleTabSelect('provided-materials')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'provided-materials'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+            : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
             }`}
         >
           <FileText className={`w-4 h-4 ${activeTab === 'provided-materials' ? 'text-white' : 'text-blue-600'}`} />
@@ -503,8 +1256,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <button
           onClick={() => handleTabSelect('additional-materials')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'additional-materials'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+            : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
             }`}
         >
           <FolderPlus className={`w-4 h-4 ${activeTab === 'additional-materials' ? 'text-white' : 'text-blue-600'}`} />
@@ -514,8 +1267,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <button
           onClick={() => handleTabSelect('assignments')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'assignments'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+            : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
             }`}
         >
           <ClipboardList className={`w-4 h-4 ${activeTab === 'assignments' ? 'text-white' : 'text-blue-600'}`} />
@@ -525,8 +1278,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <button
           onClick={() => handleTabSelect('quiz')}
           className={`px-5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'quiz'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+            : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
             }`}
         >
           <HelpCircle className={`w-4 h-4 ${activeTab === 'quiz' ? 'text-white' : 'text-blue-600'}`} />
@@ -538,8 +1291,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
         <button
           onClick={() => handleTabSelect('notes')}
           className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 whitespace-nowrap ${activeTab === 'notes'
-              ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
-              : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
+            ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+            : 'text-slate-700 hover:text-blue-700 hover:bg-slate-200/80'
             }`}
         >
           <Edit3 className={`w-3.5 h-3.5 ${activeTab === 'notes' ? 'text-white' : 'text-blue-600'}`} />
@@ -604,8 +1357,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     key={t}
                     onClick={() => setProvidedFilterType(t)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${providedFilterType === t
-                        ? 'bg-blue-600 text-white shadow-sm'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                       }`}
                   >
                     {t}
@@ -643,16 +1396,24 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   <p className="text-slate-600 text-xs leading-relaxed">{mat.description}</p>
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 flex items-center justify-between gap-2">
                   <span className="text-[11px] text-slate-500 font-mono">Provided by L&D • {mat.updatedAt}</span>
-                  <a
-                    href={mat.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-4 py-2 rounded-xl border border-blue-200 flex items-center gap-2 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> Open / Download
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenMaterial(mat)}
+                      className="bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold px-3 py-2 rounded-xl border border-blue-200 flex items-center gap-2 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-blue-600" /> View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadMaterial(mat)}
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-600" /> Download
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -689,8 +1450,8 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                     key={t}
                     onClick={() => setAdditionalFilterType(t)}
                     className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${additionalFilterType === t
-                        ? 'bg-purple-600 text-white shadow-sm'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      ? 'bg-purple-600 text-white shadow-sm'
+                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                       }`}
                   >
                     {t}
@@ -734,16 +1495,24 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
                   )}
                 </div>
 
-                <div className="pt-4 border-t border-slate-200 flex items-center justify-between">
+                <div className="pt-4 border-t border-slate-200 flex items-center justify-between gap-2">
                   <span className="text-[11px] text-slate-500 font-mono">Added: {mat.updatedAt}</span>
-                  <a
-                    href={mat.url}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-4 py-2 rounded-xl border border-purple-200 flex items-center gap-2 transition-colors"
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 text-purple-600" /> Access Reference
-                  </a>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => handleOpenMaterial(mat)}
+                      className="bg-purple-50 hover:bg-purple-100 text-purple-700 text-xs font-bold px-3 py-2 rounded-xl border border-purple-200 flex items-center gap-2 transition-colors"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-purple-600" /> View
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleDownloadMaterial(mat)}
+                      className="bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold px-3 py-2 rounded-xl border border-slate-200 flex items-center gap-2 transition-colors"
+                    >
+                      <Download className="w-3.5 h-3.5 text-slate-600" /> Download
+                    </button>
+                  </div>
                 </div>
               </div>
             ))}
@@ -1031,23 +1800,18 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File OR Paste Material Link</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File</label>
                 <div className="space-y-2">
                   <input
                     type="file"
+                    required
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         setMatFileName(e.target.files[0].name);
+                        setMatFile(e.target.files[0]);
                       }
                     }}
                     className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                  />
-                  <input
-                    type="text"
-                    value={matUrl}
-                    onChange={(e) => setMatUrl(e.target.value)}
-                    placeholder="https://... or internal document link"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-600"
                   />
                 </div>
               </div>
@@ -1139,23 +1903,18 @@ export const SessionDetailView: React.FC<SessionDetailViewProps> = ({
               </div>
 
               <div>
-                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File OR Paste Reference URL</label>
+                <label className="block text-xs font-bold mb-1 text-slate-700">Upload File</label>
                 <div className="space-y-2">
                   <input
                     type="file"
+                    required
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         setMatFileName(e.target.files[0].name);
+                        setMatFile(e.target.files[0]);
                       }
                     }}
                     className="w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
-                  />
-                  <input
-                    type="text"
-                    value={matUrl}
-                    onChange={(e) => setMatUrl(e.target.value)}
-                    placeholder="https://... or external reference URL"
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-purple-600"
                   />
                 </div>
               </div>

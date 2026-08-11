@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
-import { User, AppNotification } from '../types';
+import React, { useState, useRef, useEffect } from 'react';
+import { User } from '../types';
 import { 
   GraduationCap, 
-  Bookmark, 
   ShieldCheck, 
   UserCheck,
   ArrowLeft,
   LogOut,
-  BookOpen
+  BookOpen,
+  Key
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -18,11 +18,8 @@ interface HeaderProps {
   inspectModeActive: boolean;
   setInspectModeActive: (active: boolean) => void;
   onOpenLogin: (role?: 'GT' | 'Admin') => void;
-  onOpenSignUp: () => void;
+  onOpenChangePassword?: () => void;
   onLogout: () => void;
-  notifications: AppNotification[];
-  onMarkNotificationsRead: () => void;
-  onOpenBookmarks: () => void;
   onOpenPlayground: () => void;
   onOpenUserGuide?: () => void;
 }
@@ -33,12 +30,27 @@ export const Header: React.FC<HeaderProps> = ({
   activePortal,
   setActivePortal,
   onOpenLogin,
-  onOpenSignUp,
+  onOpenChangePassword,
   onLogout,
-  onOpenBookmarks,
   onOpenUserGuide
 }) => {
   const [showProfilePopover, setShowProfilePopover] = useState(false);
+  const profileMenuRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target as Node)) {
+        setShowProfilePopover(false);
+      }
+    };
+
+    if (showProfilePopover) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [showProfilePopover]);
 
   const handleBackToLogin = () => {
     onLogout();
@@ -116,15 +128,9 @@ export const Header: React.FC<HeaderProps> = ({
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => onOpenLogin('GT')}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-slate-700 hover:text-blue-700 bg-slate-100 hover:bg-slate-200 border border-slate-200 transition-all shadow-sm"
+                  className="h-[42px] px-5 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/20 transition-all flex items-center justify-center cursor-pointer"
                 >
                   Login
-                </button>
-                <button
-                  onClick={onOpenSignUp}
-                  className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 shadow-md shadow-blue-600/20 transition-all"
-                >
-                  Sign Up
                 </button>
               </div>
             )}
@@ -143,19 +149,10 @@ export const Header: React.FC<HeaderProps> = ({
                 <span>Back to Login</span>
               </button> */}
 
-              {/* Bookmarks Toggle */}
-              {/* <button
-                onClick={onOpenBookmarks}
-                className="p-2 text-slate-600 hover:text-amber-600 bg-slate-100 hover:bg-slate-200 rounded-xl border border-slate-200 transition-colors relative"
-                title="Saved Bookmarks"
-              >
-                <Bookmark className="w-4 h-4" />
-              </button> */}
-
               {/* Profile Menu */}
-              <div className="relative">
+              <div className="relative" ref={profileMenuRef}>
                 <button
-                  onClick={() => setShowProfilePopover(!showProfilePopover)}
+                  onClick={() => setShowProfilePopover(prev => !prev)}
                   aria-label="Open profile menu"
                   title="Open profile menu"
                   className="relative p-0.5 rounded-xl bg-white border border-slate-200 hover:border-blue-500/50 transition-all focus:outline-none focus:ring-2 focus:ring-blue-500/40 shadow-sm"
@@ -190,12 +187,26 @@ export const Header: React.FC<HeaderProps> = ({
                     </div> */}
 
                     <div className="border-t border-slate-100 pt-3 space-y-1">
+                      {onOpenChangePassword && (
+                        <button
+                          onClick={() => {
+                            setShowProfilePopover(false);
+                            onOpenChangePassword();
+                          }}
+                          className="w-full text-left px-3 py-2 rounded-xl text-slate-700 hover:bg-slate-100 transition-colors flex items-center justify-between font-semibold cursor-pointer"
+                        >
+                          <span className="flex items-center gap-2">
+                            <Key className="w-3.5 h-3.5 text-blue-600" />
+                            <span>Change Password</span>
+                          </span>
+                        </button>
+                      )}
                       <button
                         onClick={() => {
                           setShowProfilePopover(false);
                           handleBackToLogin();
                         }}
-                        className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-between font-semibold"
+                        className="w-full text-left px-3 py-2 rounded-xl text-rose-600 hover:bg-rose-50 transition-colors flex items-center justify-between font-semibold cursor-pointer"
                       >
                         <span className="flex items-center gap-2">
                           <LogOut className="w-3.5 h-3.5" />
