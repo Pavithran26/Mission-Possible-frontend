@@ -113,11 +113,72 @@ export const updateDailyGoalApi = async (dailyGoalMinutes: number): Promise<User
 
 // --- SESSIONS ---
 
-export const fetchSessions = async (): Promise<Session[]> =>
-  apiFetch<Session[]>('/api/sessions');
+/**
+ * The API returns the persistence shape, which differs from the UI's Session type in
+ * four places. Rendering it unmapped puts objects where the UI expects strings, which
+ * React refuses to render, and the whole app unmounts to a blank page.
+ *
+ *   thumbnailUrl          -> thumbnail
+ *   featuredVideoUrl      -> videoUrl
+ *   learningObjectives[]  -> objects with objectiveText, not strings
+ *   topics[].defaultStatus-> status, and orderIndex -> order
+ *
+ * Each field falls back to the already-correct name, so data that is mapped upstream
+ * later passes through untouched.
+ */
+function adaptSubtopic(s: any) {
+  return {
+    ...s,
+    id: s.id,
+    title: s.title,
+    durationMinutes: s.durationMinutes ?? 0,
+    status: s.status ?? s.defaultStatus ?? 'Unlocked'
+  };
+}
+
+function adaptTopic(t: any) {
+  return {
+    ...t,
+    id: t.id,
+    title: t.title,
+    description: t.description ?? '',
+    order: t.order ?? t.orderIndex ?? 0,
+    orderIndex: t.orderIndex,
+    status: t.status ?? t.defaultStatus ?? 'Unlocked',
+    subtopics: (t.subtopics ?? []).map(adaptSubtopic)
+  };
+}
+
+function adaptSession(s: any): Session {
+  const objectives = (s.learningObjectives ?? [])
+    .slice()
+    .sort((a: any, b: any) => (a?.orderIndex ?? 0) - (b?.orderIndex ?? 0))
+    // Tolerates both the API shape (objects) and plain strings.
+    .map((o: any) => (typeof o === 'string' ? o : o?.objectiveText ?? ''))
+    .filter(Boolean);
+
+  return {
+    ...s,
+    thumbnail: s.thumbnail ?? s.thumbnailUrl ?? '',
+    videoUrl: s.videoUrl ?? s.featuredVideoUrl,
+    // Per-user progress is not part of this payload yet.
+    progressPercent: s.progressPercent ?? 0,
+    learningObjectives: objectives,
+    topics: (s.topics ?? []).map(adaptTopic),
+    studyMaterials: s.studyMaterials ?? [],
+    quizzes: s.quizzes ?? [],
+    assignments: s.assignments ?? [],
+    notes: s.notes ?? []
+  } as Session;
+}
+
+export const fetchSessions = async (): Promise<Session[]> => {
+  const data = await apiFetch<any[]>('/api/sessions');
+  return (data ?? []).map(adaptSession);
+};
 
 export const fetchSessionById = async (id: string): Promise<Session> =>
-  apiFetch<Session>(`/api/sessions/${id}`);
+  adaptSession(await apiFetch<any>(`/api/sessions/${id}`));
 
 export const createSessionApi = async (sessionData: Partial<Session>): Promise<Session> =>
   apiFetch<Session>('/api/sessions', {
