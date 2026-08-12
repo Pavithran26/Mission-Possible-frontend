@@ -18,6 +18,11 @@ import { GoogleGenAI, Type } from "@google/genai";
 // Where the .NET API lives. In Railway, set this to the API service's internal URL.
 const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
 
+// The retrieval service. The tutor asks it first so answers are grounded in the
+// portal's own study material; without it the model answers from general knowledge
+// and cannot cite anything the trainee has actually been given.
+const RAG_API_URL = process.env.RAG_API_URL || "http://gt-s-rag-api.railway.internal:8080";
+
 // Initialize Gemini Client
 const getGeminiClient = () => {
   const apiKey = process.env.GEMINI_API_KEY;
@@ -52,17 +57,63 @@ async function startServer() {
   ai.use(express.json({ limit: '10mb' }));
 
   ai.get("/health", (_req, res) => {
-    res.json({ status: "ok", apiBaseUrl: API_BASE_URL, timestamp: new Date().toISOString() });
+    res.json({
+      status: "ok",
+      apiBaseUrl: API_BASE_URL,
+      ragApiUrl: RAG_API_URL,
+      timestamp: new Date().toISOString()
+    });
   });
+
+  /**
+   * Ask the retrieval service to answer from the portal's indexed material.
+   * Returns null when it cannot help — not configured, nothing indexed yet, or
+   * unreachable — so the caller can fall back rather than fail.
+   */
+  const askRag = async (question: string): Promise<{ reply: string; sources: unknown[] } | null> => {
+    try {
+      const response = await fetch(`${RAG_API_URL}/api/rag/query`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: question, top_k: 5 }),
+        signal: AbortSignal.timeout(25000)
+      });
+
+      if (!response.ok) {
+        // 503 is the documented "GEMINI_API_KEY missing" case; anything else is
+        // equally not-an-answer. Either way, fall back quietly.
+        console.warn(`[rag] ${response.status} from ${RAG_API_URL}, falling back to direct model`);
+        return null;
+      }
+
+      const data: any = await response.json();
+      if (!data?.answer || !Array.isArray(data?.sources) || data.sources.length === 0) {
+        return null;
+      }
+      return { reply: data.answer, sources: data.sources };
+    } catch (err: any) {
+      console.warn(`[rag] unreachable at ${RAG_API_URL}: ${err?.message}`);
+      return null;
+    }
+  };
 
   // AI Chat Tutor
   ai.post("/chat", async (req, res) => {
     const { message, context } = req.body;
+
+    // Grounded answer first: it can cite the trainee's own material.
+    const grounded = await askRag(message);
+    if (grounded) {
+      return res.json({ ...grounded, grounded: true });
+    }
+
     const client = getGeminiClient();
 
     if (!client) {
       return res.json({
-        reply: `[AI Assistant Mode]: As your Graduate Trainee mentor for "${context?.sessionName || 'the portal'}", here is an answer to your question: "${message}". \n\nKey Concept Breakdown:\n1. Ensure strict type signatures in C# and TypeScript.\n2. Handle exception boundaries with Global Exception Middleware or try-catch blocks.\n3. Always write unit tests before pushing code to production.`
+        reply: `[AI Assistant Mode]: As your Graduate Trainee mentor for "${context?.sessionName || 'the portal'}", here is an answer to your question: "${message}". \n\nKey Concept Breakdown:\n1. Ensure strict type signatures in C# and TypeScript.\n2. Handle exception boundaries with Global Exception Middleware or try-catch blocks.\n3. Always write unit tests before pushing code to production.`,
+        sources: [],
+        grounded: false
       });
     }
 
@@ -84,7 +135,9 @@ User Query: ${message}`
         }
       });
 
-      res.json({ reply: response.text || "No response generated." });
+      // No sources: this answer came from the model's general knowledge, not from
+      // the portal's material, so the UI must not present citations for it.
+      res.json({ reply: response.text || "No response generated.", sources: [], grounded: false });
     } catch (err: any) {
       console.error("Gemini AI Chat Error:", err);
       res.status(500).json({ error: "Failed to generate AI response", details: err.message });
@@ -183,6 +236,28 @@ User Query: ${message}`
 
   app.use("/api/ai", ai);
 
+  // --- RETRIEVAL SERVICE ---
+  // Exposes ingest, search and stats to the admin UI. Must be registered before the
+  // catch-all below, which would otherwise send these to the .NET API.
+  app.use(
+    createProxyMiddleware({
+      target: RAG_API_URL,
+      changeOrigin: true,
+      pathFilter: (pathname) => pathname.startsWith('/api/rag'),
+      on: {
+        error: (err, _req, res) => {
+          console.error(`[proxy] RAG service unreachable at ${RAG_API_URL}:`, err.message);
+          if (res && 'writeHead' in res && !res.headersSent) {
+            res.writeHead(503, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              detail: 'The retrieval service is unavailable. Check RAG_API_URL and that the service is running.'
+            }));
+          }
+        },
+      },
+    })
+  );
+
   // --- PROXY EVERYTHING ELSE TO THE .NET API ---
   // pathFilter keeps the original /api prefix intact, which is what the .NET routes
   // expect ([Route("api/sessions")] and friends).
@@ -190,7 +265,10 @@ User Query: ${message}`
     createProxyMiddleware({
       target: API_BASE_URL,
       changeOrigin: true,
-      pathFilter: (pathname) => pathname.startsWith('/api') && !pathname.startsWith('/api/ai'),
+      pathFilter: (pathname) =>
+        pathname.startsWith('/api') &&
+        !pathname.startsWith('/api/ai') &&
+        !pathname.startsWith('/api/rag'),
       on: {
         error: (err, _req, res) => {
           console.error(`[proxy] ${API_BASE_URL} unreachable:`, err.message);

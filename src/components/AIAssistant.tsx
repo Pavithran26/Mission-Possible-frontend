@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { sendAiChatMessageApi } from '../services/api';
+import { sendAiChatMessageApi, AiSource } from '../services/api';
 import { Bot, X, Send, Sparkles, Minimize2, Maximize2, FileText, HelpCircle, Code2, BookOpen, RefreshCw } from 'lucide-react';
 
 interface AIAssistantProps {
@@ -12,6 +12,8 @@ interface ChatMessage {
   sender: 'user' | 'ai';
   text: string;
   timestamp: string;
+  /** Present when the answer was drawn from the portal's own study material. */
+  sources?: AiSource[];
 }
 
 export const AIAssistant: React.FC<AIAssistantProps> = ({ currentSessionName, currentTopicTitle }) => {
@@ -59,7 +61,10 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentSessionName, cu
         id: `ai-${Date.now()}`,
         sender: 'ai',
         text: res.reply || "I am processing your query based on enterprise L&D guidelines.",
-        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        // Only a grounded answer gets citations; an answer from the model's general
+        // knowledge must not be dressed up as coming from the course material.
+        sources: res.grounded ? res.sources : undefined
       };
       setMessages(prev => [...prev, aiMsg]);
     } catch (err) {
@@ -194,6 +199,36 @@ export const AIAssistant: React.FC<AIAssistantProps> = ({ currentSessionName, cu
                   }`}
                 >
                   {m.text}
+
+                  {/* Shown only for grounded answers, so a trainee can tell what the
+                      tutor read and open the material themselves. */}
+                  {m.sources && m.sources.length > 0 && (
+                    <div className="mt-3 pt-2.5 border-t border-slate-200">
+                      <p className="text-[9px] uppercase tracking-wider text-slate-500 font-semibold mb-1.5">
+                        From your study material
+                      </p>
+                      <ul className="space-y-1">
+                        {m.sources.map((s) => (
+                          <li key={s.ref} className="text-[11px] text-slate-600 flex gap-1.5">
+                            <span className="text-blue-600 font-mono flex-shrink-0">[{s.ref}]</span>
+                            {s.url ? (
+                              <a
+                                href={s.url}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="hover:text-blue-600 hover:underline truncate"
+                              >
+                                {s.title}
+                              </a>
+                            ) : (
+                              <span className="truncate">{s.title}</span>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
                   <span className="block text-[9px] opacity-60 text-right mt-1.5 font-mono">
                     {m.timestamp}
                   </span>

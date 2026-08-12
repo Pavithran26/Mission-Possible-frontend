@@ -345,16 +345,58 @@ export const logActivityApi = async (action: string, details?: string): Promise<
 
 // --- AI (served locally by server.ts, not the .NET API) ---
 
-export const sendAiChatMessageApi = async (message: string, context?: any, chatHistory?: any[]) => {
+/** A passage the tutor's answer was drawn from, when the answer is grounded. */
+export interface AiSource {
+  ref: number;
+  title: string;
+  url?: string | null;
+  source_type?: string;
+  similarity?: number;
+}
+
+export interface AiChatReply {
+  reply: string;
+  /** Populated only when the answer came from the portal's indexed material. */
+  sources: AiSource[];
+  /** False when the model answered from general knowledge instead. */
+  grounded: boolean;
+}
+
+export const sendAiChatMessageApi = async (
+  message: string,
+  context?: any,
+  chatHistory?: any[]
+): Promise<AiChatReply> => {
   try {
-    return await apiFetch<any>('/api/ai/chat', {
+    const data = await apiFetch<any>('/api/ai/chat', {
       method: 'POST',
       body: JSON.stringify({ message, context, chatHistory })
     });
+    return {
+      reply: data?.reply ?? '',
+      sources: Array.isArray(data?.sources) ? data.sources : [],
+      grounded: Boolean(data?.grounded)
+    };
   } catch {
-    return { reply: 'The AI tutor is unavailable right now. Please try again shortly.' };
+    return {
+      reply: 'The AI tutor is unavailable right now. Please try again shortly.',
+      sources: [],
+      grounded: false
+    };
   }
 };
+
+// --- RETRIEVAL INDEX (proxied to the RAG service) ---
+
+export const ragStatsApi = async () => apiFetch<any>('/api/rag/stats');
+
+export const ragIngestApi = async () => apiFetch<any>('/api/rag/ingest', { method: 'POST' });
+
+export const ragSearchApi = async (query: string, topK = 5) =>
+  apiFetch<any>('/api/rag/search', {
+    method: 'POST',
+    body: JSON.stringify({ query, top_k: topK })
+  });
 
 export const summarizeMaterialAiApi = async (title: string, content: string) => {
   try {
