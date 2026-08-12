@@ -1,24 +1,22 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
+import { createProxyMiddleware } from "http-proxy-middleware";
 import { GoogleGenAI, Type } from "@google/genai";
-import {
-  mockSessions,
-  mockStudyMaterials,
-  mockQuizzes,
-  mockCurrentUser,
-  mockPersonalNotes,
-  mockDiscussions
-} from "./src/data/mockData";
-import { Session, StudyMaterial, Quiz, PersonalNote, DiscussionPost } from "./src/types";
 
-// In-memory persistent database state for dev session
-let sessions: Session[] = [...mockSessions];
-let studyMaterials: StudyMaterial[] = [...mockStudyMaterials];
-let quizzes: Quiz[] = [...mockQuizzes];
-let personalNotes: PersonalNote[] = [...mockPersonalNotes];
-let discussions: DiscussionPost[] = [...mockDiscussions];
-let currentUser = { ...mockCurrentUser };
+/**
+ * This server is a thin BFF, not a data store.
+ *
+ * Everything under /api is proxied to the .NET GTsPortal API, which owns the
+ * PostgreSQL database. The only routes handled locally are /api/ai/*, because the
+ * Gemini API key must stay server-side and never reach the browser.
+ *
+ * It previously served in-memory mock data for sessions, materials, quizzes, notes
+ * and discussions, which is why the UI never reflected the real database.
+ */
+
+// Where the .NET API lives. In Railway, set this to the API service's internal URL.
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:5000";
 
 // Initialize Gemini Client
 const getGeminiClient = () => {
@@ -47,537 +45,35 @@ async function startServer() {
     server.on('error', (err: any) => reject(err));
   });
 
-  app.use(express.json({ limit: '10mb' }));
+  // --- LOCAL AI ROUTES ---
+  // JSON parsing is scoped to these routes only. Applying it globally would consume
+  // the request body before the proxy could forward it, breaking every POST and PUT.
+  const ai = express.Router();
+  ai.use(express.json({ limit: '10mb' }));
 
-  // --- API ROUTES ---
-  app.get("/api/health", (req, res) => {
-    res.json({ status: "ok", timestamp: new Date().toISOString() });
+  ai.get("/health", (_req, res) => {
+    res.json({ status: "ok", apiBaseUrl: API_BASE_URL, timestamp: new Date().toISOString() });
   });
-
-  // Auth Routes
-  const registeredUsers: Record<string, { password: string; role: 'GT' | 'Admin'; firstName: string; lastName: string; avatar: string; batch: string }> = {
-    'sibibharathi.thangaraj@valuemomentum.com': {
-      password: '$NMFeE1998x',
-      role: 'GT',
-      firstName: 'Sibibharathi',
-      lastName: 'Thangaraj',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      batch: 'GT-2026-Batch-01'
-    },
-    'pavithran.sivanandham@valuemomentum.com': {
-      password: '$NMFeE1998x',
-      role: 'GT',
-      firstName: 'Pavithran',
-      lastName: 'Sivanandham',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      batch: 'GT-2026-Batch-01'
-    },
-    'anukraha.magdalene@valuemomentum.com': {
-      password: '$NMFeE1998x',
-      role: 'Admin',
-      firstName: 'Anukraha',
-      lastName: 'Magdalene',
-      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-      batch: 'L&D Administration'
-    }
-  };
-
-  const otpStore: Record<string, { otp: string; expiry: number; attempts: number; used: boolean }> = {};
-  const resetTokenStore: Record<string, { token: string; expiry: number; used: boolean }> = {};
-
-  app.post("/api/auth/login", (req, res) => {
-    const email = (req.body.email || "").trim().toLowerCase();
-    const password = req.body.password;
-
-    const user = registeredUsers[email];
-    if (!user || user.password !== password) {
-      return res.status(400).json({ success: false, message: "Invalid email address or password." });
-    }
-
-    currentUser = {
-      id: `usr-${Date.now()}`,
-      name: `${user.firstName} ${user.lastName}`,
-      email: email,
-      role: user.role,
-      batch: user.batch,
-      avatar: user.avatar,
-      xp: user.role === 'Admin' ? 5000 : 2850,
-      level: user.role === 'Admin' ? 10 : 5,
-      streakDays: 14,
-      lastActiveDate: new Date().toISOString().split('T')[0],
-      dailyGoalMinutes: 45,
-      todayMinutesSpent: 38
-    };
-
-    res.json({
-      success: true,
-      message: "Login successful.",
-      data: {
-        token: `jwt-${Date.now()}`,
-        userId: currentUser.id,
-        email: email,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        role: user.role
-      }
-    });
-  });
-
-  app.post("/api/auth/forgot-password", (req, res) => {
-    const email = (req.body.email || "").trim().toLowerCase();
-    if (!email || !email.includes("@")) {
-      return res.status(400).json({ success: false, message: "Please enter a valid email address." });
-    }
-
-    const user = registeredUsers[email];
-    if (!user) {
-      return res.status(404).json({ success: false, message: "No registered account was found with this email address." });
-    }
-
-    const otp = Math.floor(1000 + Math.random() * 9000).toString();
-    otpStore[email] = {
-      otp,
-      expiry: Date.now() + 5 * 60 * 1000,
-      attempts: 0,
-      used: false
-    };
-
-    delete resetTokenStore[email];
-    console.log(`[AUTH LOG] OTP for ${email}: ${otp} (expires in 5 minutes)`);
-
-    res.json({
-      success: true,
-      message: "OTP has been sent to your registered email address."
-    });
-  });
-
-  app.post("/api/auth/verify-otp", (req, res) => {
-    const email = (req.body.email || "").trim().toLowerCase();
-    const otp = (req.body.otp || "").trim();
-
-    if (!email || !otp || otp.length !== 4) {
-      return res.status(400).json({ success: false, message: "A valid 4-digit OTP is required." });
-    }
-
-    const record = otpStore[email];
-    if (!record || record.used) {
-      return res.status(400).json({ success: false, message: "No active OTP session found. Please request a new OTP." });
-    }
-
-    if (Date.now() > record.expiry) {
-      delete otpStore[email];
-      return res.status(400).json({ success: false, message: "The OTP has expired (5 minute limit). Please request a new code." });
-    }
-
-    if (record.attempts >= 5) {
-      delete otpStore[email];
-      return res.status(400).json({ success: false, message: "Too many incorrect attempts. Please request a new OTP." });
-    }
-
-    record.attempts++;
-
-    if (record.otp !== otp) {
-      const remaining = 5 - record.attempts;
-      return res.status(400).json({ success: false, message: `Invalid OTP code. ${remaining} attempt(s) remaining.` });
-    }
-
-    record.used = true;
-    delete otpStore[email];
-
-    const resetToken = `rst-${Date.now()}-${Math.random().toString(36).substring(2, 15)}`;
-    resetTokenStore[email] = {
-      token: resetToken,
-      expiry: Date.now() + 10 * 60 * 1000,
-      used: false
-    };
-
-    res.json({
-      success: true,
-      message: "OTP verified successfully.",
-      data: {
-        email,
-        resetToken
-      }
-    });
-  });
-
-  app.post("/api/auth/reset-password", (req, res) => {
-    const email = (req.body.email || "").trim().toLowerCase();
-    const { resetToken, newPassword } = req.body;
-
-    if (!email || !resetToken || !newPassword) {
-      return res.status(400).json({ success: false, message: "Email, reset authorization token, and new password are required." });
-    }
-
-    const tokenRecord = resetTokenStore[email];
-    if (!tokenRecord || tokenRecord.used || tokenRecord.token !== resetToken) {
-      return res.status(403).json({ success: false, message: "Password reset authorization has expired or is invalid." });
-    }
-
-    if (Date.now() > tokenRecord.expiry) {
-      delete resetTokenStore[email];
-      return res.status(403).json({ success: false, message: "Password reset session has expired. Please restart the verification flow." });
-    }
-
-    const user = registeredUsers[email];
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User account not found." });
-    }
-
-    if (newPassword.length < 8) {
-      return res.status(400).json({ success: false, message: "Password must be at least 8 characters long." });
-    }
-
-    user.password = newPassword;
-    tokenRecord.used = true;
-    delete resetTokenStore[email];
-
-    res.json({
-      success: true,
-      message: "Password has been reset successfully. Please log in with your new password."
-    });
-  });
-
-  app.post("/api/auth/change-password", (req, res) => {
-    const email = (req.body.email || "").trim().toLowerCase();
-    const { currentPassword, newPassword } = req.body;
-
-    const user = registeredUsers[email];
-    if (!user) {
-      return res.status(404).json({ success: false, message: "User not found." });
-    }
-
-    if (user.password !== currentPassword) {
-      return res.status(400).json({ success: false, message: "Current password is incorrect." });
-    }
-
-    if (!newPassword || newPassword.length < 8) {
-      return res.status(400).json({ success: false, message: "New password must be at least 8 characters long." });
-    }
-
-    user.password = newPassword;
-    res.json({ success: true, message: "Password updated successfully in your profile." });
-  });
-
-  // User Profile
-  app.get("/api/user", (req, res) => {
-    res.json(currentUser);
-  });
-
-  app.post("/api/user/goal", (req, res) => {
-    const { dailyGoalMinutes } = req.body;
-    if (typeof dailyGoalMinutes === 'number') {
-      currentUser.dailyGoalMinutes = dailyGoalMinutes;
-    }
-    res.json(currentUser);
-  });
-
-  // Sessions CRUD
-  app.get("/api/sessions", (req, res) => {
-    res.json(sessions);
-  });
-
-  app.get("/api/sessions/:id", (req, res) => {
-    const session = sessions.find(s => s.id === req.params.id);
-    if (!session) {
-      return res.status(404).json({ error: "Session not found" });
-    }
-    const sessionMaterials = studyMaterials.filter(m => m.sessionId === session.id);
-    const sessionQuizzes = quizzes.filter(q => q.sessionId === session.id);
-    const sessionDiscussions = discussions.filter(d => d.sessionId === session.id);
-    res.json({
-      ...session,
-      studyMaterials: sessionMaterials,
-      quizzes: sessionQuizzes,
-      discussions: sessionDiscussions
-    });
-  });
-
-  app.post("/api/sessions", (req, res) => {
-    const newSession: Session = {
-      id: `session-${Date.now()}`,
-      name: req.body.name || "New Learning Session",
-      category: req.body.category || ".NET with C#",
-      description: req.body.description || "Created by Admin L&D",
-      thumbnail: req.body.thumbnail || "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80",
-      durationHours: Number(req.body.durationHours) || 10,
-      difficulty: req.body.difficulty || "Intermediate",
-      progressPercent: 0,
-      isPublished: req.body.isPublished ?? true,
-      rating: 5.0,
-      ratingCount: 1,
-      learningObjectives: req.body.learningObjectives || ["Master key concepts"],
-      topics: req.body.topics || []
-    };
-    sessions.unshift(newSession);
-    res.status(201).json(newSession);
-  });
-
-  app.put("/api/sessions/:id", (req, res) => {
-    const index = sessions.findIndex(s => s.id === req.params.id);
-    if (index === -1) return res.status(404).json({ error: "Session not found" });
-    sessions[index] = { ...sessions[index], ...req.body };
-    res.json(sessions[index]);
-  });
-
-  app.delete("/api/sessions/:id", (req, res) => {
-    sessions = sessions.filter(s => s.id !== req.params.id);
-    studyMaterials = studyMaterials.filter(m => m.sessionId !== req.params.id);
-    quizzes = quizzes.filter(q => q.sessionId !== req.params.id);
-    res.json({ success: true, message: "Session deleted" });
-  });
-
-
-  // Study Materials
-  app.get("/api/materials", (req, res) => {
-    res.json(studyMaterials);
-  });
-
-  app.post("/api/materials", (req, res) => {
-    const newMat: StudyMaterial = {
-      id: `mat-${Date.now()}`,
-      sessionId: req.body.sessionId,
-      topicId: req.body.topicId,
-      title: req.body.title || "New Document",
-      type: req.body.type || "PDF",
-      url: req.body.url || "#",
-      description: req.body.description || "",
-      durationOrPages: req.body.durationOrPages || "10 Pages",
-      currentVersion: 1.0,
-      versions: [
-        { version: 1.0, updatedAt: new Date().toISOString().split('T')[0], updatedBy: 'Admin L&D', changeLog: 'Initial upload' }
-      ],
-      contentBody: req.body.contentBody || "",
-      tags: req.body.tags || ["General"]
-    };
-    studyMaterials.unshift(newMat);
-    res.status(201).json(newMat);
-  });
-
-  app.post("/api/materials/:id/new-version", (req, res) => {
-    const mat = studyMaterials.find(m => m.id === req.params.id);
-    if (!mat) return res.status(404).json({ error: "Material not found" });
-    const newVer = Number((mat.currentVersion + 0.1).toFixed(1));
-    mat.currentVersion = newVer;
-    mat.contentBody = req.body.contentBody || mat.contentBody;
-    mat.versions.unshift({
-      version: newVer,
-      updatedAt: new Date().toISOString().split('T')[0],
-      updatedBy: req.body.updatedBy || 'Admin L&D',
-      changeLog: req.body.changeLog || 'Version update'
-    });
-    res.json(mat);
-  });
-
-  // Quizzes & Attempts
-  app.get("/api/quizzes", (req, res) => {
-    res.json(quizzes);
-  });
-
-  app.post("/api/quizzes", (req, res) => {
-    const newQuiz: Quiz = {
-      id: `quiz-${Date.now()}`,
-      sessionId: req.body.sessionId,
-      title: req.body.title || "Custom Quiz",
-      passingScorePercent: req.body.passingScorePercent || 80,
-      timeLimitMinutes: req.body.timeLimitMinutes || 15,
-      questions: req.body.questions || []
-    };
-    quizzes.push(newQuiz);
-    res.status(201).json(newQuiz);
-  });
-
-  app.post("/api/quizzes/:id/submit", (req, res) => {
-    const quiz = quizzes.find(q => q.id === req.params.id);
-    if (!quiz) return res.status(404).json({ error: "Quiz not found" });
-    const { userAnswers, timeTakenSeconds } = req.body;
-
-    let correctCount = 0;
-    quiz.questions.forEach((q) => {
-      const userAns = userAnswers[q.id];
-      if (Array.isArray(q.correctAnswer)) {
-        if (Array.isArray(userAns) && userAns.sort().join(',') === q.correctAnswer.sort().join(',')) {
-          correctCount++;
-        }
-      } else if (userAns && String(userAns).trim().toLowerCase() === String(q.correctAnswer).trim().toLowerCase()) {
-        correctCount++;
-      }
-    });
-
-    const scorePercent = Math.round((correctCount / quiz.questions.length) * 100);
-    const passed = scorePercent >= quiz.passingScorePercent;
-
-    if (passed) {
-      currentUser.xp += 150;
-      if (typeof timeTakenSeconds === 'number' && !Number.isNaN(timeTakenSeconds)) {
-        currentUser.todayMinutesSpent += Math.round(timeTakenSeconds / 60);
-      }
-    }
-
-    res.json({
-      quizId: quiz.id,
-      scorePercent,
-      correctCount,
-      totalQuestions: quiz.questions.length,
-      passed,
-      timeTakenSeconds,
-      explanations: quiz.questions.map(q => ({
-        questionId: q.id,
-        prompt: q.prompt,
-        userAnswer: userAnswers[q.id],
-        correctAnswer: q.correctAnswer,
-        isCorrect: Array.isArray(q.correctAnswer)
-          ? Array.isArray(userAnswers[q.id]) && userAnswers[q.id].sort().join(',') === q.correctAnswer.sort().join(',')
-          : String(userAnswers[q.id]).trim().toLowerCase() === String(q.correctAnswer).trim().toLowerCase(),
-        explanation: q.explanation
-      }))
-    });
-  });
-
-  // Personal Notes
-  app.get("/api/notes", (req, res) => {
-    res.json(personalNotes);
-  });
-
-  app.post("/api/notes", (req, res) => {
-    const note: PersonalNote = {
-      id: `note-${Date.now()}`,
-      sessionId: req.body.sessionId,
-      topicId: req.body.topicId,
-      topicTitle: req.body.topicTitle || "General Note",
-      content: req.body.content,
-      highlightedText: req.body.highlightedText,
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    };
-    personalNotes.unshift(note);
-    res.status(201).json(note);
-  });
-
-  app.delete("/api/notes/:id", (req, res) => {
-    personalNotes = personalNotes.filter(n => n.id !== req.params.id);
-    res.json({ success: true });
-  });
-
-  // Discussions Q&A
-  app.get("/api/discussions", (req, res) => {
-    res.json(discussions);
-  });
-
-  app.post("/api/discussions", (req, res) => {
-    const newPost: DiscussionPost = {
-      id: `disc-${Date.now()}`,
-      sessionId: req.body.sessionId,
-      authorName: currentUser.name,
-      authorRole: currentUser.role,
-      authorAvatar: currentUser.avatar,
-      title: req.body.title,
-      body: req.body.body,
-      createdAt: 'Just now',
-      upvotes: 0,
-      replies: []
-    };
-    discussions.unshift(newPost);
-    res.status(201).json(newPost);
-  });
-
-  app.post("/api/discussions/:id/reply", (req, res) => {
-    const post = discussions.find(d => d.id === req.params.id);
-    if (!post) return res.status(404).json({ error: "Post not found" });
-    const reply = {
-      id: `rep-${Date.now()}`,
-      authorName: currentUser.name,
-      authorRole: currentUser.role,
-      authorAvatar: currentUser.avatar,
-      body: req.body.body,
-      createdAt: 'Just now',
-      isAnswer: req.body.isAnswer || false
-    };
-    post.replies.push(reply);
-    res.json(post);
-  });
-
-
-
-  // Global Analytics
-  app.get("/api/analytics", (req, res) => {
-    res.json({
-      totalSessions: sessions.length,
-      totalGTs: 124,
-      totalActiveUsers: 88,
-      averageProgress: 68,
-      averageQuizScore: 84,
-      mostViewedSession: ".NET with C# Enterprise Architecture",
-      leastViewedSession: "Azure Cloud Infrastructure",
-      mostDifficultTopic: "Async Programming & Task Concurrency",
-      completionTrends: [
-        { month: 'Jan', completed: 24, avgScore: 78 },
-        { month: 'Feb', completed: 35, avgScore: 81 },
-        { month: 'Mar', completed: 48, avgScore: 82 },
-        { month: 'Apr', completed: 62, avgScore: 85 },
-        { month: 'May', completed: 79, avgScore: 84 },
-        { month: 'Jun', completed: 95, avgScore: 88 }
-      ],
-      trackProgressList: [
-        { name: 'Insurance Domain', progress: 65 },
-        { name: '.NET with C#', progress: 80 },
-        { name: 'Frontend React', progress: 95 },
-        { name: 'SQL & Database', progress: 55 },
-        { name: 'Azure Cloud', progress: 20 }
-      ]
-    });
-  });
-
-  // Search Endpoint
-  app.get("/api/search", (req, res) => {
-    const q = (req.query.q as string || "").toLowerCase();
-    if (!q) return res.json({ sessions: [], materials: [], quizzes: [] });
-
-    const matchedSessions = sessions.filter(s =>
-      s.name.toLowerCase().includes(q) ||
-      s.category.toLowerCase().includes(q) ||
-      s.description.toLowerCase().includes(q)
-    );
-
-    const matchedMaterials = studyMaterials.filter(m =>
-      m.title.toLowerCase().includes(q) ||
-      m.description.toLowerCase().includes(q) ||
-      m.tags.some(t => t.toLowerCase().includes(q))
-    );
-
-    const matchedQuizzes = quizzes.filter(quiz =>
-      quiz.title.toLowerCase().includes(q) ||
-      quiz.questions.some(quest => quest.prompt.toLowerCase().includes(q))
-    );
-
-    res.json({
-      sessions: matchedSessions,
-      materials: matchedMaterials,
-      quizzes: matchedQuizzes
-    });
-  });
-
-  // --- GEMINI AI ENDPOINTS ---
 
   // AI Chat Tutor
-  app.post("/api/ai/chat", async (req, res) => {
-    const { message, context, chatHistory } = req.body;
-    const ai = getGeminiClient();
+  ai.post("/chat", async (req, res) => {
+    const { message, context } = req.body;
+    const client = getGeminiClient();
 
-    if (!ai) {
+    if (!client) {
       return res.json({
         reply: `[AI Assistant Mode]: As your Graduate Trainee mentor for "${context?.sessionName || 'the portal'}", here is an answer to your question: "${message}". \n\nKey Concept Breakdown:\n1. Ensure strict type signatures in C# and TypeScript.\n2. Handle exception boundaries with Global Exception Middleware or try-catch blocks.\n3. Always write unit tests before pushing code to production.`
       });
     }
 
     try {
-      const response = await ai.models.generateContent({
+      const response = await client.models.generateContent({
         model: "gemini-3.6-flash",
         contents: [
           {
             role: 'user',
             parts: [{
-              text: `Context: You are an enterprise L&D AI Tutor for Graduate Trainees (GTs). 
+              text: `Context: You are an enterprise L&D AI Tutor for Graduate Trainees (GTs).
 Session Context: ${JSON.stringify(context || {})}
 User Query: ${message}`
             }]
@@ -596,18 +92,18 @@ User Query: ${message}`
   });
 
   // AI Document / Notes Summarizer
-  app.post("/api/ai/summarize", async (req, res) => {
+  ai.post("/summarize", async (req, res) => {
     const { title, content } = req.body;
-    const ai = getGeminiClient();
+    const client = getGeminiClient();
 
-    if (!ai) {
+    if (!client) {
       return res.json({
         summary: `### AI Summary of ${title}\n\n- **Core Theme**: High performance enterprise system architecture.\n- **Key Takeaway**: Apply SOLID principles, proper indexing in SQL databases, and async/await non-blocking I/O.\n- **Action Item**: Review the code examples and complete the topic quiz.`
       });
     }
 
     try {
-      const response = await ai.models.generateContent({
+      const response = await client.models.generateContent({
         model: "gemini-3.6-flash",
         contents: `Summarize the following study material or note titled "${title}":\n\n${content}`,
         config: {
@@ -622,11 +118,11 @@ User Query: ${message}`
   });
 
   // AI Practice Quiz Generator
-  app.post("/api/ai/generate-quiz", async (req, res) => {
+  ai.post("/generate-quiz", async (req, res) => {
     const { topicName, textContent } = req.body;
-    const ai = getGeminiClient();
+    const client = getGeminiClient();
 
-    if (!ai) {
+    if (!client) {
       return res.json({
         quizTitle: `AI Generated Practice Quiz: ${topicName || 'General Tech'}`,
         questions: [
@@ -648,7 +144,7 @@ User Query: ${message}`
     }
 
     try {
-      const response = await ai.models.generateContent({
+      const response = await client.models.generateContent({
         model: "gemini-3.6-flash",
         contents: `Generate 3 high quality multiple choice practice questions for GTs on the topic "${topicName}". Source Material: ${textContent || 'General enterprise topic'}`,
         config: {
@@ -685,6 +181,30 @@ User Query: ${message}`
     }
   });
 
+  app.use("/api/ai", ai);
+
+  // --- PROXY EVERYTHING ELSE TO THE .NET API ---
+  // pathFilter keeps the original /api prefix intact, which is what the .NET routes
+  // expect ([Route("api/sessions")] and friends).
+  app.use(
+    createProxyMiddleware({
+      target: API_BASE_URL,
+      changeOrigin: true,
+      pathFilter: (pathname) => pathname.startsWith('/api') && !pathname.startsWith('/api/ai'),
+      on: {
+        error: (err, _req, res) => {
+          console.error(`[proxy] ${API_BASE_URL} unreachable:`, err.message);
+          if (res && 'writeHead' in res && !res.headersSent) {
+            res.writeHead(502, { 'Content-Type': 'application/json' });
+            res.end(JSON.stringify({
+              message: 'The API is unavailable. Check that the .NET service is running and API_BASE_URL is correct.'
+            }));
+          }
+        },
+      },
+    })
+  );
+
   // Vite Middleware in Dev or Static Serve in Prod
   if (process.env.NODE_ENV !== "production") {
     const vite = await createViteServer({
@@ -695,7 +215,7 @@ User Query: ${message}`
   } else {
     const distPath = path.join(process.cwd(), 'dist');
     app.use(express.static(distPath));
-    app.get('*', (req, res) => {
+    app.get('*', (_req, res) => {
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }
@@ -716,6 +236,7 @@ User Query: ${message}`
   }
 
   console.log(`Server running on http://localhost:${activePort}`);
+  console.log(`Proxying /api -> ${API_BASE_URL}`);
 }
 
 startServer();
