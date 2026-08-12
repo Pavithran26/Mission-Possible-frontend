@@ -149,6 +149,46 @@ function adaptTopic(t: any) {
   };
 }
 
+/**
+ * The API stores a question's answer in correctAnswerJson; the UI reads correctAnswer.
+ * Left unmapped, QuizReview compares the user's answer against undefined and marks
+ * every question wrong, even though the server scored the attempt correctly.
+ *
+ * The column holds either a bare string ("class") or a JSON array for multi-select,
+ * so parse when it looks like JSON and fall back to the raw value otherwise.
+ */
+function parseCorrectAnswer(raw: any): string | string[] {
+  if (Array.isArray(raw)) return raw.map(String);
+  if (typeof raw !== 'string') return raw ?? '';
+
+  const trimmed = raw.trim();
+  if (trimmed.startsWith('[')) {
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (Array.isArray(parsed)) return parsed.map(String);
+    } catch {
+      // Not JSON after all; treat it as a literal answer.
+    }
+  }
+  return raw;
+}
+
+function adaptQuestion(q: any) {
+  return {
+    ...q,
+    options: q.options ?? [],
+    correctAnswer: q.correctAnswer ?? parseCorrectAnswer(q.correctAnswerJson),
+    explanation: q.explanation ?? ''
+  };
+}
+
+function adaptQuiz(q: any) {
+  return {
+    ...q,
+    questions: (q.questions ?? []).map(adaptQuestion)
+  };
+}
+
 function adaptSession(s: any): Session {
   const objectives = (s.learningObjectives ?? [])
     .slice()
@@ -166,7 +206,7 @@ function adaptSession(s: any): Session {
     learningObjectives: objectives,
     topics: (s.topics ?? []).map(adaptTopic),
     studyMaterials: s.studyMaterials ?? [],
-    quizzes: s.quizzes ?? [],
+    quizzes: (s.quizzes ?? []).map(adaptQuiz),
     assignments: s.assignments ?? [],
     notes: s.notes ?? []
   } as Session;
@@ -225,7 +265,8 @@ export const fetchQuizzesApi = async (sessionId?: string): Promise<Quiz[]> => {
   const url = sessionId
     ? `/api/quizzes?sessionId=${encodeURIComponent(sessionId)}`
     : '/api/quizzes';
-  return apiFetch<Quiz[]>(url);
+  const data = await apiFetch<any[]>(url);
+  return (data ?? []).map(adaptQuiz);
 };
 
 export const submitQuizApi = async (quizId: string, userAnswers: Record<string, any>, timeTakenSeconds?: number) =>

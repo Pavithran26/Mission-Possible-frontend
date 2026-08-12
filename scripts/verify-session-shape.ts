@@ -21,7 +21,7 @@ globalThis.fetch = ((input: any, init?: any) =>
   removeItem: () => {}
 };
 
-const { fetchSessions } = await import('../src/services/api');
+const { fetchSessions, fetchQuizzesApi } = await import('../src/services/api');
 
 let failures = 0;
 function check(label: string, condition: boolean, detail = '') {
@@ -66,5 +66,37 @@ check('subtopic.durationMinutes is a number', typeof st?.durationMinutes === 'nu
 check('no object leaks into a string field',
   s.learningObjectives.every((o: any) => o !== '[object Object]'));
 
+// Quizzes: the API stores the answer in correctAnswerJson, the UI reads correctAnswer.
+// Unmapped, QuizReview marks every question wrong.
+const quizzes: any[] = await fetchQuizzesApi();
+console.log(`\nfetched ${quizzes.length} quiz(zes)\n`);
+
+const q: any = quizzes[0];
+check('quiz has questions', Array.isArray(q?.questions) && q.questions.length > 0,
+  `-> ${q?.questions?.length} question(s)`);
+
+const qq: any = q?.questions?.[0];
+check('question.correctAnswer is populated (was correctAnswerJson)',
+  qq?.correctAnswer !== undefined && qq?.correctAnswer !== '',
+  `-> "${qq?.correctAnswer}"`);
+
+check('question.options is a string array',
+  Array.isArray(qq?.options) && qq.options.every((o: any) => typeof o === 'string'),
+  `-> ${JSON.stringify(qq?.options)}`);
+
+check('correctAnswer actually matches one of the options',
+  Array.isArray(qq?.options) && qq.options.includes(qq.correctAnswer));
+
+// Quizzes nested inside a session must be mapped the same way.
+const nested: any = s.quizzes?.[0];
+if (nested) {
+  check('nested session.quizzes[0] is mapped too',
+    nested.questions?.[0]?.correctAnswer !== undefined,
+    `-> "${nested.questions?.[0]?.correctAnswer}"`);
+}
+
 console.log(`\n${failures === 0 ? 'ALL CHECKS PASSED' : failures + ' CHECK(S) FAILED'}`);
-process.exit(failures === 0 ? 0 : 1);
+
+// Set the code and let Node drain naturally. Calling process.exit() here trips a libuv
+// assertion on Windows because fetch's keep-alive socket is still open.
+process.exitCode = failures === 0 ? 0 : 1;
