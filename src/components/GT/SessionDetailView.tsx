@@ -53,6 +53,9 @@ interface CustomMaterialItem {
   sourceOrAuthor?: string;
   tags?: string[];
   fileSizeOrDuration?: string;
+  // Set for materials uploaded in this session and not yet persisted; handleOpenMaterial
+  // opens them via URL.createObjectURL. Matches StudyMaterial.file in types.ts.
+  file?: File;
 }
 
 interface SessionDetailViewProps {

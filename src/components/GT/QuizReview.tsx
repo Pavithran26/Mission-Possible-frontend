@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, BookOpen, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowLeft, BookOpen, CheckCircle2, RefreshCw, XCircle } from 'lucide-react';
 import { Quiz, QuizQuestion } from '../../types';
 
 interface QuizReviewProps {
@@ -48,7 +48,7 @@ const getOptionState = (question: QuizQuestion, option: string, userAnswer: any)
   return 'neutral';
 };
 
-export const QuizReview: React.FC<QuizReviewProps> = ({ quiz, answers, onBack, onGoToCourse, scorePercent, passed }) => {
+export const QuizReview: React.FC<QuizReviewProps> = ({ quiz, answers, onBack, onRetry, onGoToCourse, scorePercent, passed }) => {
   const available = quiz && Array.isArray(quiz.questions) && quiz.questions.length > 0;
   const safeScorePercent = scorePercent ?? 0;
 
