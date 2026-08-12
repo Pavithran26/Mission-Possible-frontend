@@ -107,14 +107,16 @@ async function startServer() {
       return res.json({ ...grounded, grounded: true });
     }
 
+    const offlineReply = () => ({
+      reply: `[AI Assistant Mode]: As your Graduate Trainee mentor for "${context?.sessionName || 'the portal'}", here is an answer to your question: "${message}". \n\nKey Concept Breakdown:\n1. Ensure strict type signatures in C# and TypeScript.\n2. Handle exception boundaries with Global Exception Middleware or try-catch blocks.\n3. Always write unit tests before pushing code to production.`,
+      sources: [],
+      grounded: false
+    });
+
     const client = getGeminiClient();
 
     if (!client) {
-      return res.json({
-        reply: `[AI Assistant Mode]: As your Graduate Trainee mentor for "${context?.sessionName || 'the portal'}", here is an answer to your question: "${message}". \n\nKey Concept Breakdown:\n1. Ensure strict type signatures in C# and TypeScript.\n2. Handle exception boundaries with Global Exception Middleware or try-catch blocks.\n3. Always write unit tests before pushing code to production.`,
-        sources: [],
-        grounded: false
-      });
+      return res.json(offlineReply());
     }
 
     try {
@@ -139,8 +141,11 @@ User Query: ${message}`
       // the portal's material, so the UI must not present citations for it.
       res.json({ reply: response.text || "No response generated.", sources: [], grounded: false });
     } catch (err: any) {
-      console.error("Gemini AI Chat Error:", err);
-      res.status(500).json({ error: "Failed to generate AI response", details: err.message });
+      // A missing key already degrades to the offline reply above. An invalid or
+      // rejected key threw instead, and the tutor answered users with a 500. Both
+      // are the same thing from the trainee's side, so both degrade the same way.
+      console.error("Gemini AI Chat Error, serving offline reply:", err?.message);
+      res.json(offlineReply());
     }
   });
 
