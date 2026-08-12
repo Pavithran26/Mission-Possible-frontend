@@ -1,0 +1,24 @@
+# Frontend / BFF service.
+#
+# Required variable:
+#   API_BASE_URL  - internal URL of the .NET GTsPortal API service, for example
+#                   http://gtsportal-api.railway.internal:8080
+#                   Without it the proxy falls back to http://localhost:5000 and
+#                   every /api call fails with 502.
+#
+# Optional:
+#   GEMINI_API_KEY - enables the AI tutor; without it those routes return
+#                    canned fallback responses rather than failing.
+#
+# The health check targets /api/ai/health, which is served locally and does not
+# depend on the API being reachable, so this service reports its own state.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+healthcheckPath = "/api/ai/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
